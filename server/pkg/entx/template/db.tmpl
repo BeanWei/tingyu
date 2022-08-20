@@ -1,0 +1,38 @@
+{{/* gotype: entgo.io/ent/entc/gen.Type */}}
+
+{{ define "db" }}
+{{ template "header" $ }}
+import (
+	"context"
+	"sync"
+
+    "github.com/BeanWei/tingyu/g"
+	"github.com/BeanWei/tingyu/pkg/entx/driver"
+)
+
+var (
+	dbclient     *Client
+	dbclientOnce sync.Once
+)
+
+func DB() *Client {
+	dbclientOnce.Do(func() {
+		if g.Cfg().Server.IsDev {
+			dbclient = NewClient(Driver(driver.NewDriver())).Debug()
+		} else {
+			dbclient = NewClient(Driver(driver.NewDriver()))
+		}
+
+		dbclient.Use(func(next Mutator) Mutator {
+			return MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
+				v, err := next.Mutate(ctx, m)
+				if err != nil {
+					return nil, err
+				}
+				return v, nil
+			})
+		})
+	})
+	return dbclient
+}
+{{ end }}

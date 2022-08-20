@@ -1,0 +1,23 @@
+.DS_Store
+.buildpath
+.hgignore.swp
+.project
+.orig
+.swp
+.idea/
+.settings/
+vender/
+log/
+tmp
+bin/
+cbuild
+main
+
+# private
+server/config.yaml
+
+# ent gen code
+**/ent/*
+!**/ent/schema
+!**/ent/entc.go
+!**/ent/generate.go
