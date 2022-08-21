@@ -30,3 +30,4 @@ components/style/color/*.less
 .vcmrc
 .huskyrc
 .gitmodules
+.prettierrc.js
