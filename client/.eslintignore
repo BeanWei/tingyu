@@ -1,0 +1,12 @@
+node_modules/
+es/
+lib/
+dist/
+pnpm-lock.yaml
+package-lock.json
+# misc
+.github
+**/*.spec.*
+**/style/
+*.html
+/components/test/*
