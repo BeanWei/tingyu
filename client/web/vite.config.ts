@@ -5,6 +5,9 @@ import Pages from 'vite-plugin-pages'
 import Layouts from 'vite-plugin-vue-layouts'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { VitePWA } from 'vite-plugin-pwa'
 import VueI18n from '@intlify/vite-plugin-vue-i18n'
 import Inspect from 'vite-plugin-inspect'
@@ -28,6 +31,9 @@ export default defineConfig({
     // https://github.com/JohnCampionJr/vite-plugin-vue-layouts
     Layouts(),
 
+    // https://github.com/antfu/unplugin-icons
+    Icons(),
+
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
       imports: [
@@ -37,6 +43,14 @@ export default defineConfig({
         'vue/macros',
         '@vueuse/head',
         '@vueuse/core',
+        {
+          'naive-ui': [
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar',
+          ],
+        },
       ],
       dts: 'src/auto-imports.d.ts',
       dirs: [
@@ -49,6 +63,10 @@ export default defineConfig({
     // https://github.com/antfu/unplugin-vue-components
     Components({
       dts: 'src/components.d.ts',
+      resolvers: [
+        NaiveUiResolver(),
+        IconsResolver(),
+      ],
     }),
 
     // https://github.com/antfu/unocss
@@ -95,9 +113,4 @@ export default defineConfig({
     // Visit http://localhost:3333/__inspect/ to see the inspector
     Inspect(),
   ],
-
-  ssr: {
-    // TODO: workaround until they support native ESM
-    noExternal: ['workbox-window', /vue-i18n/],
-  },
 })

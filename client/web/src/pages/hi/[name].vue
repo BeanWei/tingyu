@@ -35,13 +35,11 @@ watchEffect(() => {
       </p>
     </template>
 
-    <div>
-      <button
-        btn m="3 t6" text-sm
-        @click="router.back()"
-      >
-        {{ t('button.back') }}
-      </button>
-    </div>
+    <n-button
+      strong secondary round type="primary"
+      @click="router.back()"
+    >
+      {{ t('button.back') }}
+    </n-button>
   </div>
 </template>

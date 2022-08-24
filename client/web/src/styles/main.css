@@ -1,15 +1,14 @@
-@import './markdown.css';
-
 html,
 body,
 #app {
   height: 100%;
   margin: 0;
   padding: 0;
+  color: #333;
+  background-color: #f4f5f5;
 }
 
 html.dark {
-  background: #121212;
   color-scheme: dark;
 }
 

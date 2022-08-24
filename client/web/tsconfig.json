@@ -15,11 +15,12 @@
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "types": [
-      "vitest",
       "vite/client",
       "vue/ref-macros",
       "vite-plugin-pages/client",
-      "vite-plugin-vue-layouts/client"
+      "vite-plugin-vue-layouts/client",
+      "naive-ui/volar",
+      "unplugin-icons/types/vue"
     ],
     "paths": {
       "~/*": ["src/*"]
