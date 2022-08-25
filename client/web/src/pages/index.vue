@@ -13,7 +13,7 @@ const { t } = useI18n()
 
 <template>
   <div>
-    <div class="relative bg-#fff border-rd-4px p-x-4 p-y6">
+    <div class="relative bg-#fff border-rd-4px p-x-4 p-t-2 p-b-4">
       <PostEditor />
     </div>
     <div text-4xl>

@@ -1,28 +1,285 @@
+<script setup lang="ts">
+import {
+  LexicalComposer,
+  LexicalContentEditable,
+  LexicalRichTextPlugin,
+} from 'lexical-vue'
+import { HeadingNode, QuoteNode } from '@lexical/rich-text'
+import { TableCellNode, TableNode, TableRowNode } from '@lexical/table'
+import { ListItemNode, ListNode } from '@lexical/list'
+import { CodeHighlightNode, CodeNode } from '@lexical/code'
+import { AutoLinkNode, LinkNode } from '@lexical/link'
+import { HashtagNode } from '@lexical/hashtag'
+import MarkdownShortcutPlugin from './plugins/MarkdownShortcutPlugin.vue'
+import defaultTheme from './themes/default'
+
+const config = {
+  theme: defaultTheme,
+  nodes: [
+    HeadingNode,
+    ListNode,
+    ListItemNode,
+    QuoteNode,
+    CodeNode,
+    CodeHighlightNode,
+    TableNode,
+    TableCellNode,
+    TableRowNode,
+    AutoLinkNode,
+    LinkNode,
+    HashtagNode,
+  ],
+}
+
+const onError = (error: Error) => {
+  throw error
+}
+</script>
+
 <template>
-  <div class="bg-inherit">
-    <div>
-      <div class="relative min-h-88px">
-        123
-      </div>
+  <LexicalComposer :initial-config="config" @error="onError">
+    <div class="bg-inherit relative">
+      <LexicalRichTextPlugin>
+        <template #contentEditable>
+          <LexicalContentEditable class="min-h-88px select-text break-all resize-none tab-1 outline-0 text-left" />
+        </template>
+        <template #placeholder>
+          <div class="color-#999 overflow-hidden absolute text-ellipsis top-0px left-0px select-none inline-block pointer-events-none">
+            Enter some text...
+          </div>
+        </template>
+      </LexicalRichTextPlugin>
+      <MarkdownShortcutPlugin />
     </div>
-    <n-space justify="space-between">
-      <div class="flex relative">
-        <n-button quaternary circle>
-          <template #icon>
-            <n-icon><i-carbon-image /></n-icon>
-          </template>
-        </n-button>
-        <n-button quaternary circle>
-          <template #icon>
-            <n-icon><i-carbon-face-add /></n-icon>
-          </template>
-        </n-button>
-      </div>
-      <n-button
-        strong secondary round type="primary"
-      >
-        发布
+  </LexicalComposer>
+  <n-space justify="space-between">
+    <div class="flex relative">
+      <n-button quaternary circle>
+        <template #icon>
+          <n-icon><i-carbon-image /></n-icon>
+        </template>
       </n-button>
-    </n-space>
-  </div>
+      <n-button quaternary circle>
+        <template #icon>
+          <n-icon><i-carbon-face-add /></n-icon>
+        </template>
+      </n-button>
+    </div>
+    <n-button
+      strong secondary round type="primary"
+    >
+      发布
+    </n-button>
+  </n-space>
 </template>
+
+<style>
+h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+.ltr {
+  text-align: left;
+}
+
+.rtl {
+  text-align: right;
+}
+
+.editor-text-bold {
+  font-weight: bold;
+}
+
+.editor-text-italic {
+  font-style: italic;
+}
+
+.editor-text-underline {
+  text-decoration: underline;
+}
+
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.editor-text-underlineStrikethrough {
+  text-decoration: underline line-through;
+}
+
+.editor-text-code {
+  background-color: rgba(24, 160, 88, 0.16);
+  padding: 1px 0.25rem;
+  font-family: Menlo, Consolas, Monaco, monospace;
+  font-size: 94%;
+  color: #18a058;
+  border-radius: .25rem;
+}
+
+.editor-text-hashtag {
+  background-color: rgba(88, 144, 255, 0.15);
+  border-bottom: 1px solid rgba(88, 144, 255, 0.3);
+}
+
+.editor-link {
+  color: rgb(33, 111, 219);
+  text-decoration: none;
+}
+
+.tree-view-output {
+  display: block;
+  background: #222;
+  color: #fff;
+  padding: 5px;
+  font-size: 12px;
+  white-space: pre-wrap;
+  margin: 1px auto 10px auto;
+  max-height: 250px;
+  position: relative;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  overflow: auto;
+  line-height: 14px;
+}
+
+.editor-code {
+  background-color: rgb(240, 242, 245);
+  font-family: Menlo, Consolas, Monaco, monospace;
+  display: block;
+  padding: 8px 8px 8px 52px;
+  line-height: 1.53;
+  font-size: 13px;
+  margin: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  tab-size: 2;
+  /* white-space: pre; */
+  overflow-x: auto;
+  position: relative;
+}
+
+.editor-code:before {
+  content: attr(data-gutter);
+  position: absolute;
+  background-color: #eee;
+  left: 0;
+  top: 0;
+  border-right: 1px solid #ccc;
+  padding: 8px;
+  color: #777;
+  white-space: pre-wrap;
+  text-align: right;
+  min-width: 25px;
+}
+.editor-code:after {
+  content: attr(data-highlight-language);
+  top: 0;
+  right: 3px;
+  padding: 3px;
+  font-size: 10px;
+  text-transform: uppercase;
+  position: absolute;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.editor-tokenComment {
+  color: slategray;
+}
+
+.editor-tokenPunctuation {
+  color: #999;
+}
+
+.editor-tokenProperty {
+  color: #905;
+}
+
+.editor-tokenSelector {
+  color: #690;
+}
+
+.editor-tokenOperator {
+  color: #9a6e3a;
+}
+
+.editor-tokenAttr {
+  color: #07a;
+}
+
+.editor-tokenVariable {
+  color: #e90;
+}
+
+.editor-tokenFunction {
+  color: #dd4a68;
+}
+
+.editor-paragraph {
+  margin: 0;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.editor-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.editor-heading-h1 {
+  font-size: 24px;
+  color: rgb(5, 5, 5);
+  font-weight: 400;
+  margin: 0;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.editor-heading-h2 {
+  font-size: 15px;
+  color: rgb(101, 103, 107);
+  font-weight: 700;
+  margin: 0;
+  margin-top: 10px;
+  padding: 0;
+  text-transform: uppercase;
+}
+
+.editor-quote {
+  margin: 0;
+  margin-left: 20px;
+  font-size: 15px;
+  color: rgb(101, 103, 107);
+  border-left-color: rgb(206, 208, 212);
+  border-left-width: 4px;
+  border-left-style: solid;
+  padding-left: 16px;
+}
+
+.editor-list-ol {
+  padding: 0;
+  margin: 0;
+  margin-left: 16px;
+}
+
+.editor-list-ul {
+  padding: 0;
+  margin: 0;
+  margin-left: 16px;
+}
+
+.editor-listitem {
+  margin: 8px 32px 8px 32px;
+}
+
+.editor-nested-listitem {
+  list-style-type: none;
+}
+
+pre::-webkit-scrollbar {
+  background: transparent;
+  width: 10px;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: #999;
+}
+</style>

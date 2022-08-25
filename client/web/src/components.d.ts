@@ -7,12 +7,14 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BlockDragger: typeof import('./components/editor/BlockDragger.vue')['default']
     Counter: typeof import('./components/Counter.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
     ICarbonFaceAdd: typeof import('~icons/carbon/face-add')['default']
     ICarbonImage: typeof import('~icons/carbon/image')['default']
     ICarbonNotificationFilled: typeof import('~icons/carbon/notification-filled')['default']
     ICarbonSearch: typeof import('~icons/carbon/search')['default']
+    MarkdownShortcutPlugin: typeof import('./components/editor/plugins/MarkdownShortcutPlugin.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
     NCol: typeof import('naive-ui')['NCol']
