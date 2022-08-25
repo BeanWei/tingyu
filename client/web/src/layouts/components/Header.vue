@@ -32,9 +32,9 @@ const {
                   <i-carbon-search />
                 </template>
               </n-input>
-              <n-button strong secondary circle>
+              <n-button quaternary circle>
                 <template #icon>
-                  <n-icon><i-carbon-notification-filled /></n-icon>
+                  <n-icon><i-carbon-notification /></n-icon>
                 </template>
               </n-button>
               <n-avatar

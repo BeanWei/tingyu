@@ -6,7 +6,7 @@ import UserBox from './components/UserBox.vue'
 
 <template>
   <Header />
-  <main class="flex max-w-1240px relative w-full py-5 m-y-0 m-x-a text-center text-gray-700 dark:text-gray-200">
+  <main class="flex max-w-1240px relative w-full py-5 m-y-0 m-x-a text-gray-700 dark:text-gray-200">
     <div class="mr-20px w-180px">
       <NavBox />
     </div>

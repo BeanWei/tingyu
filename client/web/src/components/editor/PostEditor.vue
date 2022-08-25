@@ -74,19 +74,6 @@ const onError = (error: Error) => {
 </template>
 
 <style>
-h1 {
-  font-size: 24px;
-  color: #333;
-}
-
-.ltr {
-  text-align: left;
-}
-
-.rtl {
-  text-align: right;
-}
-
 .editor-text-bold {
   font-weight: bold;
 }
