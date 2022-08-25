@@ -13,6 +13,9 @@ const { t } = useI18n()
 
 <template>
   <div>
+    <div class="relative bg-#fff border-rd-4px p-x-4 p-y6">
+      <PostEditor />
+    </div>
     <div text-4xl>
       <div i-carbon-campsite inline-block />
     </div>

@@ -36,7 +36,7 @@ const {
 </script>
 
 <template>
-  <nav class="w-180px bg-#fff p-8px box-border z-99 fixed top-80px" border-rd-4px>
+  <nav class="w-180px bg-#fff box-border z-99 fixed" border-rd-4px>
     <n-scrollbar class="max-h-[calc(100%-109px)]">
       <n-menu :value="activeKey" :options="menuOptions" />
     </n-scrollbar>

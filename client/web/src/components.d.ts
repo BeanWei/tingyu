@@ -9,6 +9,8 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Counter: typeof import('./components/Counter.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
+    ICarbonFaceAdd: typeof import('~icons/carbon/face-add')['default']
+    ICarbonImage: typeof import('~icons/carbon/image')['default']
     ICarbonNotificationFilled: typeof import('~icons/carbon/notification-filled')['default']
     ICarbonSearch: typeof import('~icons/carbon/search')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
@@ -21,6 +23,7 @@ declare module '@vue/runtime-core' {
     NScrollbar: typeof import('naive-ui')['NScrollbar']
     NSpace: typeof import('naive-ui')['NSpace']
     NStatistic: typeof import('naive-ui')['NStatistic']
+    PostEditor: typeof import('./components/editor/PostEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
