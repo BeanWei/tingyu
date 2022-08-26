@@ -45,7 +45,7 @@ const onError = (error: Error) => {
         </template>
         <template #placeholder>
           <div class="color-#999 overflow-hidden absolute text-ellipsis top-0px left-0px select-none inline-block pointer-events-none">
-            Enter some text...
+            输入评论
           </div>
         </template>
       </LexicalRichTextPlugin>
@@ -68,7 +68,7 @@ const onError = (error: Error) => {
     <n-button
       strong secondary round type="primary"
     >
-      发布
+      发表评论
     </n-button>
   </n-space>
 </template>

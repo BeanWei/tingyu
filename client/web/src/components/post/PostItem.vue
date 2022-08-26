@@ -15,5 +15,8 @@ import PostHeaderAction from './PostHeaderAction.vue'
     <div class="m-t-12px m-x--20px">
       <PostFooterAction />
     </div>
+    <div class="relative bg-#fff border-rd-4px p-t-2 p-b-4 mb-12px">
+      <CommentEditor />
+    </div>
   </div>
 </template>

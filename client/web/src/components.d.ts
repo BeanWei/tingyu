@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BlockDragger: typeof import('./components/editor/BlockDragger.vue')['default']
+    CommentEditor: typeof import('./components/editor/CommentEditor.vue')['default']
     CommentItem: typeof import('./components/comment/CommentItem.vue')['default']
     Counter: typeof import('./components/Counter.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
