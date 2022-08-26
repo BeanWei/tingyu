@@ -4,28 +4,28 @@
       Bean.Wei
     </div>
     <div class="flex pt-20px">
-      <n-row>
-        <n-col :span="6">
-          <n-statistic label="帖子">
+      <NRow>
+        <NCol :span="6">
+          <NStatistic label="帖子">
             6
-          </n-statistic>
-        </n-col>
-        <n-col :span="6">
-          <n-statistic label="话题">
+          </NStatistic>
+        </NCol>
+        <NCol :span="6">
+          <NStatistic label="话题">
             6
-          </n-statistic>
-        </n-col>
-        <n-col :span="6">
-          <n-statistic label="关注">
+          </NStatistic>
+        </NCol>
+        <NCol :span="6">
+          <NStatistic label="关注">
             6
-          </n-statistic>
-        </n-col>
-        <n-col :span="6">
-          <n-statistic label="粉丝">
+          </NStatistic>
+        </NCol>
+        <NCol :span="6">
+          <NStatistic label="粉丝">
             6
-          </n-statistic>
-        </n-col>
-      </n-row>
+          </NStatistic>
+        </NCol>
+      </NRow>
     </div>
   </div>
 </template>

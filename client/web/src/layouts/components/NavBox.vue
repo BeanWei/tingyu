@@ -52,14 +52,14 @@ const {
 
 <template>
   <nav class="w-180px bg-#fff box-border z-99 fixed" border-rd-4px>
-    <n-scrollbar class="max-h-[calc(100%-109px)]">
-      <n-menu
+    <NScrollbar class="max-h-[calc(100%-109px)]">
+      <NMenu
         :value="activeKey"
         :options="menuOptions"
         :expand-icon="() => null"
         :collapsed="false"
         default-expand-all
       />
-    </n-scrollbar>
+    </NScrollbar>
   </nav>
 </template>

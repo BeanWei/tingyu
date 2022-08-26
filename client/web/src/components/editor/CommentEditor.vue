@@ -52,23 +52,23 @@ const onError = (error: Error) => {
       <MarkdownShortcutPlugin />
     </div>
   </LexicalComposer>
-  <n-space justify="space-between">
-    <n-space>
-      <n-button quaternary circle>
+  <NSpace justify="space-between">
+    <NSpace>
+      <NButton quaternary circle>
         <template #icon>
-          <n-icon><i-carbon-image /></n-icon>
+          <NIcon><ICarbonImage /></NIcon>
         </template>
-      </n-button>
-      <n-button quaternary circle>
+      </NButton>
+      <NButton quaternary circle>
         <template #icon>
-          <n-icon><i-carbon-face-add /></n-icon>
+          <NIcon><ICarbonFaceAdd /></NIcon>
         </template>
-      </n-button>
-    </n-space>
-    <n-button
+      </NButton>
+    </NSpace>
+    <NButton
       strong secondary round type="primary"
     >
       发表评论
-    </n-button>
-  </n-space>
+    </NButton>
+  </NSpace>
 </template>

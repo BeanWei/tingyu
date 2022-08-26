@@ -14,16 +14,16 @@ const options: DropdownOption[] = [
 </script>
 
 <template>
-  <n-dropdown
+  <NDropdown
     trigger="hover"
     :options="options"
     :show-arrow="true"
     placement="bottom-end"
   >
-    <n-button quaternary circle>
+    <NButton quaternary circle>
       <template #icon>
-        <n-icon><i-carbon-overflow-menu-vertical /></n-icon>
+        <NIcon><ICarbonOverflowMenuVertical /></NIcon>
       </template>
-    </n-button>
-  </n-dropdown>
+    </NButton>
+  </NDropdown>
 </template>

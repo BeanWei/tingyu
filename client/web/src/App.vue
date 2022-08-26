@@ -1,3 +1,7 @@
 <template>
-  <RouterView />
+  <NConfigProvider>
+    <NProvider>
+      <RouterView />
+    </NProvider>
+  </NConfigProvider>
 </template>

@@ -17,6 +17,8 @@ const {
   activeKey?: string
   menuOptions?: MenuOption[]
 }>()
+
+const userStore = useUserStore()
 </script>
 
 <template>
@@ -24,26 +26,37 @@ const {
     <header class="border-b-1 border-b-#f1f1f1 color-#909090 z-250 fixed top-0 left-0 right-0 bg-#fff">
       <div class="p-y-6px m-auto max-w-1240px flex items-center h-full w-full relative">
         <nav class="h-full flex-auto">
-          <n-space justify="space-between" align="center">
-            <n-menu :value="activeKey" mode="horizontal" :options="menuOptions" />
-            <n-space align="center">
-              <n-input round placeholder="搜索">
+          <NSpace justify="space-between" align="center">
+            <NMenu :value="activeKey" mode="horizontal" :options="menuOptions" />
+            <NSpace align="center">
+              <NInput round placeholder="搜索">
                 <template #suffix>
-                  <i-carbon-search />
+                  <ICarbonSearch />
                 </template>
-              </n-input>
-              <n-button quaternary circle>
-                <template #icon>
-                  <n-icon><i-carbon-notification /></n-icon>
-                </template>
-              </n-button>
-              <n-avatar
+              </NInput>
+              <NSpace v-if="!!userStore.info">
+                <NButton quaternary circle>
+                  <template #icon>
+                    <NIcon><ICarbonNotification /></NIcon>
+                  </template>
+                </NButton>
+                <NAvatar
+                  round
+                  :size="34"
+                  src="https://avatars.githubusercontent.com/u/33516660?s=40&v=4"
+                />
+              </NSpace>
+              <NButton
+                v-else
+                strong
+                secondary
                 round
-                :size="34"
-                src="https://avatars.githubusercontent.com/u/33516660?s=40&v=4"
-              />
-            </n-space>
-          </n-space>
+                type="primary"
+              >
+                登录 / 注册
+              </NButton>
+            </NSpace>
+          </NSpace>
         </nav>
       </div>
     </header>

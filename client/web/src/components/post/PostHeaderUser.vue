@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center">
-    <n-avatar
+    <NAvatar
       round
       :size="48"
       src="https://avatars.githubusercontent.com/u/33516660?s=40&v=4"

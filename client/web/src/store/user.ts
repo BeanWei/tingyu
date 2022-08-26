@@ -1,33 +1,38 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ACCESS_TOKEN } from '~/constants'
 
-export const useUserStore = defineStore('user', () => {
-  /**
-   * Current name of the user.
-   */
-  const savedName = ref('')
-  const previousNames = ref(new Set<string>())
+const token = useStorage(ACCESS_TOKEN, '')
 
-  const usedNames = computed(() => Array.from(previousNames.value))
-  const otherNames = computed(() => usedNames.value.filter(name => name !== savedName.value))
-
-  /**
-   * Changes the current name of the user and saves the one that was used
-   * before.
-   *
-   * @param name - new name to set
-   */
-  function setNewName(name: string) {
-    if (savedName.value)
-      previousNames.value.add(savedName.value)
-
-    savedName.value = name
+export interface IUserState {
+  token: string
+  info?: {
+    id: string
+    username: string
+    nickname: string
+    avatar: string
   }
+}
 
-  return {
-    setNewName,
-    otherNames,
-    savedName,
-  }
+export const useUserStore = defineStore('user', {
+  state: (): IUserState => ({
+    token: token.value,
+  }),
+  getters: {
+    getToken(): string {
+      return this.token
+    },
+    getInfo(): IUserState['info'] {
+      return this.info
+    },
+  },
+  actions: {
+    setToken(token: string) {
+      this.token = token
+    },
+    setInfo(info: IUserState['info']) {
+      this.info = info
+    },
+  },
 })
 
 if (import.meta.hot)
