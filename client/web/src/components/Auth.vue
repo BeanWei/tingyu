@@ -1,23 +1,24 @@
 <script setup lang="ts">
 import type { FormInst, FormRules } from 'naive-ui'
+import { userLogin } from '~/api/user'
 
 const miscStore = useMiscStore()
 
-const authType = ref<'login' | 'reset'>('login')
-const loading = ref(false)
+const authTypeRef = ref<'login' | 'reset'>('login')
+const loadingRef = ref(false)
 // 登录/注册
 const loginRef = ref<FormInst>()
-const loginForm = ref({
+const loginModelRef = ref({
   username: '',
   password: '',
 })
 // 重置密码
 const resetRef = ref<FormInst>()
-const resetForm = ref({
+const resetModelRef = ref({
   username: '',
   code: '',
 })
-
+// 表单校验规则
 const loginRules: FormRules = {
   username: {
     required: true,
@@ -39,22 +40,33 @@ const resetRules: FormRules = {
   },
 }
 
-const onUpdateAuthType = (e: MouseEvent) => {
-  authType.value = authType.value === 'login' ? 'reset' : 'login'
+const handleUpdateAuthType = (e: MouseEvent) => {
+  authTypeRef.value = authTypeRef.value === 'login' ? 'reset' : 'login'
 }
 
-const onLogin = (e: MouseEvent) => {
+const handleLogin = (e: MouseEvent) => {
   e.preventDefault()
-  loginRef.value?.validate((errors) => {
-    if (!errors)
-      window.$message?.success('valid')
+  loginRef.value?.validate(async (errors) => {
+    if (!errors) {
+      loadingRef.value = true
+      await userLogin({
+        username: loginModelRef.value.username,
+        password: loginModelRef.value.password,
+      })
+      loadingRef.value = false
+    }
   })
 }
-const onReset = (e: MouseEvent) => {
+const handleReset = (e: MouseEvent) => {
   e.preventDefault()
   resetRef.value?.validate((errors) => {
-    if (!errors)
+    if (!errors) {
       window.$message?.success('valid')
+      loadingRef.value = true
+      setTimeout(() => {
+        loadingRef.value = false
+      }, 20000)
+    }
   })
 }
 </script>
@@ -65,27 +77,27 @@ const onReset = (e: MouseEvent) => {
     preset="card"
     :mask-closable="false"
     :bordered="false"
-    :title="authType === 'login' ? '密码登录' : '重置密码'"
+    :title="authTypeRef === 'login' ? '密码登录' : '重置密码'"
     class="w-400px"
     closable
     @close="() => miscStore.setAuthModalVisible(false)"
   >
     <NForm
-      v-if="authType === 'login'"
+      v-if="authTypeRef === 'login'"
       ref="loginRef"
-      :model="loginForm"
+      :model="loginModelRef"
       :rules="loginRules"
       label-placement="left"
     >
       <NFormItem path="username">
         <NInput
-          v-model:value="loginForm.username"
+          v-model:value="loginModelRef.username"
           placeholder="邮箱或手机号"
         />
       </NFormItem>
       <NFormItem path="password">
         <NInput
-          v-model:value="loginForm.password"
+          v-model:value="loginModelRef.password"
           type="password"
           show-password-on="click"
           placeholder="密码"
@@ -97,20 +109,18 @@ const onReset = (e: MouseEvent) => {
           text
           tag="a"
           type="primary"
-          @click="onUpdateAuthType"
+          @click="handleUpdateAuthType"
         >
           忘记密码
         </NButton>
       </div>
-      <NFormItem
-        attr-type="button"
-        @click="onLogin"
-      >
+      <NFormItem attr-type="button">
         <NButton
-          :loading="loading"
+          :loading="loadingRef"
           type="primary"
           block
           strong
+          @click="handleLogin"
         >
           登录/注册
         </NButton>
@@ -120,21 +130,21 @@ const onReset = (e: MouseEvent) => {
       </div>
     </NForm>
     <NForm
-      v-else-if="authType === 'reset'"
+      v-else-if="authTypeRef === 'reset'"
       ref="resetRef"
-      :model="resetForm"
+      :model="resetModelRef"
       :rules="resetRules"
       label-placement="left"
     >
       <NFormItem path="username">
         <NInput
-          v-model:value="resetForm.username"
+          v-model:value="resetModelRef.username"
           placeholder="邮箱或手机号"
         />
       </NFormItem>
       <NFormItem path="password">
         <NInput
-          v-model:value="resetForm.code"
+          v-model:value="resetModelRef.code"
           placeholder="验证码"
           :maxlength="6"
         />
@@ -144,20 +154,18 @@ const onReset = (e: MouseEvent) => {
           text
           tag="a"
           type="primary"
-          @click="onUpdateAuthType"
+          @click="handleUpdateAuthType"
         >
           密码登录
         </NButton>
       </div>
-      <NFormItem
-        attr-type="button"
-        @click="onReset"
-      >
+      <NFormItem attr-type="button">
         <NButton
-          :loading="loading"
+          :loading="loadingRef"
           type="primary"
           block
           strong
+          @click="handleReset"
         >
           重置密码
         </NButton>

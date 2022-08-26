@@ -3,7 +3,7 @@ import type { StrictUseAxiosReturn } from '@vueuse/integrations/useAxios'
 import { useAxios } from '@vueuse/integrations/useAxios'
 
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.DEV ? 'http://localhost:8888' : '' + '/api',
   timeout: 30 * 1000, // 30s 超时
 })
 
