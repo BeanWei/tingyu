@@ -19,6 +19,7 @@ const {
 }>()
 
 const userStore = useUserStore()
+const miscStore = useMiscStore()
 </script>
 
 <template>
@@ -52,8 +53,9 @@ const userStore = useUserStore()
                 secondary
                 round
                 type="primary"
+                @click="miscStore.setAuthModalVisible(true)"
               >
-                登录 / 注册
+                登录/注册
               </NButton>
             </NSpace>
           </NSpace>

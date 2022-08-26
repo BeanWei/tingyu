@@ -32,6 +32,11 @@ export const useUserStore = defineStore('user', {
     setInfo(info: IUserState['info']) {
       this.info = info
     },
+    resetAll() {
+      token.value = ''
+      this.token = ''
+      this.info = undefined
+    },
   },
 })
 

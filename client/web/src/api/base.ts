@@ -30,12 +30,17 @@ instance.interceptors.response.use(
   (error = {}) => {
     const { response = {} } = error || {}
     // 重定向
-    if (response?.status === 401)
-      window.$message?.warning(response?.data.msg || '请登录')
-    else if (response?.status === 403)
+    if (response?.status === 401) {
+      // window.$message?.warning(response?.data.msg || '请登录')
+      useUserStore().resetAll()
+      useMiscStore().setAuthModalVisible(true)
+    }
+    else if (response?.status === 403) {
       window.$message?.warning(response?.data.msg || '禁止访问')
-    else
+    }
+    else {
       window.$message?.error(response?.data?.msg || '请求失败')
+    }
 
     return Promise.reject(response?.data || {})
   },

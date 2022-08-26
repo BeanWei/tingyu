@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Auth: typeof import('./components/Auth.vue')['default']
     BlockDragger: typeof import('./components/editor/BlockDragger.vue')['default']
     CommentEditor: typeof import('./components/editor/CommentEditor.vue')['default']
     CommentItem: typeof import('./components/comment/CommentItem.vue')['default']
@@ -25,11 +26,14 @@ declare module '@vue/runtime-core' {
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
     NDialogProvider: typeof import('naive-ui')['NDialogProvider']
     NDropdown: typeof import('naive-ui')['NDropdown']
+    NForm: typeof import('naive-ui')['NForm']
+    NFormItem: typeof import('naive-ui')['NFormItem']
     NIcon: typeof import('naive-ui')['NIcon']
     NInput: typeof import('naive-ui')['NInput']
     NLoadingBarProvider: typeof import('naive-ui')['NLoadingBarProvider']
     NMenu: typeof import('naive-ui')['NMenu']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
+    NModal: typeof import('naive-ui')['NModal']
     NNotificationProvider: typeof import('naive-ui')['NNotificationProvider']
     NProvider: typeof import('./components/NProvider.vue')['default']
     NRow: typeof import('naive-ui')['NRow']
