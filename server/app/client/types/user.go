@@ -6,11 +6,6 @@ type UserLoginReq struct {
 	Password string `json:"password,required"`
 }
 
-type UserSignInReq struct {
-	Username string `json:"username,required"`
-	Password string `json:"password,required"`
-}
-
 type GetUserInfoReq struct {
 	ID int64 `query:"id"`
 }

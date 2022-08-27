@@ -40,7 +40,7 @@ func JWT() *jwt.HertzJWTMiddleware {
 			if err := c.BindAndValidate(&req); err != nil {
 				return nil, biz.NewError(biz.CodeParamBindError, err)
 			}
-			usr, err := GetLoginUser(ctx, &req)
+			usr, err := UserLoginOrSignIn(ctx, &req)
 			if err != nil {
 				return nil, err
 			}

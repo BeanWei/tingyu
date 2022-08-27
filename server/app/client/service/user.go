@@ -14,20 +14,38 @@ import (
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/cloudwego/hertz/pkg/common/errors"
+	"github.com/duke-git/lancet/v2/random"
 	"github.com/duke-git/lancet/v2/validator"
 	"golang.org/x/crypto/pbkdf2"
 )
 
 const (
-	LOGIN_ERR_KEY       = "userloginerr"
+	LOGIN_ERR_KEY       = "user-login-err"
 	MAX_LOGIN_ERR_TIMES = 10
 )
 
-// GetLoginUser 用户登录认证
-func GetLoginUser(ctx context.Context, req *types.UserLoginReq) (*ent.User, *errors.Error) {
+// UserLoginOrSignIn 登录或注册
+func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User, *errors.Error) {
 	usr, err := ent.DB().User.Query().Where(user.UsernameEQ(req.Username)).Only(ctx)
-	if ent.IsNotFound(err) {
-		return nil, biz.NewError(biz.CodeUnauthorizedAuthFailed, err)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			// 如果账号不存在则注册
+			if err := ValidateUsername(ctx, req.Username); err != nil {
+				return nil, err
+			}
+			if err := ValidPassword(req.Password); err != nil {
+				return nil, err
+			}
+			salt := random.RandString(10)
+			usr := ent.DB().User.Create().
+				SetUsername(req.Username).
+				SetNickname(req.Username).
+				SetPassword(HashUserPwd(req.Password, salt)).
+				SetSalt(salt).
+				SaveX(ctx)
+			return usr, nil
+		}
+		return nil, errors.New(err, errors.ErrorTypePublic, nil)
 	}
 	lek := fmt.Sprintf("%s:%d", LOGIN_ERR_KEY, usr.ID)
 	// 登录错误次数
@@ -54,9 +72,6 @@ func ValidateUsername(ctx context.Context, username string) *errors.Error {
 		}
 	} else if !validator.IsChineseMobile(username) {
 		return biz.NewError(biz.CodeInvalidEmail, fmt.Errorf("phone %s is invalid", username))
-	}
-	if ent.DB().User.Query().Where(user.UsernameEqualFold(username)).ExistX(ctx) {
-		return biz.NewError(biz.CodeUsernameExisted, fmt.Errorf("username %s is existed", username))
 	}
 	return nil
 }

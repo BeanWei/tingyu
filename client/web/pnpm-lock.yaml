@@ -9,6 +9,7 @@ specifiers:
   '@vueuse/integrations': ^9.1.1
   axios: ^0.27.2
   critters: ^0.0.16
+  cross-env: ^7.0.3
   eslint: ^8.22.0
   lexical: 0.3.9
   lexical-vue: 0.1.7
@@ -49,6 +50,7 @@ devDependencies:
   '@intlify/vite-plugin-vue-i18n': registry.npmmirror.com/@intlify/vite-plugin-vue-i18n/6.0.1_vite@3.0.9+vue-i18n@9.2.2
   '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/3.0.3_vite@3.0.9+vue@3.2.37
   critters: registry.npmmirror.com/critters/0.0.16
+  cross-env: registry.npmmirror.com/cross-env/7.0.3
   eslint: registry.npmmirror.com/eslint/8.22.0
   pnpm: registry.npmmirror.com/pnpm/7.9.5
   taze: registry.npmmirror.com/taze/0.7.6
@@ -3686,6 +3688,16 @@ packages:
       parse5-htmlparser2-tree-adapter: registry.npmmirror.com/parse5-htmlparser2-tree-adapter/6.0.1
       postcss: registry.npmmirror.com/postcss/8.4.16
       pretty-bytes: registry.npmmirror.com/pretty-bytes/5.6.0
+    dev: true
+
+  registry.npmmirror.com/cross-env/7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/cross-env/-/cross-env-7.0.3.tgz}
+    name: cross-env
+    version: 7.0.3
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: registry.npmmirror.com/cross-spawn/7.0.3
     dev: true
 
   registry.npmmirror.com/cross-spawn/7.0.3:

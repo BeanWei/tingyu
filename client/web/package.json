@@ -4,7 +4,7 @@
   "packageManager": "pnpm@7.8.0",
   "scripts": {
     "build": "vite build",
-    "dev": "vite --port 3333 --open",
+    "dev": "cross-env vite --port 3333 --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit",
@@ -28,6 +28,7 @@
     "@intlify/vite-plugin-vue-i18n": "^6.0.1",
     "@vitejs/plugin-vue": "^3.0.3",
     "critters": "^0.0.16",
+    "cross-env": "^7.0.3",
     "eslint": "^8.22.0",
     "pnpm": "^7.9.4",
     "taze": "^0.7.6",

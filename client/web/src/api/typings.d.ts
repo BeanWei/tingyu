@@ -7,6 +7,12 @@ declare namespace API {
     token: string
   }
   type GetUserInfoReq = {
-    id?: string
+    id?: number
+  }
+  type GetUserInfoResp = {
+    id: number
+    username: string
+    nickname: string
+    avatar: string
   }
 }

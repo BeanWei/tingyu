@@ -8,11 +8,6 @@ export const useMiscStore = defineStore('misc', {
   state: (): IMiscState => ({
     authModalVisible: false,
   }),
-  getters: {
-    getAuthModalVisible(): boolean {
-      return this.authModalVisible
-    },
-  },
   actions: {
     setAuthModalVisible(visible: boolean) {
       this.authModalVisible = visible

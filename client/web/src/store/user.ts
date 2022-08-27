@@ -1,12 +1,12 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { ACCESS_TOKEN } from '~/constants'
 
-const token = useStorage(ACCESS_TOKEN, '')
+const tokenRef = useStorage(ACCESS_TOKEN, '')
 
 export interface IUserState {
   token: string
   info?: {
-    id: string
+    id: number
     username: string
     nickname: string
     avatar: string
@@ -15,27 +15,20 @@ export interface IUserState {
 
 export const useUserStore = defineStore('user', {
   state: (): IUserState => ({
-    token: token.value,
+    token: tokenRef.value,
+    info: undefined,
   }),
-  getters: {
-    getToken(): string {
-      return this.token
-    },
-    getInfo(): IUserState['info'] {
-      return this.info
-    },
-  },
   actions: {
     setToken(token: string) {
+      tokenRef.value = token
       this.token = token
     },
     setInfo(info: IUserState['info']) {
       this.info = info
     },
     resetAll() {
-      token.value = ''
-      this.token = ''
-      this.info = undefined
+      this.setToken('')
+      this.setInfo(undefined)
     },
   },
 })

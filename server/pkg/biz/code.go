@@ -28,7 +28,7 @@ var (
 		CodeParamBindError:         {"参数信息错误", "param bind error"},
 		CodeNotAuthorized:          {"未登录或非法访问", "not authorized"},
 		CodeForbidden:              {"你没有权限访问该资源", "forbidden"},
-		CodeUnauthorizedAuthFailed: {"账户不存在或密码错误", "auth failed"},
+		CodeUnauthorizedAuthFailed: {"密码错误", "auth failed"},
 		CodeTooManyLoginError:      {"登录失败次数过多，请稍后再试", "too many login error"},
 		CodeInvalidPhone:           {"无效的手机号", "invalid phone"},
 		CodeInvalidEmail:           {"无效的邮箱", "invalid email"},

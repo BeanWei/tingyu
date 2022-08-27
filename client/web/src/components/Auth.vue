@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { FormInst, FormRules } from 'naive-ui'
-import { userLogin } from '~/api/user'
+import { getUserInfo, userLogin } from '~/api/user'
 
+const userStore = useUserStore()
 const miscStore = useMiscStore()
 
 const authTypeRef = ref<'login' | 'reset'>('login')
@@ -49,14 +50,27 @@ const handleLogin = (e: MouseEvent) => {
   loginRef.value?.validate(async (errors) => {
     if (!errors) {
       loadingRef.value = true
-      await userLogin({
+      const { data: res1 } = await userLogin({
         username: loginModelRef.value.username,
         password: loginModelRef.value.password,
       })
+      if (res1.value?.data.token) {
+        userStore.setToken(res1.value?.data.token)
+        const { data: res2 } = await getUserInfo()
+        if (res2.value?.data) {
+          userStore.setInfo(res2.value?.data)
+          loginModelRef.value = {
+            username: '',
+            password: '',
+          }
+          miscStore.setAuthModalVisible(false)
+        }
+      }
       loadingRef.value = false
     }
   })
 }
+
 const handleReset = (e: MouseEvent) => {
   e.preventDefault()
   resetRef.value?.validate((errors) => {
@@ -69,6 +83,15 @@ const handleReset = (e: MouseEvent) => {
     }
   })
 }
+
+onMounted(() => {
+  if (userStore.token) {
+    getUserInfo().then(({ data }) => {
+      if (data.value?.data)
+        userStore.setInfo(data.value.data)
+    })
+  }
+})
 </script>
 
 <template>

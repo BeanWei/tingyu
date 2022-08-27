@@ -3,14 +3,14 @@ import type { StrictUseAxiosReturn } from '@vueuse/integrations/useAxios'
 import { useAxios } from '@vueuse/integrations/useAxios'
 
 const instance = axios.create({
-  baseURL: import.meta.env.DEV ? 'http://localhost:8888' : '' + '/api',
+  baseURL: '/api',
   timeout: 30 * 1000, // 30s 超时
 })
 
 instance.interceptors.request.use(
   (config) => {
     !config.headers && (config.headers = { Authorization: '' })
-    const token = useUserStore().getToken
+    const token = useUserStore().token
     if (token)
       config.headers.Authorization = `Bearer ${token}`
     return config
@@ -31,7 +31,6 @@ instance.interceptors.response.use(
     const { response = {} } = error || {}
     // 重定向
     if (response?.status === 401) {
-      // window.$message?.warning(response?.data.msg || '请登录')
       useUserStore().resetAll()
       useMiscStore().setAuthModalVisible(true)
     }
@@ -52,6 +51,6 @@ export interface Result<T> {
   data: T
 }
 
-export interface Promise<T> extends PromiseLike<StrictUseAxiosReturn<Result<T>>> {}
+export interface P<T> extends PromiseLike<StrictUseAxiosReturn<Result<T>>> {}
 
 export const api = useAxios<Result<any>>('', instance, { immediate: false })

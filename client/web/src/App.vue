@@ -1,8 +1,8 @@
 <template>
   <NConfigProvider>
     <NProvider>
-      <RouterView />
       <Auth />
+      <RouterView />
     </NProvider>
   </NConfigProvider>
 </template>

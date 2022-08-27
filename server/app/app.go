@@ -27,7 +27,7 @@ func NewHTTPServer() {
 		middleware.ErrorHandler(),
 	)
 
-	client.Rgister(svr)
+	client.Register(svr)
 
 	svr.Spin()
 }
