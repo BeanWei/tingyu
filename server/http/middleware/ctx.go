@@ -9,15 +9,17 @@ import (
 )
 
 // Ctx 自定义上下文初始化
-func Ctx() app.HandlerFunc {
+func Ctx(hzjwt *jwt.HertzJWTMiddleware) app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
-		claims := jwt.ExtractClaims(ctx, c)
-		if uid, ok := claims["id"].(int64); ok && uid > 0 {
-			ctx = context.WithValue(ctx, shared.CtxSvcKey, &shared.Ctx{
-				User: &shared.CtxUser{
-					ID: uid,
-				},
-			})
+		claims, _ := hzjwt.GetClaimsFromJWT(ctx, c)
+		if exp, ok := claims["exp"].(float64); ok && int64(exp) >= hzjwt.TimeFunc().Unix() {
+			if uid, ok := claims["id"].(float64); ok && uid > 0 {
+				ctx = context.WithValue(ctx, shared.CtxSvcKey, &shared.Ctx{
+					User: &shared.CtxUser{
+						ID: int64(uid),
+					},
+				})
+			}
 		}
 		c.Next(ctx)
 	}

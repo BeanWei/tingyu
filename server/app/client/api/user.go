@@ -30,6 +30,7 @@ func GetUserInfo(ctx context.Context, c *app.RequestContext) {
 	}
 	if uid <= 0 {
 		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeUserNotFound, fmt.Errorf("user id %d is invalid", uid)))
+		return
 	}
 	usr, err := ent.DB().User.Get(ctx, uid)
 	if err != nil {

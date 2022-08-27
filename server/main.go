@@ -12,6 +12,7 @@ func main() {
 		Name: "LiFly",
 		Commands: []*cli.Command{
 			cmd.Start,
+			cmd.Migrate,
 		},
 	}
 	if err := app.Run(os.Args); err != nil {

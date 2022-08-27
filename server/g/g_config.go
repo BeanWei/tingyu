@@ -14,22 +14,22 @@ var (
 
 type conf struct {
 	Server struct {
-		Address string `yaml:"address"`
-		IsDev   bool   `yaml:"is_dev"`
-	} `yaml:"server"`
+		Address string `mapstructure:"address"`
+		IsDev   bool   `mapstructure:"is_dev"`
+	} `mapstructure:"server"`
 	JWT struct {
-		SecretKey   string `yaml:"secret_key"`
-		TimeoutDays int    `yaml:"timeout_days"`
-	}
+		SecretKey   string `mapstructure:"secret_key"`
+		TimeoutDays int    `mapstructure:"timeout_days"`
+	} `mapstructure:"jwt"`
 	Database struct {
-		Read  string `yaml:"read"`
-		Write string `yaml:"write"`
-	} `yaml:"database"`
+		Read  string `mapstructure:"read"`
+		Write string `mapstructure:"write"`
+	} `mapstructure:"database"`
 	Redis struct {
-		Addr string `toml:"addr"`
-		Pass string `toml:"pass"`
-		DB   int    `toml:"db"`
-	} `toml:"redis"`
+		Addr string `mapstructure:"addr"`
+		Pass string `mapstructure:"pass"`
+		DB   int    `mapstructure:"db"`
+	} `mapstructure:"redis"`
 }
 
 func Cfg() *conf {
@@ -37,7 +37,7 @@ func Cfg() *conf {
 		viper.SetConfigType("yaml")
 		viper.AutomaticEnv()
 
-		cfgfile := viper.GetString("c")
+		cfgfile := viper.GetString("ty_cfg_file")
 		if cfgfile == "" {
 			panic("config file is missing")
 		}

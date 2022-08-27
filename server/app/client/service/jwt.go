@@ -10,6 +10,7 @@ import (
 	"github.com/BeanWei/tingyu/pkg/shared"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/hertz-contrib/jwt"
 )
 
@@ -42,6 +43,7 @@ func JWT() *jwt.HertzJWTMiddleware {
 			}
 			usr, err := UserLoginOrSignIn(ctx, &req)
 			if err != nil {
+				c.AbortWithError(consts.StatusBadRequest, err)
 				return nil, err
 			}
 			return &shared.CtxUser{
@@ -55,6 +57,9 @@ func JWT() *jwt.HertzJWTMiddleware {
 			return false
 		},
 		Unauthorized: func(ctx context.Context, c *app.RequestContext, code int, message string) {
+			if err := c.Errors.Last(); err != nil {
+				return
+			}
 			c.JSON(code, biz.RespFail(biz.CodeNotAuthorized))
 		},
 		LoginResponse: func(ctx context.Context, c *app.RequestContext, code int, token string, expire time.Time) {

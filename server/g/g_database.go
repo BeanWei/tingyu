@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"sync"
 
-	_ "github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 var (
@@ -20,7 +20,7 @@ func DB(read ...bool) *sql.DB {
 		if err != nil {
 			panic(err)
 		}
-		if Cfg().Database.Read != "" {
+		if Cfg().Database.Read != "" && Cfg().Database.Read != Cfg().Database.Write {
 			dbr, err = sql.Open("pgx", Cfg().Database.Read)
 			if err != nil {
 				panic(err)

@@ -1,5 +1,4 @@
 //go:build ignore
-// +build ignore
 
 package main
 
@@ -13,7 +12,9 @@ import (
 
 func main() {
 	err := entc.Generate("./schema",
-		&gen.Config{},
+		&gen.Config{
+			Features: []gen.Feature{gen.FeatureVersionedMigration},
+		},
 		entc.Extensions(&entx.Extension{}),
 	)
 	if err != nil {

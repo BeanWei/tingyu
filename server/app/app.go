@@ -25,6 +25,7 @@ func NewHTTPServer() {
 	// 注册全局中间件
 	svr.Use(
 		middleware.ErrorHandler(),
+		middleware.CORS(),
 	)
 
 	client.Register(svr)
