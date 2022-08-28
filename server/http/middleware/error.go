@@ -5,6 +5,8 @@ import (
 
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/errors"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
@@ -18,6 +20,9 @@ func ErrorHandler() app.HandlerFunc {
 					bizErr.BizCode, bizErr.Msg,
 				))
 			} else {
+				if err.IsType(errors.ErrorTypePrivate) {
+					hlog.Error(err)
+				}
 				c.JSON(consts.StatusInternalServerError, biz.RespFail(
 					biz.CodeServerError,
 				))

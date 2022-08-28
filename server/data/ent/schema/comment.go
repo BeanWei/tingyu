@@ -24,7 +24,7 @@ func (Comment) Fields() []ent.Field {
 		field.Int64("user_id").Comment("用户ID"),
 		field.String("ip").Default("").Sensitive().Comment("IP"),
 		field.String("ip_loc").Default("").Comment("IP地址"),
-		field.JSON("content", []map[string]any{}).Comment("回复内容"),
+		field.String("content").Default("{}").Comment("回复内容"),
 	}
 }
 

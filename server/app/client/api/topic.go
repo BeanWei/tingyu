@@ -15,8 +15,8 @@ import (
 // ListTopic 话题列表
 func ListTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.ListTopicReq
-	if err := c.Bind(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, err)
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
 		return
 	}
 
@@ -34,8 +34,8 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 // CreateTopic 创建话题
 func CreateTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.CreateTopicReq
-	if err := c.Bind(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, err)
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
 		return
 	}
 	if titleLength := len(req.Title); titleLength > 20 {

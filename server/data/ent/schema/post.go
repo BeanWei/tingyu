@@ -30,7 +30,7 @@ func (Post) Fields() []ent.Field {
 		field.Int64("latest_replied_at").Default(0).Comment("最后回复时间"),
 		field.String("ip").Default("").Sensitive().Comment("IP"),
 		field.String("ip_loc").Default("").Comment("IP地址"),
-		field.JSON("content", []map[string]any{}).Comment("帖子内容"),
+		field.String("content").Default("{}").Comment("帖子内容"),
 	}
 }
 

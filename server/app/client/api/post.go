@@ -17,8 +17,8 @@ import (
 // ListPost 帖子列表
 func ListPost(ctx context.Context, c *app.RequestContext) {
 	var req types.ListPostReq
-	if err := c.Bind(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, err)
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
 		return
 	}
 
@@ -39,8 +39,8 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 // GetPost 帖子详情
 func GetPost(ctx context.Context, c *app.RequestContext) {
 	var req types.GetPostReq
-	if err := c.Bind(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, err)
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
 		return
 	}
 
@@ -52,8 +52,8 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 // CreatePost 发表帖子
 func CreatePost(ctx context.Context, c *app.RequestContext) {
 	var req types.CreatePostReq
-	if err := c.Bind(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, err)
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
 		return
 	}
 

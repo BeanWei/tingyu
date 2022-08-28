@@ -12,7 +12,7 @@ type GetPostReq struct {
 }
 
 type CreatePostReq struct {
-	Content     []map[string]any `json:"content,required"`
-	ContentText string           `json:"content_text,required"`
-	TopicIds    []int64          `json:"topic_ids"`
+	Content     string  `json:"content,required"`
+	ContentText string  `json:"content_text,required"`
+	TopicIds    []int64 `json:"topic_ids"`
 }
