@@ -20,6 +20,7 @@ const (
 	CodeInvalidPassword        = 20005
 	CodeUsernameExisted        = 20006
 	CodeUserNotFound           = 20007
+	CodeInvalidTopicTitle      = 20008
 )
 
 var (
@@ -35,6 +36,7 @@ var (
 		CodeInvalidPassword:        {"密码长度6~16且必须包含数字和大小写字母", "invalid password"},
 		CodeUsernameExisted:        {"该手机号或邮箱已经注册", "username existed"},
 		CodeUserNotFound:           {"用户不存在", "user not found"},
+		CodeInvalidTopicTitle:      {"标题长度不能超过20", "invalid topic title"},
 	}
 )
 

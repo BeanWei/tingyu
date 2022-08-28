@@ -10,6 +10,9 @@ switch (argv["_"][0]) {
   case "nm":
     await $`go run -mod=mod data/migrate/main.go ${argv["_"][1]}`;
     break;
+  case "ip":
+    await $`curl https://99wry.cf/qqwry.dat -o ./\pkg/\iploc/\qqwry.dat`;
+    break;
   default:
     console.warn("Exit~");
 }

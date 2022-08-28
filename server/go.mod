@@ -15,6 +15,7 @@ require (
 	github.com/urfave/cli/v2 v2.11.2
 	github.com/yitter/idgenerator-go v1.3.1
 	github.com/ysmood/got v0.31.4
+	golang.org/x/text v0.3.7
 )
 
 require (
@@ -65,8 +66,7 @@ require (
 	golang.org/x/arch v0.0.0-20210923205945-b76863e36670 // indirect
 	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
-	golang.org/x/text v0.3.7 // indirect
+	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	golang.org/x/tools v0.1.13-0.20220804200503-81c7dc4e4efa // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
