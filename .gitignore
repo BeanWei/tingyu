@@ -46,6 +46,10 @@ bin/
 cbuild
 main
 
+# ip db
+server/pkg/iploc/*.dat
+server/pkg/iploc/*.mmdb
+
 # private
 server/config.yaml
 
