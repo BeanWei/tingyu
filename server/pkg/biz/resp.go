@@ -1,29 +1,22 @@
 package biz
 
-import "github.com/cloudwego/hertz/pkg/common/utils"
-
 type Resp struct {
-	Code int         `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data,omitempty"`
+	Code  int         `json:"code"`
+	Msg   string      `json:"msg"`
+	Total int         `json:"total,omitempty"`
+	Data  interface{} `json:"data,omitempty"`
 }
 
 func RespSuccess(data interface{}, total ...int) *Resp {
-	if len(total) > 0 {
-		return &Resp{
-			Code: 0,
-			Msg:  "success",
-			Data: utils.H{
-				"list":  data,
-				"total": total[0],
-			},
-		}
-	}
-	return &Resp{
+	resp := &Resp{
 		Code: 0,
 		Msg:  "success",
 		Data: data,
 	}
+	if len(total) > 0 {
+		resp.Total = total[0]
+	}
+	return resp
 }
 
 func RespFail(bizCode int, errMsg ...string) *Resp {
