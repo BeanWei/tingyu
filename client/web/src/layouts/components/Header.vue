@@ -42,10 +42,20 @@ const miscStore = useMiscStore()
                   </template>
                 </NButton>
                 <NAvatar
+                  v-if="userStore.info?.avatar"
                   round
-                  :size="34"
-                  src="https://avatars.githubusercontent.com/u/33516660?s=40&v=4"
+                  :src="userStore.info?.avatar"
                 />
+                <NAvatar
+                  v-else
+                  round
+                  :style="{
+                    'background-color': 'rgba(24, 160, 88, 0.16)',
+                    'color': '#18a058',
+                  }"
+                >
+                  <NIcon><ICarbonRainDrop /></NIcon>
+                </NAvatar>
               </NSpace>
               <NButton
                 v-else
