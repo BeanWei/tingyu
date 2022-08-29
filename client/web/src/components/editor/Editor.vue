@@ -17,6 +17,7 @@ import { HashtagNode } from '@lexical/hashtag'
 import defaultTheme from './themes/default'
 
 const props = withDefaults(defineProps<{
+  readOnly?: boolean
   placeholder?: string
   submitButtonText?: string
   onSubmit?: (values: {
@@ -45,6 +46,7 @@ const config = {
     LinkNode,
     HashtagNode,
   ],
+  readOnly: props.readOnly,
   onError(error: Error) {
     throw error
   },
@@ -113,7 +115,7 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
       </LexicalRichTextPlugin>
       <MarkdownShortcutPlugin />
     </div>
-    <NSpace justify="space-between">
+    <NSpace v-if="!!!props.readOnly" justify="space-between">
       <NSpace>
         <NButton quaternary circle>
           <template #icon>

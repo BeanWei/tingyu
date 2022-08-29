@@ -48,6 +48,7 @@ instance.interceptors.response.use(
 export interface Result<T> {
   code: number
   msg: string
+  total: number
   data: T
 }
 

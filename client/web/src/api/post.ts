@@ -8,7 +8,7 @@ export const createPost = (data: API.CreatePostReq) => {
   })
 }
 
-export const listPost = (params?: API.ListPostReq): P<{ total: number; list: API.GetUserInfoResp }> => {
+export const listPost = (params?: API.ListPostReq): P<API.ListPostResp> => {
   return api.execute('/v1/post/list', {
     method: 'get',
     params,

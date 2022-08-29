@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import PostHeaderUser from './PostHeaderUser.vue'
 import PostHeaderAction from './PostHeaderAction.vue'
+
+defineProps<{
+  data?: Record<string, any>
+}>()
 </script>
 
 <template>
@@ -10,13 +14,13 @@ import PostHeaderAction from './PostHeaderAction.vue'
       <PostHeaderAction />
     </div>
     <div class="p-t-2">
-      <div>123</div>
+      <Editor :read-only="true" />
     </div>
     <div class="m-t-12px m-x--20px">
       <PostFooterAction />
     </div>
-    <div class="relative bg-#fff border-rd-4px p-t-2 p-b-4 mb-12px">
+    <!-- <div class="relative bg-#fff border-rd-4px p-t-2 p-b-4 mb-12px">
       <CommentEditor />
-    </div>
+    </div> -->
   </div>
 </template>

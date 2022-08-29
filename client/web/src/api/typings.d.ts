@@ -38,5 +38,5 @@ declare namespace API {
     latest_replied_at: number
     ip_loc: string
     user: object
-  }
+  }[]
 }
