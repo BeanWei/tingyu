@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { listPost } from '~/api/post'
+import { useAxios } from '@vueuse/integrations/useAxios'
+import type { Result } from '~/api'
+import { instance, url } from '~/api'
 
 const pageNumberRef = ref(1)
-const pageLoadingRef = ref(true)
-const pageDataRef = ref<Record<string, any>[]>()
-
-const loadPostList = async () => {
-  const { data, isLoading } = await listPost({
+const { data, isLoading } = useAxios<Result<API.ListPostResp>>(url.listPost, {
+  params: {
     limit: 20,
     page: pageNumberRef.value,
-  })
-  pageLoadingRef.value = isLoading.value
-  pageDataRef.value = data.value?.data
-}
-
-onMounted(() => {
-  loadPostList()
-})
+  },
+}, instance)
 </script>
 
 <template>
@@ -25,14 +18,14 @@ onMounted(() => {
       <PostEditor />
     </div>
     <NList clickable>
-      <div v-if="pageLoadingRef" class="bg-#fff border-rd-4px relative">
+      <div v-if="isLoading" class="bg-#fff border-rd-4px relative">
         <PostSkeleton />
       </div>
-      <div v-else-if="!pageDataRef" class="bg-#fff border-rd-4px relative">
-        <NEmpty size="large" description="一篇荒芜:)" />
+      <div v-else-if="!data?.total" class="bg-#fff border-rd-4px relative min-h-100 flex items-center justify-center">
+        <NEmpty size="large" description="一篇荒芜 :)" />
       </div>
       <NListItem
-        v-for="post in pageDataRef"
+        v-for="post in data.data"
         v-else
         :key="post.id"
         :show-divider="false"
@@ -41,9 +34,6 @@ onMounted(() => {
         <PostItem :data="post" />
       </NListItem>
     </NList>
-    <div class="bg-#fff border-rd-4px relative">
-      <PostItem />
-    </div>
     <div text-4xl>
       <div i-carbon-campsite inline-block />
     </div>

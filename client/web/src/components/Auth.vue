@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useAxios } from '@vueuse/integrations/useAxios'
 import type { FormInst, FormRules } from 'naive-ui'
-import { getUserInfo, userLogin } from '~/api/user'
+import type { Result } from '~/api'
+import { instance, url } from '~/api'
 
 const userStore = useUserStore()
 const miscStore = useMiscStore()
@@ -50,13 +52,15 @@ const handleLogin = (e: MouseEvent) => {
   loginRef.value?.validate(async (errors) => {
     if (!errors) {
       loadingRef.value = true
-      const { data: res1 } = await userLogin({
-        username: loginModelRef.value.username,
-        password: loginModelRef.value.password,
-      })
+      const { data: res1 } = await useAxios<Result<API.UserLoginResp>>(url.userLogin, {
+        data: {
+          username: loginModelRef.value.username,
+          password: loginModelRef.value.password,
+        },
+      }, instance)
       if (res1.value?.data.token) {
         userStore.setToken(res1.value?.data.token)
-        const { data: res2 } = await getUserInfo()
+        const { data: res2 } = await useAxios<Result<API.GetUserInfoResp>>(url.getUserInfo, instance)
         if (res2.value?.data) {
           userStore.setInfo(res2.value?.data)
           loginModelRef.value = {
@@ -86,7 +90,7 @@ const handleReset = (e: MouseEvent) => {
 
 onMounted(() => {
   if (userStore.token) {
-    getUserInfo().then(({ data }) => {
+    useAxios<Result<API.GetUserInfoResp>>(url.getUserInfo, instance).then(({ data }) => {
       if (data.value?.data)
         userStore.setInfo(data.value.data)
     })

@@ -20,10 +20,7 @@ const props = withDefaults(defineProps<{
   readOnly?: boolean
   placeholder?: string
   submitButtonText?: string
-  onSubmit?: (values: {
-    content: string
-    content_text: string
-  }) => PromiseLike<StrictUseAxiosReturn<any>>
+  onSubmit?: (values: API.CreatePostReq) => PromiseLike<StrictUseAxiosReturn<any>>
   onSubmitSuccess?: () => void
   onSubmitFailed?: () => void
 }>(), {

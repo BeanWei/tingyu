@@ -1,14 +1,17 @@
 import axios from 'axios'
-import type { StrictUseAxiosReturn } from '@vueuse/integrations/useAxios'
-import { useAxios } from '@vueuse/integrations/useAxios'
 
-const instance = axios.create({
+export const instance = axios.create({
   baseURL: '/api',
   timeout: 30 * 1000, // 30s 超时
 })
 
 instance.interceptors.request.use(
   (config) => {
+    if (config.url && !config.url.startsWith('/')) {
+      const [method, ...uri] = config.url.split(':')
+      config.method = method
+      config.url = uri.join(':')
+    }
     !config.headers && (config.headers = { Authorization: '' })
     const token = useUserStore().token
     if (token)
@@ -52,6 +55,9 @@ export interface Result<T> {
   data: T
 }
 
-export interface P<T> extends PromiseLike<StrictUseAxiosReturn<Result<T>>> {}
-
-export const api = useAxios<Result<any>>('', instance, { immediate: false })
+export const url = {
+  userLogin: 'POST:/v1/user/login',
+  getUserInfo: 'GET:/v1/user/get',
+  createPost: 'POST:/v1/post/create',
+  listPost: 'GET:/v1/post/list',
+}

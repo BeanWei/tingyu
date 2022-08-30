@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { useAxios } from '@vueuse/integrations/useAxios'
 import Editor from './Editor.vue'
-import { createPost } from '~/api/post'
+import { instance, url } from '~/api'
+
+const createPost = (values: API.CreatePostReq) => {
+  return useAxios(url.createPost, {
+    data: values,
+  }, instance)
+}
 </script>
 
 <template>

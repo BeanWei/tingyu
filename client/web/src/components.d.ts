@@ -48,6 +48,7 @@ declare module '@vue/runtime-core' {
     NSkeleton: typeof import('naive-ui')['NSkeleton']
     NSpace: typeof import('naive-ui')['NSpace']
     NStatistic: typeof import('naive-ui')['NStatistic']
+    NThing: typeof import('naive-ui')['NThing']
     PostEditor: typeof import('./components/editor/PostEditor.vue')['default']
     PostFooterAction: typeof import('./components/post/PostFooterAction.vue')['default']
     PostHeaderAction: typeof import('./components/post/PostHeaderAction.vue')['default']
