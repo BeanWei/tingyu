@@ -60,4 +60,11 @@ export const url = {
   getUserInfo: 'GET:/v1/user/get',
   createPost: 'POST:/v1/post/create',
   listPost: 'GET:/v1/post/list',
+  getPost: 'GET:/v1/post/get',
+  listComment: 'GET:/v1/comment/list',
+  createComment: 'POST:/v1/comment/create',
+  deleteComment: 'DELETE:/v1/comment/delete',
+  listReply: 'GET:/v1/reply/list',
+  createReply: 'POST:/v1/reply/create',
+  deleteReply: 'DELETE:/v1/reply/delete',
 }

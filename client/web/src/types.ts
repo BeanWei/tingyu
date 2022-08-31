@@ -9,6 +9,7 @@ declare global {
     $message?: MessageProviderInst
     $notification?: NotificationProviderInst
   }
+  type AnyObject = Record<string, any>
 }
 
 export type UserModule = (ctx: {

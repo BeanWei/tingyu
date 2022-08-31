@@ -63,7 +63,8 @@ func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
 		SetCommentID(commentData.ID).
 		SetToUserID(req.ToUserId).
 		SetToReplyID(req.ToReplyId).
-		SetIsPoster(commentData.Edges.Post.UserID == uid)
+		SetIsPoster(commentData.Edges.Post.UserID == uid).
+		ExecX(ctx)
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
 }

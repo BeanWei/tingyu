@@ -1,25 +1,47 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
+import { RouterLink } from 'vue-router'
 
-const {
-  activeKey = 'index',
-  menuOptions = [
-    {
-      label: '首页',
-      key: 'index',
+const menuOptions: MenuOption[] = [
+  {
+    label: () => {
+      return h(
+        RouterLink,
+        {
+          to: {
+            name: 'index',
+          },
+        },
+        { default: () => '首页' },
+      )
     },
-    {
-      label: '关于',
-      key: 'about',
+    key: 'index',
+  },
+  {
+    label: () => {
+      return h(
+        RouterLink,
+        {
+          to: {
+            name: 'index',
+          },
+        },
+        { default: () => '关于' },
+      )
     },
-  ],
-} = defineProps<{
-  activeKey?: string
-  menuOptions?: MenuOption[]
-}>()
+    key: 'about',
+  },
+]
 
 const userStore = useUserStore()
 const miscStore = useMiscStore()
+const route = useRoute()
+
+const activeKeyRef = ref(route.name as string)
+
+watch(route, () => {
+  activeKeyRef.value = route.name as string
+})
 </script>
 
 <template>
@@ -28,7 +50,11 @@ const miscStore = useMiscStore()
       <div class="p-y-6px m-auto max-w-1240px flex items-center h-full w-full relative">
         <nav class="h-full flex-auto">
           <NSpace justify="space-between" align="center">
-            <NMenu :value="activeKey" mode="horizontal" :options="menuOptions" />
+            <NMenu
+              :value="activeKeyRef"
+              mode="horizontal"
+              :options="menuOptions"
+            />
             <NSpace align="center">
               <NInput round placeholder="搜索">
                 <template #suffix>
@@ -41,21 +67,7 @@ const miscStore = useMiscStore()
                     <NIcon><ICarbonNotification /></NIcon>
                   </template>
                 </NButton>
-                <NAvatar
-                  v-if="userStore.info?.avatar"
-                  round
-                  :src="userStore.info?.avatar"
-                />
-                <NAvatar
-                  v-else
-                  round
-                  :style="{
-                    'background-color': 'rgba(24, 160, 88, 0.16)',
-                    'color': '#18a058',
-                  }"
-                >
-                  <NIcon><ICarbonRainDrop /></NIcon>
-                </NAvatar>
+                <UserAvatar :src="userStore.info?.avatar" :size="32" />
               </NSpace>
               <NButton
                 v-else

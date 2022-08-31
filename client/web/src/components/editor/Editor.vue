@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { StrictUseAxiosReturn } from '@vueuse/integrations/useAxios'
-import type { EditorState } from 'lexical'
+import type { EditorState, LexicalEditor } from 'lexical'
 import { $getRoot } from 'lexical'
 import {
+  LexicalAutoFocusPlugin,
   LexicalComposer,
   LexicalContentEditable,
   LexicalOnChangePlugin,
@@ -17,10 +18,13 @@ import { HashtagNode } from '@lexical/hashtag'
 import defaultTheme from './themes/default'
 
 const props = withDefaults(defineProps<{
+  initialState?: string
+  autofocus?: boolean
   readOnly?: boolean
   placeholder?: string
   submitButtonText?: string
-  onSubmit?: (values: API.CreatePostReq) => PromiseLike<StrictUseAxiosReturn<any>>
+  onChange?: (editorState: EditorState, editor: LexicalEditor) => void
+  onSubmit?: (values: any) => PromiseLike<StrictUseAxiosReturn<any>>
   onSubmitSuccess?: () => void
   onSubmitFailed?: () => void
 }>(), {
@@ -55,7 +59,7 @@ const submittingRef = ref(false)
 const contentRef = ref()
 const contentTextRef = ref('')
 
-const onChange = (editorState: EditorState) => {
+const onChange = (editorState: EditorState, editor: LexicalEditor) => {
   editorState.read(() => {
     const text = $getRoot().getTextContent()?.trim()
     if (text) {
@@ -67,6 +71,7 @@ const onChange = (editorState: EditorState) => {
       contentTextRef.value = ''
     }
   })
+  props.onChange?.(editorState, editor)
 }
 
 const handleSubmit = async (): Promise<boolean | undefined> => {
@@ -100,19 +105,25 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
         @change="onChange"
       />
       <LexicalClearEditorPlugin />
-      <LexicalRichTextPlugin>
+      <LexicalRichTextPlugin
+        :initial-editor-state="props.initialState"
+      >
         <template #contentEditable>
-          <LexicalContentEditable class="min-h-88px select-text break-all resize-none tab-1 outline-0 text-left" />
+          <LexicalContentEditable
+            class="select-text break-all resize-none tab-1 outline-0 text-left border-rd-4px box-border important-focus-bg-#fff focus-b focus-b-color-#18a058"
+            :style="props.readOnly ? {} : { 'min-height': '88px', 'background-color': '#f2f3f5', 'padding': '8px 12px' }"
+          />
         </template>
         <template #placeholder>
-          <div class="color-#999 overflow-hidden absolute text-ellipsis top-0px left-0px select-none inline-block pointer-events-none">
+          <div class="color-#999 overflow-hidden absolute text-ellipsis top-0px left-0px select-none inline-block pointer-events-none p-x-3.5 p-y-2">
             {{ props.placeholder }}
           </div>
         </template>
       </LexicalRichTextPlugin>
+      <LexicalAutoFocusPlugin v-if="props.autofocus" />
       <MarkdownShortcutPlugin />
     </div>
-    <NSpace v-if="!!!props.readOnly" justify="space-between">
+    <NSpace v-if="!!!props.readOnly" justify="space-between" class="m-t-2">
       <NSpace>
         <NButton quaternary circle>
           <template #icon>

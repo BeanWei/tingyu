@@ -4,8 +4,8 @@ go 1.18
 
 require (
 	entgo.io/ent v0.11.2
-	github.com/cloudwego/hertz v0.2.1
-	github.com/duke-git/lancet/v2 v2.1.5
+	github.com/cloudwego/hertz v0.3.0
+	github.com/duke-git/lancet/v2 v2.1.6
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/hertz-contrib/cors v0.0.0-20220601061225-50f4e582beaf
 	github.com/hertz-contrib/jwt v1.0.0

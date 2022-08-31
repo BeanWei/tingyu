@@ -15,20 +15,30 @@ func Register(s *server.Hertz) {
 		// user
 		apiv1.POST("/user/login", jwt.LoginHandler)
 		apiv1.GET("/user/get", middleware.Ctx(jwt), api.GetUserInfo)
+		// topic
+		apiv1.GET("/topic/list", api.ListTopic)
 		// post
 		apiv1.GET("/post/list", api.ListPost)
 		apiv1.GET("/post/get", api.GetPost)
-		// topic
-		apiv1.GET("/topic/list", api.ListTopic)
+		// comment
+		apiv1.GET("/comment/list", api.ListComment)
+		// reply
+		apiv1.GET("/reply/list", api.ListCommentReply)
 
 		apiv1.Use(middleware.Ctx(jwt), middleware.Authentication())
 
 		// user
 		apiv1.POST("/user/logout", jwt.LogoutHandler)
 		apiv1.GET("/user/refresh_token", jwt.RefreshHandler)
-		// post
-		apiv1.POST("/post/create", api.CreatePost)
 		// topic
 		apiv1.POST("/topic/create", api.CreateTopic)
+		// post
+		apiv1.POST("/post/create", api.CreatePost)
+		// comment
+		apiv1.POST("/comment/create", api.CreateComment)
+		apiv1.DELETE("/comment/delete", api.DeleteComment)
+		// reply
+		apiv1.POST("/reply/create", api.CreateCommentReply)
+		apiv1.DELETE("/reply/delete", api.DeleteCommentReply)
 	}
 }

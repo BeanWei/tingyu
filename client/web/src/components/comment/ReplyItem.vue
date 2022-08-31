@@ -11,12 +11,14 @@ const changeEditorVisible = () => {
   editorVisibleRef.value = !editorVisibleRef.value
 }
 
-const createReply = (commentId: number) => {
+const createReply = (commentId: number, toUserId: number, toReplyId: number) => {
   return function (values: AnyObject) {
     return useAxios(url.createReply, {
       data: {
         ...values,
         comment_id: commentId,
+        to_user_id: toUserId,
+        to_reply_id: toReplyId,
       },
     }, instance)
   }
@@ -50,25 +52,13 @@ const createReply = (commentId: number) => {
           <span class="m-l-0.3em text-12px font-medium">{{ editorVisibleRef ? '取消回复' : data.reply_count || '回复' }}</span>
         </div>
       </NSpace>
-      <div v-if="editorVisibleRef" class="m-t-4 m-b6">
+      <div v-if="editorVisibleRef" class="m-t-4">
         <Editor
           :placeholder="`回复 ${data.edges.user?.nickname}...`"
           submit-button-text="发布"
           :autofocus="true"
-          :on-submit="createReply(data.id)"
+          :on-submit="createReply(data.comment_id, data.user_id, data.id)"
         />
-      </div>
-      <div v-if="data.edges.comment_replies" class="m-t-4 p-4 bg-#f7f8fa border-rd-4px">
-        <NList :show-divider="false">
-          <NListItem
-            v-for="reply in data.edges.comment_replies"
-            :key="reply.id"
-            :show-divider="false"
-            class="bg-#f7f8fa"
-          >
-            <ReplyItem :data="reply" />
-          </NListItem>
-        </NList>
       </div>
     </template>
   </NThing>

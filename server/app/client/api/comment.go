@@ -36,8 +36,7 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 	}
 	comments := query.WithUser().WithCommentReplies(
 		func(crq *ent.CommentReplyQuery) {
-			// 带上前5条回复
-			crq.Limit(5).Order(ent.Asc(commentreply.FieldCreatedAt))
+			crq.WithUser().Order(ent.Asc(commentreply.FieldCreatedAt))
 		},
 	).Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 

@@ -12,7 +12,6 @@ import UserBox from './components/UserBox.vue'
     </div>
     <div class="w-720px max-w-full flex-shrink-0 m-r-20px">
       <RouterView />
-      <Footer />
     </div>
     <div class="w-260px flex-1">
       <UserBox />

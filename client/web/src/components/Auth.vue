@@ -52,7 +52,7 @@ const handleLogin = (e: MouseEvent) => {
   loginRef.value?.validate(async (errors) => {
     if (!errors) {
       loadingRef.value = true
-      const { data: res1 } = await useAxios<Result<API.UserLoginResp>>(url.userLogin, {
+      const { data: res1 } = await useAxios<Result<AnyObject>>(url.userLogin, {
         data: {
           username: loginModelRef.value.username,
           password: loginModelRef.value.password,
@@ -60,9 +60,9 @@ const handleLogin = (e: MouseEvent) => {
       }, instance)
       if (res1.value?.data.token) {
         userStore.setToken(res1.value?.data.token)
-        const { data: res2 } = await useAxios<Result<API.GetUserInfoResp>>(url.getUserInfo, instance)
+        const { data: res2 } = await useAxios<Result<AnyObject>>(url.getUserInfo, instance)
         if (res2.value?.data) {
-          userStore.setInfo(res2.value?.data)
+          userStore.setInfo(res2.value?.data as any)
           loginModelRef.value = {
             username: '',
             password: '',
@@ -90,9 +90,9 @@ const handleReset = (e: MouseEvent) => {
 
 onMounted(() => {
   if (userStore.token) {
-    useAxios<Result<API.GetUserInfoResp>>(url.getUserInfo, instance).then(({ data }) => {
+    useAxios<Result<AnyObject>>(url.getUserInfo, instance).then(({ data }) => {
       if (data.value?.data)
-        userStore.setInfo(data.value.data)
+        userStore.setInfo(data.value.data as any)
     })
   }
 })

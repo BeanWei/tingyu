@@ -44,7 +44,7 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	post := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).OnlyX(ctx)
+	post := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(post))
 }

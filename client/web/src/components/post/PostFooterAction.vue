@@ -1,20 +1,33 @@
+<script setup lang="ts">
+const { data } = defineProps<{
+  data: Record<string, any>
+}>()
+
+const router = useRouter()
+</script>
+
 <template>
-  <NSpace
-    justify="space-between"
-    align="center"
-    class="flex relative h-36px border-t-1 border-t-#f1f1f1 color-#86909c p-x-20px"
-  >
-    <div class="flex items-center justify-center">
-      <span class="i-carbon-bookmark-add w-16px h-16px" />
-      <span class="m-l-0.3em text-12px font-medium inline-block">收藏</span>
+  <NSpace justify="space-between">
+    <div class="flex items-center cursor-pointer">
+      <NIcon size="18">
+        <ICarbonBookmarkAdd />
+      </NIcon>
+      <span class="m-l-0.3em text-12px font-medium">收藏</span>
     </div>
-    <div class="flex items-center justify-center">
-      <span class="i-carbon-chat w-16px h-16px" />
-      <span class="m-l-0.3em text-12px font-medium inline-block">6</span>
+    <div
+      class="flex items-center cursor-pointer"
+      @click="router.push(`/post/${data.id}`)"
+    >
+      <NIcon size="18">
+        <ICarbonChat />
+      </NIcon>
+      <span class="m-l-0.3em text-12px font-medium">{{ data.comment_count || '评论' }}</span>
     </div>
-    <div class="flex items-center justify-center">
-      <span class="i-carbon-arrow-up-right w-16px h-16px" />
-      <span class="m-l-0.3em text-12px font-medium inline-block">分享</span>
+    <div class="flex items-center cursor-pointer">
+      <NIcon size="18">
+        <ICarbonArrowUpRight />
+      </NIcon>
+      <span class="m-l-0.3em text-12px font-medium">分享</span>
     </div>
   </NSpace>
 </template>

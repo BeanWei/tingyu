@@ -15,5 +15,5 @@ type CreateCommentReplyReq struct {
 }
 
 type DeleteCommentReplyReq struct {
-	Id int64 `json:"id,required"`
+	Id int64 `query:"id,required"`
 }

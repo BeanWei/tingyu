@@ -10,9 +10,9 @@ type ListCommentReq struct {
 type CreateCommentReq struct {
 	Content     string `json:"content,required"`
 	ContentText string `json:"content_text,required"`
-	PostId      int64  `json:"post_id,required"`
+	PostId      int64  `json:"post_id,string,required"`
 }
 
 type DeleteCommentReq struct {
-	Id int64 `json:"id,required"`
+	Id int64 `query:"id,required"`
 }
