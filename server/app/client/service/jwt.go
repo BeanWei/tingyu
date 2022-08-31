@@ -15,17 +15,17 @@ import (
 )
 
 func JWT() *jwt.HertzJWTMiddleware {
-	identityKey := "id"
 	j, err := jwt.New(&jwt.HertzJWTMiddleware{
 		Realm:       "tingyu jwt",
 		Key:         []byte(g.Cfg().JWT.SecretKey),
 		Timeout:     time.Hour * 24 * time.Duration(g.Cfg().JWT.TimeoutDays),
 		MaxRefresh:  time.Hour * 24,
-		IdentityKey: identityKey,
+		IdentityKey: "id",
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*shared.CtxUser); ok {
 				return jwt.MapClaims{
-					identityKey: v.ID,
+					"id":       v.ID,
+					"is_admin": v.IsAdmin,
 				}
 			}
 			return jwt.MapClaims{}
@@ -33,7 +33,8 @@ func JWT() *jwt.HertzJWTMiddleware {
 		IdentityHandler: func(ctx context.Context, c *app.RequestContext) interface{} {
 			claims := jwt.ExtractClaims(ctx, c)
 			return &shared.CtxUser{
-				ID: claims[identityKey].(int64),
+				ID:      claims["id"].(int64),
+				IsAdmin: claims["is_admin"].(bool),
 			}
 		},
 		Authenticator: func(ctx context.Context, c *app.RequestContext) (interface{}, error) {
@@ -47,7 +48,8 @@ func JWT() *jwt.HertzJWTMiddleware {
 				return nil, err
 			}
 			return &shared.CtxUser{
-				ID: usr.ID,
+				ID:      usr.ID,
+				IsAdmin: usr.IsAdmin,
 			}, nil
 		},
 		Authorizator: func(data interface{}, ctx context.Context, c *app.RequestContext) bool {

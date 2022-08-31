@@ -34,5 +34,6 @@ func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("posts", Post.Type),
 		edge.To("comments", Comment.Type),
+		edge.To("comment_replies", CommentReply.Type),
 	}
 }

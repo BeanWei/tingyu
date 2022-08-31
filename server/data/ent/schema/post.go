@@ -30,7 +30,7 @@ func (Post) Fields() []ent.Field {
 		field.Int64("latest_replied_at").Default(0).Comment("最后回复时间"),
 		field.String("ip").Default("").Sensitive().Comment("IP"),
 		field.String("ip_loc").Default("").Comment("IP地址"),
-		field.String("content").Default("{}").Comment("帖子内容"),
+		field.String("content").Default("").Comment("帖子内容"),
 	}
 }
 
@@ -49,5 +49,6 @@ func (Post) Edges() []ent.Edge {
 			Required(),
 		edge.To("topics", Topic.Type),
 		edge.To("comments", Comment.Type),
+		edge.To("comment_replies", CommentReply.Type),
 	}
 }
