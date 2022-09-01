@@ -60,7 +60,7 @@ const createComment = (values: AnyObject) => {
         </NSwitch>
       </NSpace>
       <NList :show-divider="false">
-        <div v-if="!comments?.total" class=" min-h-80 flex items-center justify-center">
+        <div v-if="!comments?.total" class=" min-h-40 flex items-center justify-center">
           <NEmpty size="large" description="一篇荒芜 :)" />
         </div>
         <NListItem

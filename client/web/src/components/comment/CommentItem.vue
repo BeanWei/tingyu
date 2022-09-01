@@ -39,7 +39,7 @@ const createReply = (commentId: number) => {
       <Editor :read-only="true" :initial-state="data.content" />
     </template>
     <template #footer>
-      <NSpace>
+      <NSpace justify="space-between" align="center">
         <div
           class="flex items-center cursor-pointer"
           @click="changeEditorVisible"
@@ -49,6 +49,7 @@ const createReply = (commentId: number) => {
           </NIcon>
           <span class="m-l-0.3em text-12px font-medium">{{ editorVisibleRef ? '取消回复' : data.reply_count || '回复' }}</span>
         </div>
+        <CreationInfo :time="data.created_at" :location="data.ip_loc" />
       </NSpace>
       <div v-if="editorVisibleRef" class="m-t-4 m-b6">
         <Editor
@@ -58,7 +59,7 @@ const createReply = (commentId: number) => {
           :on-submit="createReply(data.id)"
         />
       </div>
-      <div v-if="data.edges.comment_replies" class="m-t-4 p-4 bg-#f7f8fa border-rd-4px">
+      <div v-if="data.edges.comment_replies" class="m-t-4 p-4 bg-#f7f8fa border-rd-1">
         <NList :show-divider="false">
           <NListItem
             v-for="reply in data.edges.comment_replies"

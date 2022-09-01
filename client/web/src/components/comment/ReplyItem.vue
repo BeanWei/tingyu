@@ -41,7 +41,7 @@ const createReply = (commentId: number, toUserId: number, toReplyId: number) => 
       <Editor :read-only="true" :initial-state="data.content" />
     </template>
     <template #footer>
-      <NSpace>
+      <NSpace justify="space-between" align="center">
         <div
           class="flex items-center cursor-pointer"
           @click="changeEditorVisible"
@@ -51,6 +51,7 @@ const createReply = (commentId: number, toUserId: number, toReplyId: number) => 
           </NIcon>
           <span class="m-l-0.3em text-12px font-medium">{{ editorVisibleRef ? '取消回复' : data.reply_count || '回复' }}</span>
         </div>
+        <CreationInfo :time="data.created_at" :location="data.ip_loc" />
       </NSpace>
       <div v-if="editorVisibleRef" class="m-t-4">
         <Editor

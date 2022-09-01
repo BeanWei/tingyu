@@ -5,7 +5,7 @@ const { data } = defineProps<{
 </script>
 
 <template>
-  <div class="bg-#fff border-rd-4px p-20px relative">
+  <div class="bg-#fff border-rd-1 p-y-4 p-x-5 relative">
     <NThing content-indented>
       <template #avatar>
         <UserAvatar
@@ -21,7 +21,7 @@ const { data } = defineProps<{
 
       </template> -->
       <template #description>
-        <div class="m-t-1">
+        <div class="m-t-2">
           <Editor :read-only="true" :initial-state="data.content" />
         </div>
       </template>
