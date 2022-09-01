@@ -17,4 +17,5 @@ import UserBox from './components/UserBox.vue'
       <UserBox />
     </div>
   </main>
+  <NBackTop />
 </template>

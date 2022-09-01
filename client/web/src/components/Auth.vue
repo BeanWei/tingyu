@@ -7,17 +7,17 @@ import { instance, url } from '~/api'
 const userStore = useUserStore()
 const miscStore = useMiscStore()
 
-const authTypeRef = ref<'login' | 'reset'>('login')
-const loadingRef = ref(false)
+const authType = ref<'login' | 'reset'>('login')
+const loading = ref(false)
 // 登录/注册
-const loginRef = ref<FormInst>()
-const loginModelRef = ref({
+const loginForm = ref<FormInst>()
+const loginModel = ref({
   username: '',
   password: '',
 })
 // 重置密码
-const resetRef = ref<FormInst>()
-const resetModelRef = ref({
+const resetForm = ref<FormInst>()
+const resetModel = ref({
   username: '',
   code: '',
 })
@@ -44,18 +44,18 @@ const resetRules: FormRules = {
 }
 
 const handleUpdateAuthType = (e: MouseEvent) => {
-  authTypeRef.value = authTypeRef.value === 'login' ? 'reset' : 'login'
+  authType.value = authType.value === 'login' ? 'reset' : 'login'
 }
 
 const handleLogin = (e: MouseEvent) => {
   e.preventDefault()
-  loginRef.value?.validate(async (errors) => {
+  loginForm.value?.validate(async (errors) => {
     if (!errors) {
-      loadingRef.value = true
+      loading.value = true
       const { data: res1 } = await useAxios<Result<AnyObject>>(url.userLogin, {
         data: {
-          username: loginModelRef.value.username,
-          password: loginModelRef.value.password,
+          username: loginModel.value.username,
+          password: loginModel.value.password,
         },
       }, instance)
       if (res1.value?.data.token) {
@@ -63,26 +63,26 @@ const handleLogin = (e: MouseEvent) => {
         const { data: res2 } = await useAxios<Result<AnyObject>>(url.getUserInfo, instance)
         if (res2.value?.data) {
           userStore.setInfo(res2.value?.data as any)
-          loginModelRef.value = {
+          loginModel.value = {
             username: '',
             password: '',
           }
           miscStore.setAuthModalVisible(false)
         }
       }
-      loadingRef.value = false
+      loading.value = false
     }
   })
 }
 
 const handleReset = (e: MouseEvent) => {
   e.preventDefault()
-  resetRef.value?.validate((errors) => {
+  resetForm.value?.validate((errors) => {
     if (!errors) {
       window.$message?.success('valid')
-      loadingRef.value = true
+      loading.value = true
       setTimeout(() => {
-        loadingRef.value = false
+        loading.value = false
       }, 20000)
     }
   })
@@ -104,27 +104,27 @@ onMounted(() => {
     preset="card"
     :mask-closable="false"
     :bordered="false"
-    :title="authTypeRef === 'login' ? '密码登录' : '重置密码'"
+    :title="authType === 'login' ? '密码登录' : '重置密码'"
     class="w-400px"
     closable
     @close="() => miscStore.setAuthModalVisible(false)"
   >
     <NForm
-      v-if="authTypeRef === 'login'"
-      ref="loginRef"
-      :model="loginModelRef"
+      v-if="authType === 'login'"
+      ref="loginForm"
+      :model="loginModel"
       :rules="loginRules"
       label-placement="left"
     >
       <NFormItem path="username">
         <NInput
-          v-model:value="loginModelRef.username"
+          v-model:value="loginModel.username"
           placeholder="邮箱或手机号"
         />
       </NFormItem>
       <NFormItem path="password">
         <NInput
-          v-model:value="loginModelRef.password"
+          v-model:value="loginModel.password"
           type="password"
           show-password-on="click"
           placeholder="密码"
@@ -143,7 +143,7 @@ onMounted(() => {
       </div>
       <NFormItem attr-type="button">
         <NButton
-          :loading="loadingRef"
+          :loading="loading"
           type="primary"
           block
           strong
@@ -157,21 +157,21 @@ onMounted(() => {
       </div>
     </NForm>
     <NForm
-      v-else-if="authTypeRef === 'reset'"
-      ref="resetRef"
-      :model="resetModelRef"
+      v-else-if="authType === 'reset'"
+      ref="resetForm"
+      :model="resetModel"
       :rules="resetRules"
       label-placement="left"
     >
       <NFormItem path="username">
         <NInput
-          v-model:value="resetModelRef.username"
+          v-model:value="resetModel.username"
           placeholder="邮箱或手机号"
         />
       </NFormItem>
       <NFormItem path="password">
         <NInput
-          v-model:value="resetModelRef.code"
+          v-model:value="resetModel.code"
           placeholder="验证码"
           :maxlength="6"
         />
@@ -188,7 +188,7 @@ onMounted(() => {
       </div>
       <NFormItem attr-type="button">
         <NButton
-          :loading="loadingRef"
+          :loading="loading"
           type="primary"
           block
           strong

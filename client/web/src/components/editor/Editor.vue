@@ -55,20 +55,20 @@ const config = {
 
 const userStore = useUserStore()
 
-const submittingRef = ref(false)
-const contentRef = ref()
-const contentTextRef = ref('')
+const submitting = ref(false)
+const content = ref()
+const contentText = ref('')
 
 const onChange = (editorState: EditorState, editor: LexicalEditor) => {
   editorState.read(() => {
     const text = $getRoot().getTextContent()?.trim()
     if (text) {
-      contentRef.value = editorState.toJSON()
-      contentTextRef.value = text
+      content.value = editorState.toJSON()
+      contentText.value = text
     }
     else {
-      contentRef.value = undefined
-      contentTextRef.value = ''
+      content.value = undefined
+      contentText.value = ''
     }
   })
   props.onChange?.(editorState, editor)
@@ -77,20 +77,20 @@ const onChange = (editorState: EditorState, editor: LexicalEditor) => {
 const handleSubmit = async (): Promise<boolean | undefined> => {
   if (!props.onSubmit)
     return
-  submittingRef.value = true
+  submitting.value = true
 
   const { isFinished, error } = await props.onSubmit({
-    content: JSON.stringify(contentRef.value),
-    content_text: contentTextRef.value,
+    content: JSON.stringify(content.value),
+    content_text: contentText.value,
   })
   if (isFinished) {
-    submittingRef.value = false
+    submitting.value = false
     if (error.value) {
       props.onSubmitFailed?.()
     }
     else {
-      contentRef.value = undefined
-      contentTextRef.value = ''
+      content.value = undefined
+      contentText.value = ''
       props.onSubmitSuccess?.()
       return true
     }
@@ -137,8 +137,8 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
         </NButton>
       </NSpace>
       <EditorSubmit
-        :disabled="!!!userStore.info || !!!contentTextRef"
-        :loading="submittingRef"
+        :disabled="!!!userStore.info || !!!contentText"
+        :loading="submitting"
         :button-text="props.submitButtonText"
         @submit="handleSubmit"
       />

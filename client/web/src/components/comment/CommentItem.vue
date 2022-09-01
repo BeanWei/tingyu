@@ -6,9 +6,9 @@ const { data } = defineProps<{
   data: AnyObject
 }>()
 
-const editorVisibleRef = ref(false)
+const editorVisible = ref(false)
 const changeEditorVisible = () => {
-  editorVisibleRef.value = !editorVisibleRef.value
+  editorVisible.value = !editorVisible.value
 }
 
 const createReply = (commentId: number) => {
@@ -47,11 +47,11 @@ const createReply = (commentId: number) => {
           <NIcon size="18">
             <ICarbonChat />
           </NIcon>
-          <span class="m-l-0.3em text-12px font-medium">{{ editorVisibleRef ? '取消回复' : data.reply_count || '回复' }}</span>
+          <span class="m-l-0.3em text-12px font-medium">{{ editorVisible ? '取消回复' : data.reply_count || '回复' }}</span>
         </div>
         <CreationInfo :time="data.created_at" :location="data.ip_loc" />
       </NSpace>
-      <div v-if="editorVisibleRef" class="m-t-4 m-b6">
+      <div v-if="editorVisible" class="m-t-4 m-b6">
         <Editor
           :placeholder="`回复 ${data.edges.user?.nickname}...`"
           submit-button-text="发布"

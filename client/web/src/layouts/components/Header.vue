@@ -37,10 +37,10 @@ const userStore = useUserStore()
 const miscStore = useMiscStore()
 const route = useRoute()
 
-const activeKeyRef = ref(route.name as string)
+const activeKey = ref(route.name as string)
 
 watch(route, () => {
-  activeKeyRef.value = route.name as string
+  activeKey.value = route.name as string
 })
 </script>
 
@@ -51,7 +51,7 @@ watch(route, () => {
         <nav class="h-full flex-auto">
           <NSpace justify="space-between" align="center">
             <NMenu
-              :value="activeKeyRef"
+              :value="activeKey"
               mode="horizontal"
               :options="menuOptions"
             />
