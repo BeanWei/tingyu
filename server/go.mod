@@ -11,6 +11,7 @@ require (
 	github.com/hertz-contrib/jwt v1.0.0
 	github.com/hibiken/asynq v0.23.0
 	github.com/jackc/pgx/v5 v5.0.0-beta.3
+	github.com/panjf2000/ants/v2 v2.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/urfave/cli/v2 v2.11.2
 	github.com/yitter/idgenerator-go v1.3.1

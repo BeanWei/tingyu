@@ -8,9 +8,14 @@ import (
 	"github.com/BeanWei/tingyu/http/middleware"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/config"
+	"github.com/panjf2000/ants/v2"
+
+	_ "github.com/BeanWei/tingyu/data/hook"
 )
 
 func NewHTTPServer() {
+	defer ants.Release()
+
 	svr := server.Default(func() []config.Option {
 		opts := make([]config.Option, 0)
 		if g.Cfg().Server.Address != "" {

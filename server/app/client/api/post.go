@@ -28,6 +28,9 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
 		return
 	}
+	if req.SortType == 0 {
+		query.Order(ent.Desc(post.FieldCreatedAt))
+	}
 	posts := query.WithUser().
 		Limit(req.Limit).
 		Offset(req.Offset()).
