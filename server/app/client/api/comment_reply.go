@@ -55,7 +55,7 @@ func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
 		ip  = c.ClientIP()
 		uid = shared.GetCtxUser(ctx).ID
 	)
-	ent.DB().CommentReply.Create().
+	res := ent.DB().CommentReply.Create().
 		SetUserID(uid).
 		SetIP(ip).
 		SetIPLoc(iploc.Find(ip)).
@@ -64,9 +64,9 @@ func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
 		SetToUserID(req.ToUserId).
 		SetToReplyID(req.ToReplyId).
 		SetIsPoster(commentData.Edges.Post.UserID == uid).
-		ExecX(ctx)
+		SaveX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(consts.StatusOK, biz.RespSuccess(res))
 }
 
 // DeleteCommentReply 删除回复

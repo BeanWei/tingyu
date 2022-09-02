@@ -2,8 +2,10 @@
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { instance, url } from '~/api'
 
-const { data } = defineProps<{
+const { data, index, onReplySuccess } = defineProps<{
   data: AnyObject
+  index: number
+  onReplySuccess?: (reply: AnyObject, index: number) => void
 }>()
 
 const editorVisible = ref(false)
@@ -22,6 +24,11 @@ const createReply = (commentId: number, toUserId: number, toReplyId: number) => 
       },
     }, instance)
   }
+}
+
+const handleSubmitSuccess = (data: AnyObject) => {
+  editorVisible.value = false
+  onReplySuccess?.(data, index)
 }
 </script>
 
@@ -59,6 +66,7 @@ const createReply = (commentId: number, toUserId: number, toReplyId: number) => 
           submit-button-text="发布"
           :autofocus="true"
           :on-submit="createReply(data.comment_id, data.user_id, data.id)"
+          :on-submit-success="handleSubmitSuccess"
         />
       </div>
     </template>

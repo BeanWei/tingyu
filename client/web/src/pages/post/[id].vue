@@ -5,17 +5,56 @@ import { instance, url } from '~/api'
 
 const props = defineProps<{ id: string }>()
 
+const userStore = useUserStore()
+
+const commentsPageNumber = ref(1)
+const commentsLoading = ref(true)
+const comments = ref<AnyObject[]>([])
+const hasMoreComments = ref(false)
+
 const { data: post, isLoading: postLoading } = useAxios<Result<AnyObject>>(url.getPost, {
   params: {
     id: props.id,
   },
 }, instance)
 
-const { data: comments, isLoading: commentsLoading, execute: reloadComments } = useAxios<Result<AnyObject[]>>(url.listComment, {
-  params: {
-    post_id: props.id,
-  },
-}, instance)
+const loadMoreComments = () => {
+  return useAxios<Result<AnyObject[]>>(url.listComment, {
+    params: {
+      limit: 20,
+      page: commentsPageNumber.value,
+      post_id: props.id,
+    },
+  }, instance)
+}
+
+const handleIntersect = async ($state: {
+  loaded: () => void
+  complete: () => void
+}) => {
+  if (hasMoreComments.value) {
+    commentsPageNumber.value++
+    const { data, isFinished } = await loadMoreComments()
+    if (isFinished) {
+      comments.value.push(...(data.value?.data || []))
+      hasMoreComments.value = comments.value.length < (data.value?.total || 0)
+      $state.loaded()
+    }
+  }
+  else {
+    $state.complete()
+  }
+}
+
+const reloadComments = async () => {
+  commentsPageNumber.value = 1
+  commentsLoading.value = true
+  const { data, isFinished } = await loadMoreComments()
+  if (isFinished) {
+    comments.value = data.value?.data || []
+    hasMoreComments.value = comments.value.length < (data.value?.total || 0)
+  }
+}
 
 const createComment = (values: AnyObject) => {
   return useAxios(url.createComment, {
@@ -25,6 +64,37 @@ const createComment = (values: AnyObject) => {
     },
   }, instance)
 }
+
+const handleNewReply = (reply: AnyObject, commentIdx: number) => {
+  comments.value[commentIdx] = {
+    ...comments.value[commentIdx],
+    reply_count: (comments.value[commentIdx].reply_count || 0) + 1,
+    edges: {
+      ...comments.value[commentIdx].edges,
+      comment_replies: [
+        ...comments.value[commentIdx].edges.comment_replies,
+        {
+          ...reply,
+          edges: {
+            user: {
+              nickname: userStore.info?.nickname,
+            },
+          },
+        },
+      ],
+    },
+  }
+}
+
+onMounted(async () => {
+  const { data, isFinished } = await loadMoreComments()
+  if (isFinished) {
+    commentsLoading.value = false
+    if (data.value?.total)
+      comments.value.push(...(data.value.data || []))
+    hasMoreComments.value = comments.value.length < (data.value?.total || 0)
+  }
+})
 </script>
 
 <template>
@@ -50,7 +120,7 @@ const createComment = (values: AnyObject) => {
         <span class="text-18px font-600 color-#252933">
           全部评论
         </span>
-        <NSwitch v-if="comments?.total">
+        <NSwitch v-if="comments.length">
           <template #checked>
             最新
           </template>
@@ -60,18 +130,19 @@ const createComment = (values: AnyObject) => {
         </NSwitch>
       </NSpace>
       <NList :show-divider="false">
-        <div v-if="!comments?.total" class=" min-h-40 flex items-center justify-center">
+        <div v-if="!comments.length" class=" min-h-40 flex items-center justify-center">
           <NEmpty size="large" description="一篇荒芜 :)" />
         </div>
         <NListItem
-          v-for="comment in comments?.data"
+          v-for="(comment, index) in comments"
           v-else
           :key="comment.id"
           :show-divider="false"
         >
-          <CommentItem :data="comment" />
+          <CommentItem :data="comment" :index="index" @reply-success="handleNewReply" />
         </NListItem>
       </NList>
+      <InfiniteScroll v-if="comments.length" @intersect="handleIntersect" />
     </div>
   </div>
 </template>

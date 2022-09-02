@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { StrictUseAxiosReturn } from '@vueuse/integrations/useAxios'
 import type { EditorState, LexicalEditor } from 'lexical'
+import type { AxiosError } from 'axios'
 import { $getRoot } from 'lexical'
 import {
   LexicalAutoFocusPlugin,
@@ -25,8 +26,8 @@ const props = withDefaults(defineProps<{
   submitButtonText?: string
   onChange?: (editorState: EditorState, editor: LexicalEditor) => void
   onSubmit?: (values: any) => PromiseLike<StrictUseAxiosReturn<any>>
-  onSubmitSuccess?: () => void
-  onSubmitFailed?: () => void
+  onSubmitSuccess?: (data: AnyObject) => void
+  onSubmitFailed?: (error: AxiosError) => void
 }>(), {
   placeholder: '说点什么吧~',
 })
@@ -79,19 +80,19 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
     return
   submitting.value = true
 
-  const { isFinished, error } = await props.onSubmit({
+  const { data, isFinished, error } = await props.onSubmit({
     content: JSON.stringify(content.value),
     content_text: contentText.value,
   })
   if (isFinished) {
     submitting.value = false
     if (error.value) {
-      props.onSubmitFailed?.()
+      props.onSubmitFailed?.(error.value)
     }
     else {
       content.value = undefined
       contentText.value = ''
-      props.onSubmitSuccess?.()
+      props.onSubmitSuccess?.(data.value.data)
       return true
     }
   }

@@ -2,8 +2,10 @@
 import { useAxios } from '@vueuse/integrations/useAxios'
 import { instance, url } from '~/api'
 
-const { data } = defineProps<{
+const { data, index, onReplySuccess } = defineProps<{
   data: AnyObject
+  index: number
+  onReplySuccess?: (reply: AnyObject, index: number) => void
 }>()
 
 const editorVisible = ref(false)
@@ -67,7 +69,7 @@ const createReply = (commentId: number) => {
             :show-divider="false"
             class="bg-#f7f8fa"
           >
-            <ReplyItem :data="reply" />
+            <ReplyItem :data="reply" :index="index" :on-reply-success="onReplySuccess" />
           </NListItem>
         </NList>
       </div>
