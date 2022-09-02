@@ -4,9 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
+	"github.com/BeanWei/tingyu/app/client/service"
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
+	"github.com/BeanWei/tingyu/data/ent/topic"
+	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/pkg/biz"
+	"github.com/BeanWei/tingyu/pkg/shared"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
@@ -20,7 +25,22 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	query := ent.DB().Topic.Query()
+	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0))
+	if req.IsRec {
+		query.Where(topic.IsRecEQ(true))
+	}
+	if req.CategoryId != 0 {
+		query.Where(topic.TopicCategoryIDEQ(req.CategoryId))
+	}
+	if req.UserId != 0 {
+		query.Where(topic.HasUsersWith(user.IDEQ(req.UserId)))
+	} else if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil && ctxUser.Id > 0 {
+		query.Where(func(s *sql.Selector) {
+			s.Where(sql.P(func(b *sql.Builder) {
+				b.WriteString(`"topics"."id" NOT IN (SELECT "user_topics"."topic_id" FROM "user_topics" WHERE "user_topics"."user_id" = `).Arg(ctxUser.Id).WriteString(")")
+			}))
+		})
+	}
 	total := query.CountX(ctx)
 	if total == 0 {
 		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
@@ -49,8 +69,54 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 		SetTitle(req.Title).
 		SetIcon(req.Icon).
 		SetDescription(req.Description).
-		SetNotice(req.Notice).
+		SetCreatorID(shared.GetCtxUser(ctx).Id).
 		ExecX(ctx)
+
+	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+}
+
+// FollowTopic 关注话题
+func FollowTopic(ctx context.Context, c *app.RequestContext) {
+	var req types.FollowTopicReq
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		return
+	}
+
+	if !ent.DB().Topic.Query().Where(topic.IDEQ(req.Id)).ExistX(ctx) {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, fmt.Errorf("topic %d is not found in db", req.Id)))
+		return
+	}
+
+	uid := shared.GetCtxUser(ctx).Id
+	if service.TopicIsFollowed(ctx, req.Id, uid) {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeTopicIsFollowed, fmt.Errorf("user %d followed topic %d repeat", uid, req.Id)))
+		return
+	}
+	ent.DB().User.UpdateOneID(uid).AddTopicIDs(req.Id).ExecX(ctx)
+
+	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+}
+
+// UnFollowTopic 取关话题
+func UnFollowTopic(ctx context.Context, c *app.RequestContext) {
+	var req types.UnFollowTopicReq
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		return
+	}
+
+	if !ent.DB().Topic.Query().Where(topic.IDEQ(req.Id)).ExistX(ctx) {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, fmt.Errorf("topic %d is not found in db", req.Id)))
+		return
+	}
+
+	uid := shared.GetCtxUser(ctx).Id
+	if !service.TopicIsFollowed(ctx, req.Id, uid) {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeTopicIsNotFollowed, fmt.Errorf("user %d not followed topic %d", uid, req.Id)))
+		return
+	}
+	ent.DB().User.UpdateOneID(uid).RemoveTopicIDs(req.Id).ExecX(ctx)
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
 }

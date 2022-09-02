@@ -22,7 +22,7 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	query := ent.DB().Post.Query()
+	query := ent.DB().Post.Query().Where(post.DeletedAtEQ(0))
 	total := query.CountX(ctx)
 	if total == 0 {
 		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
@@ -62,7 +62,7 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 
 	ip := c.ClientIP()
 	ent.DB().Post.Create().
-		SetUserID(shared.GetCtxUser(ctx).ID).
+		SetUserID(shared.GetCtxUser(ctx).Id).
 		SetIP(ip).
 		SetIPLoc(iploc.Find(ip)).
 		SetContent(req.Content).

@@ -17,9 +17,9 @@ const { data } = defineProps<{
       <template #header>
         <PostHeaderUser :data="data" />
       </template>
-      <!-- <template #header-extra>
-
-      </template> -->
+      <template #header-extra>
+        <slot name="header-extra" />
+      </template>
       <template #description>
         <div class="m-t-2">
           <Editor :read-only="true" :initial-state="data.content" />

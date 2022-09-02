@@ -1,7 +1,11 @@
+<script setup lang="ts">
+const userStore = useUserStore()
+</script>
+
 <template>
   <div class="bg-#fff border-rd-4px p-24px">
     <div class="flex items-center border-b-1 border-b-#f1f1f1 pb-20px">
-      Bean.Wei
+      {{ userStore.info?.nickname }}
     </div>
     <div class="flex pt-20px">
       <NRow>

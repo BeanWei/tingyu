@@ -16,7 +16,7 @@ func Ctx(hzjwt *jwt.HertzJWTMiddleware) app.HandlerFunc {
 			if uid, ok := claims["id"].(float64); ok && uid > 0 {
 				ctx = context.WithValue(ctx, shared.CtxSvcKey, &shared.Ctx{
 					User: &shared.CtxUser{
-						ID: int64(uid),
+						Id: int64(uid),
 					},
 				})
 			}

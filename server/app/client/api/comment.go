@@ -54,7 +54,7 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 	var (
 		postData = ent.DB().Post.GetX(ctx, req.PostId)
 		ip       = c.ClientIP()
-		uid      = shared.GetCtxUser(ctx).ID
+		uid      = shared.GetCtxUser(ctx).Id
 	)
 	ent.DB().Comment.Create().
 		SetPostID(postData.ID).
@@ -80,10 +80,10 @@ func DeleteComment(ctx context.Context, c *app.RequestContext) {
 		commentData = ent.DB().Comment.GetX(ctx, req.Id)
 		ctxUser     = shared.GetCtxUser(ctx)
 	)
-	if commentData.UserID != ctxUser.ID && !ctxUser.IsAdmin {
+	if commentData.UserID != ctxUser.Id && !ctxUser.IsAdmin {
 		c.AbortWithError(consts.StatusForbidden, biz.NewError(
 			biz.CodeForbidden,
-			fmt.Errorf("user %d forbidden to delete comment %d", ctxUser.ID, req.Id)),
+			fmt.Errorf("user %d forbidden to delete comment %d", ctxUser.Id, req.Id)),
 		)
 		return
 	}

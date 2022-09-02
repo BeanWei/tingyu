@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AddTopicModal: typeof import('./components/topic/AddTopicModal.vue')['default']
     Auth: typeof import('./components/Auth.vue')['default']
     BlockDragger: typeof import('./components/editor/BlockDragger.vue')['default']
     CommentItem: typeof import('./components/comment/CommentItem.vue')['default']
@@ -15,9 +16,11 @@ declare module '@vue/runtime-core' {
     Editor: typeof import('./components/editor/Editor.vue')['default']
     EditorSubmit: typeof import('./components/editor/EditorSubmit.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
+    ICarbonAdd: typeof import('~icons/carbon/add')['default']
     ICarbonArrowUpRight: typeof import('~icons/carbon/arrow-up-right')['default']
     ICarbonBookmarkAdd: typeof import('~icons/carbon/bookmark-add')['default']
     ICarbonChat: typeof import('~icons/carbon/chat')['default']
+    ICarbonChevronDown: typeof import('~icons/carbon/chevron-down')['default']
     ICarbonFaceAdd: typeof import('~icons/carbon/face-add')['default']
     ICarbonImage: typeof import('~icons/carbon/image')['default']
     ICarbonNotification: typeof import('~icons/carbon/notification')['default']
@@ -61,6 +64,9 @@ declare module '@vue/runtime-core' {
     NSpace: typeof import('naive-ui')['NSpace']
     NStatistic: typeof import('naive-ui')['NStatistic']
     NSwitch: typeof import('naive-ui')['NSwitch']
+    NTab: typeof import('naive-ui')['NTab']
+    NTabPane: typeof import('naive-ui')['NTabPane']
+    NTabs: typeof import('naive-ui')['NTabs']
     NTag: typeof import('naive-ui')['NTag']
     NThing: typeof import('naive-ui')['NThing']
     NTime: typeof import('naive-ui')['NTime']
@@ -72,6 +78,7 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Skeleton: typeof import('./components/Skeleton.vue')['default']
+    TopicItem: typeof import('./components/topic/TopicItem.vue')['default']
     UserAvatar: typeof import('./components/UserAvatar.vue')['default']
   }
 }

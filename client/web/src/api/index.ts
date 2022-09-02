@@ -58,9 +58,11 @@ export interface Result<T> {
 export const url = {
   userLogin: 'POST:/v1/user/login',
   getUserInfo: 'GET:/v1/user/get',
-  createPost: 'POST:/v1/post/create',
+  listTopic: 'GET:/v1/topic/list',
+  createTopic: 'POST:/v1/topic/create',
   listPost: 'GET:/v1/post/list',
   getPost: 'GET:/v1/post/get',
+  createPost: 'POST:/v1/post/create',
   listComment: 'GET:/v1/comment/list',
   createComment: 'POST:/v1/comment/create',
   deleteComment: 'DELETE:/v1/comment/delete',

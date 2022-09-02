@@ -1,53 +1,96 @@
 <script setup lang="ts">
+import { useAxios } from '@vueuse/integrations/useAxios'
 import type { MenuOption } from 'naive-ui'
-import { NEllipsis } from 'naive-ui'
+import type { Result } from '~/api'
+import { instance, url } from '~/api'
 import ICarbonTime from '~icons/carbon/time'
 import ICarbonFire from '~icons/carbon/fire'
 import ICarbonUserMilitary from '~icons/carbon/user-military'
 import ICarbonUserHashtag from '~icons/carbon/hashtag'
+import { menuLabelRender } from '~/utils/ui'
 
-const {
-  activeKey = 'new',
-  menuOptions = [
-    {
-      label: '最新',
-      key: 'new',
-      icon: () => h(ICarbonTime),
-    },
-    {
-      label: '热门',
-      key: 'hot',
-      icon: () => h(ICarbonFire),
-    },
-    {
-      label: '关注',
-      key: 'following',
-      icon: () => h(ICarbonUserMilitary),
-    },
-    {
-      label: '话题',
-      key: 'topics',
-      icon: () => h(ICarbonUserHashtag),
-      children: [
-        {
-          label: () => h(NEllipsis, {
-            class: 'color-#8a919f',
-          }, { default: () => '电灯熄灭 物换星移 泥牛入海' }),
-          key: 'topics1',
-        },
-        {
-          label: () => h(NEllipsis, {
-            class: 'color-#8a919f',
-          }, { default: () => '更多' }),
-          key: 'topics-more',
-        },
-      ],
-    },
-  ],
-} = defineProps<{
-  activeKey?: string
-  menuOptions?: MenuOption[]
-}>()
+const menuOptions: MenuOption[] = [
+  {
+    label: '最新',
+    path: '/',
+    key: 'new',
+    icon: () => h(ICarbonTime),
+  },
+  {
+    label: '热门',
+    key: 'hot',
+    icon: () => h(ICarbonFire),
+  },
+  {
+    label: '关注',
+    key: 'following',
+    icon: () => h(ICarbonUserMilitary),
+  },
+  {
+    label: '话题',
+    path: '/topic',
+    key: 'topic',
+    icon: () => h(ICarbonUserHashtag),
+  },
+]
+
+const userStore = useUserStore()
+const route = useRoute()
+
+const getActiveKeyByRouteName = (name: string): string => {
+  switch (route.name) {
+    case 'index':
+      return 'new'
+    default:
+      return route.name as string
+  }
+}
+
+const activeKey = ref(getActiveKeyByRouteName(route.name as string))
+
+const { data, isFinished, execute } = useAxios<Result<AnyObject[]>>(url.listTopic, {
+  params: {
+    limit: 20,
+    page: 1,
+  },
+}, instance, { immediate: false })
+const mergeMenus = (): MenuOption[] => {
+  if (isFinished && data.value?.total) {
+    return [
+      ...menuOptions,
+      ...(data.value?.data || []).map((item) => {
+        return {
+          label: () => {
+            return h('div', {
+              style: {
+                'padding-left': '32px',
+                'color': '#8a919f',
+              },
+            }, item.title)
+          },
+          key: item.id,
+        }
+      }),
+    ]
+  }
+  return menuOptions
+}
+
+userStore.$subscribe((_, $state) => {
+  if ($state.info) {
+    execute(url.listTopic, {
+      params: {
+        limit: 20,
+        page: 1,
+        user_id: userStore.info?.id,
+      },
+    })
+  }
+})
+
+watch(route, () => {
+  activeKey.value = getActiveKeyByRouteName(route.name as string)
+})
 </script>
 
 <template>
@@ -55,9 +98,10 @@ const {
     <NScrollbar class="max-h-[calc(100%-109px)]">
       <NMenu
         :value="activeKey"
-        :options="menuOptions"
+        :options="mergeMenus()"
         :expand-icon="() => null"
         :collapsed="false"
+        :render-label="menuLabelRender"
         default-expand-all
       />
     </NScrollbar>

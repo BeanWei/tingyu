@@ -24,7 +24,7 @@ func JWT() *jwt.HertzJWTMiddleware {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*shared.CtxUser); ok {
 				return jwt.MapClaims{
-					"id":       v.ID,
+					"id":       v.Id,
 					"is_admin": v.IsAdmin,
 				}
 			}
@@ -33,7 +33,7 @@ func JWT() *jwt.HertzJWTMiddleware {
 		IdentityHandler: func(ctx context.Context, c *app.RequestContext) interface{} {
 			claims := jwt.ExtractClaims(ctx, c)
 			return &shared.CtxUser{
-				ID:      claims["id"].(int64),
+				Id:      claims["id"].(int64),
 				IsAdmin: claims["is_admin"].(bool),
 			}
 		},
@@ -48,12 +48,12 @@ func JWT() *jwt.HertzJWTMiddleware {
 				return nil, err
 			}
 			return &shared.CtxUser{
-				ID:      usr.ID,
+				Id:      usr.ID,
 				IsAdmin: usr.IsAdmin,
 			}, nil
 		},
 		Authorizator: func(data interface{}, ctx context.Context, c *app.RequestContext) bool {
-			if v, ok := data.(*shared.CtxUser); ok && v.ID != 0 {
+			if v, ok := data.(*shared.CtxUser); ok && v.Id != 0 {
 				return true
 			}
 			return false

@@ -1,34 +1,15 @@
 <script setup lang="ts">
 import type { MenuOption } from 'naive-ui'
-import { RouterLink } from 'vue-router'
+import { menuLabelRender } from '~/utils/ui'
 
 const menuOptions: MenuOption[] = [
   {
-    label: () => {
-      return h(
-        RouterLink,
-        {
-          to: {
-            name: 'index',
-          },
-        },
-        { default: () => '首页' },
-      )
-    },
+    label: '首页',
+    path: '/',
     key: 'index',
   },
   {
-    label: () => {
-      return h(
-        RouterLink,
-        {
-          to: {
-            name: 'index',
-          },
-        },
-        { default: () => '关于' },
-      )
-    },
+    label: '关于',
     key: 'about',
   },
 ]
@@ -54,6 +35,7 @@ watch(route, () => {
               :value="activeKey"
               mode="horizontal"
               :options="menuOptions"
+              :render-label="menuLabelRender"
             />
             <NSpace align="center">
               <NInput round placeholder="搜索">

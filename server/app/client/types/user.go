@@ -7,5 +7,5 @@ type UserLoginReq struct {
 }
 
 type GetUserInfoReq struct {
-	ID int64 `query:"id"`
+	Id int64 `query:"id"`
 }

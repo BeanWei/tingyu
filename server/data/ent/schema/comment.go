@@ -4,6 +4,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 	"github.com/BeanWei/tingyu/pkg/entx/mixin"
 )
 
@@ -27,6 +28,13 @@ func (Comment) Fields() []ent.Field {
 		field.String("content").Default("").Comment("评论内容"),
 		field.Int("reply_count").Default(0).Comment("回复数"),
 		field.Bool("is_poster").Default(false).Comment("是否发帖者"),
+	}
+}
+
+func (Comment) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("post_id"),
+		index.Fields("user_id"),
 	}
 }
 

@@ -32,6 +32,8 @@ func Register(s *server.Hertz) {
 		apiv1.GET("/user/refresh_token", jwt.RefreshHandler)
 		// topic
 		apiv1.POST("/topic/create", api.CreateTopic)
+		apiv1.POST("/topic/follow", api.FollowTopic)
+		apiv1.DELETE("/topic/unfollow", api.UnFollowTopic)
 		// post
 		apiv1.POST("/post/create", api.CreatePost)
 		// comment

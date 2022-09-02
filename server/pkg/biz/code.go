@@ -21,6 +21,8 @@ const (
 	CodeUsernameExisted        = 20006
 	CodeUserNotFound           = 20007
 	CodeInvalidTopicTitle      = 20008
+	CodeTopicIsFollowed        = 20009
+	CodeTopicIsNotFollowed     = 20010
 )
 
 var (
@@ -37,6 +39,8 @@ var (
 		CodeUsernameExisted:        {"该手机号或邮箱已经注册", "username existed"},
 		CodeUserNotFound:           {"用户不存在", "user not found"},
 		CodeInvalidTopicTitle:      {"标题长度不能超过20", "invalid topic title"},
+		CodeTopicIsFollowed:        {"你已经关注该话题，请勿重复操作", "topic is followed"},
+		CodeTopicIsNotFollowed:     {"你还没关注该话题，操作无效", "topic is not followed"},
 	}
 )
 

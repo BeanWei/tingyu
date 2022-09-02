@@ -14,7 +14,7 @@ type Ctx struct {
 
 // CtxUser 上下文用户信息
 type CtxUser struct {
-	ID      int64 `json:"id"`
+	Id      int64 `json:"id"`
 	IsAdmin bool  `json:"is_admin"`
 }
 

@@ -21,11 +21,11 @@ func GetUserInfo(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	uid := req.ID
+	uid := req.Id
 	if uid == 0 {
 		ctxUser := shared.GetCtxUser(ctx)
 		if ctxUser != nil {
-			uid = ctxUser.ID
+			uid = ctxUser.Id
 		}
 	}
 	if uid <= 0 {

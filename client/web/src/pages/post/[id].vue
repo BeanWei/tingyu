@@ -101,8 +101,19 @@ onMounted(async () => {
   <div v-if="postLoading" class="bg-#fff border-rd-4px relative p-20px">
     <Skeleton />
   </div>
-  <PostItem v-else :data="post?.data || {}" />
-  <div v-if="commentsLoading" class="bg-#fff border-rd-4px relative p-y-20px m-t-16px">
+  <PostItem v-else :data="post?.data || {}">
+    <template #header-extra>
+      <NButton strong secondary round type="primary">
+        <template #icon>
+          <n-icon>
+            <ICarbonAdd />
+          </n-icon>
+        </template>
+        关注
+      </NButton>
+    </template>
+  </PostItem>
+  <div v-if="commentsLoading" class="bg-#fff border-rd-4px relative p-20px m-t-16px">
     <Skeleton />
   </div>
   <div v-else class="bg-#fff border-rd-4px relative p-y-20px m-t-16px">
@@ -116,18 +127,14 @@ onMounted(async () => {
     </div>
     <NDivider />
     <div class="p-x-20px">
-      <NSpace justify="space-between" class="p-b-2">
+      <NSpace justify="space-between" align="center" class="p-b-2">
         <span class="text-18px font-600 color-#252933">
           全部评论
         </span>
-        <NSwitch v-if="comments.length">
-          <template #checked>
-            最新
-          </template>
-          <template #unchecked>
-            最热
-          </template>
-        </NSwitch>
+        <NTabs v-if="comments.length" type="segment" size="small" class="w-30">
+          <NTab name="new" tab="最新" />
+          <NTab name="hot" tab="最热" />
+        </NTabs>
       </NSpace>
       <NList :show-divider="false">
         <div v-if="!comments.length" class=" min-h-40 flex items-center justify-center">

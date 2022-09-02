@@ -53,7 +53,7 @@ func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
 				WithPost().
 				OnlyX(ctx)
 		ip  = c.ClientIP()
-		uid = shared.GetCtxUser(ctx).ID
+		uid = shared.GetCtxUser(ctx).Id
 	)
 	res := ent.DB().CommentReply.Create().
 		SetUserID(uid).
@@ -81,10 +81,10 @@ func DeleteCommentReply(ctx context.Context, c *app.RequestContext) {
 		replyData = ent.DB().CommentReply.GetX(ctx, req.Id)
 		ctxUser   = shared.GetCtxUser(ctx)
 	)
-	if replyData.UserID != ctxUser.ID && !ctxUser.IsAdmin {
+	if replyData.UserID != ctxUser.Id && !ctxUser.IsAdmin {
 		c.AbortWithError(consts.StatusForbidden, biz.NewError(
 			biz.CodeForbidden,
-			fmt.Errorf("user %d forbidden to delete comment %d", ctxUser.ID, req.Id)),
+			fmt.Errorf("user %d forbidden to delete comment %d", ctxUser.Id, req.Id)),
 		)
 		return
 	}
