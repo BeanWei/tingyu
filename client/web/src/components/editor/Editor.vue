@@ -17,6 +17,7 @@ import { CodeHighlightNode, CodeNode } from '@lexical/code'
 import { AutoLinkNode, LinkNode } from '@lexical/link'
 import { HashtagNode } from '@lexical/hashtag'
 import defaultTheme from './themes/default'
+import { MentionNode } from './nodes/MentionNode'
 
 const props = withDefaults(defineProps<{
   initialState?: string
@@ -24,6 +25,11 @@ const props = withDefaults(defineProps<{
   readOnly?: boolean
   placeholder?: string
   submitButtonText?: string
+  pluginsConfig?: {
+    mentions: {
+      triggers: ('@' | '#')[]
+    }
+  }
   onChange?: (editorState: EditorState, editor: LexicalEditor) => void
   onSubmit?: (values: any) => PromiseLike<StrictUseAxiosReturn<any>>
   onSubmitSuccess?: (data: AnyObject) => void
@@ -47,6 +53,7 @@ const config = {
     AutoLinkNode,
     LinkNode,
     HashtagNode,
+    MentionNode,
   ],
   readOnly: props.readOnly,
   onError(error: Error) {
@@ -122,7 +129,8 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
         </template>
       </LexicalRichTextPlugin>
       <LexicalAutoFocusPlugin v-if="props.autofocus" />
-      <MarkdownShortcutPlugin />
+      <LexicalMarkdownShortcutPlugin />
+      <LexicalMentionsPlugin :triggers="props.pluginsConfig?.mentions.triggers" />
     </div>
     <NSpace v-if="!!!props.readOnly" justify="space-between" class="m-t-2">
       <NSpace>

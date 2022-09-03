@@ -9,6 +9,10 @@ type ListTopicReq struct {
 	UserId     int64 `query:"user_id"`
 }
 
+type SearchTopicReq struct {
+	Keyword string `query:"keyword"`
+}
+
 type CreateTopicReq struct {
 	Title       string `json:"title,required"`
 	Icon        string `json:"icon"`

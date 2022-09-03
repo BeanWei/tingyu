@@ -59,6 +59,7 @@ export const url = {
   userLogin: 'POST:/v1/user/login',
   getUserInfo: 'GET:/v1/user/get',
   listTopic: 'GET:/v1/topic/list',
+  searchTopic: 'GET:/v1/topic/search',
   createTopic: 'POST:/v1/topic/create',
   followTopic: 'POST:/v1/topic/follow',
   unFollowTopic: 'DELETE:/v1/topic/unfollow',

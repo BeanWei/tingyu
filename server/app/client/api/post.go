@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
@@ -23,6 +24,9 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	query := ent.DB().Post.Query().Where(post.DeletedAtEQ(0))
+	if req.TopicId != 0 {
+		query.Where(post.ContentContains(fmt.Sprintf(`"mentionName":"%d"`, req.TopicId)))
+	}
 	total := query.CountX(ctx)
 	if total == 0 {
 		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
@@ -30,6 +34,9 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 	}
 	if req.SortType == 0 {
 		query.Order(ent.Desc(post.FieldCreatedAt))
+	} else if req.SortType == 1 {
+		// TODO: 热度值计算
+		query.Order(ent.Desc(post.FieldCommentCount))
 	}
 	posts := query.WithUser().
 		Limit(req.Limit).

@@ -53,6 +53,31 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, biz.RespSuccess(topics, total))
 }
 
+// SearchTopic 搜索话题
+func SearchTopic(ctx context.Context, c *app.RequestContext) {
+	var req types.SearchTopicReq
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		return
+	}
+
+	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0))
+	if req.Keyword != "" {
+		query.Where(topic.TitleContainsFold(req.Keyword))
+	} else if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil && ctxUser.Id > 0 {
+		query.Where(func(s *sql.Selector) {
+			s.Where(sql.P(func(b *sql.Builder) {
+				b.WriteString(`"topics"."id" IN (SELECT "user_topics"."topic_id" FROM "user_topics" WHERE "user_topics"."user_id" = `).Arg(ctxUser.Id).WriteString(")")
+			}))
+		})
+	}
+	topics := query.Order(
+		ent.Asc(topic.FieldRecRank), ent.Desc(topic.FieldCreatedAt),
+	).Limit(20).AllX(ctx)
+
+	c.JSON(consts.StatusOK, biz.RespSuccess(topics, len(topics)))
+}
+
 // CreateTopic 创建话题
 func CreateTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.CreateTopicReq

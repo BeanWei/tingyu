@@ -82,8 +82,7 @@ watch(route, async () => {
   const { data, isFinished } = await loadPost()
   if (isFinished) {
     isLoading.value = false
-    if (data.value?.total)
-      posts.value.push(...(data.value.data || []))
+    posts.value = data.value?.data || []
     hasMorePost.value = posts.value.length < (data.value?.total || 0)
   }
 })
@@ -94,6 +93,11 @@ watch(route, async () => {
     <Editor
       placeholder="快和水友一起分享新鲜事~"
       submit-button-text="发布"
+      :plugins-config="{
+        mentions: {
+          triggers: ['#', '@'],
+        },
+      }"
       @submit="createPost"
     />
   </div>
