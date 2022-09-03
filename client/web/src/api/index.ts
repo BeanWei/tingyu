@@ -60,6 +60,8 @@ export const url = {
   getUserInfo: 'GET:/v1/user/get',
   listTopic: 'GET:/v1/topic/list',
   createTopic: 'POST:/v1/topic/create',
+  followTopic: 'POST:/v1/topic/follow',
+  unFollowTopic: 'DELETE:/v1/topic/unfollow',
   listPost: 'GET:/v1/post/list',
   getPost: 'GET:/v1/post/get',
   createPost: 'POST:/v1/post/create',

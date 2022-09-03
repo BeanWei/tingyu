@@ -18,7 +18,7 @@ const { data: post, isLoading: postLoading } = useAxios<Result<AnyObject>>(url.g
   },
 }, instance)
 
-const loadMoreComments = () => {
+const loadComments = () => {
   return useAxios<Result<AnyObject[]>>(url.listComment, {
     params: {
       limit: 20,
@@ -34,7 +34,7 @@ const handleIntersect = async ($state: {
 }) => {
   if (hasMoreComments.value) {
     commentsPageNumber.value++
-    const { data, isFinished } = await loadMoreComments()
+    const { data, isFinished } = await loadComments()
     if (isFinished) {
       comments.value.push(...(data.value?.data || []))
       hasMoreComments.value = comments.value.length < (data.value?.total || 0)
@@ -49,7 +49,7 @@ const handleIntersect = async ($state: {
 const reloadComments = async () => {
   commentsPageNumber.value = 1
   commentsLoading.value = true
-  const { data, isFinished } = await loadMoreComments()
+  const { data, isFinished } = await loadComments()
   if (isFinished) {
     comments.value = data.value?.data || []
     hasMoreComments.value = comments.value.length < (data.value?.total || 0)
@@ -87,7 +87,7 @@ const handleNewReply = (reply: AnyObject, commentIdx: number) => {
 }
 
 onMounted(async () => {
-  const { data, isFinished } = await loadMoreComments()
+  const { data, isFinished } = await loadComments()
   if (isFinished) {
     commentsLoading.value = false
     if (data.value?.total)
@@ -149,7 +149,7 @@ onMounted(async () => {
           <CommentItem :data="comment" :index="index" @reply-success="handleNewReply" />
         </NListItem>
       </NList>
-      <InfiniteScroll v-if="comments.length" @intersect="handleIntersect" />
+      <InfiniteScroll v-if="!commentsLoading && comments.length" @intersect="handleIntersect" />
     </div>
   </div>
 </template>

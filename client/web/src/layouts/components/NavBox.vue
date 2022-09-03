@@ -1,25 +1,20 @@
 <script setup lang="ts">
 import { useAxios } from '@vueuse/integrations/useAxios'
 import type { MenuOption } from 'naive-ui'
+import { RouterLink } from 'vue-router'
 import type { Result } from '~/api'
 import { instance, url } from '~/api'
-import ICarbonTime from '~icons/carbon/time'
-import ICarbonFire from '~icons/carbon/fire'
+import ICarbonHome from '~icons/carbon/home'
 import ICarbonUserMilitary from '~icons/carbon/user-military'
 import ICarbonUserHashtag from '~icons/carbon/hashtag'
 import { menuLabelRender } from '~/utils/ui'
 
 const menuOptions: MenuOption[] = [
   {
-    label: '最新',
+    label: '广场',
     path: '/',
-    key: 'new',
-    icon: () => h(ICarbonTime),
-  },
-  {
-    label: '热门',
-    key: 'hot',
-    icon: () => h(ICarbonFire),
+    key: 'index',
+    icon: () => h(ICarbonHome),
   },
   {
     label: '关注',
@@ -38,12 +33,10 @@ const userStore = useUserStore()
 const route = useRoute()
 
 const getActiveKeyByRouteName = (name: string): string => {
-  switch (route.name) {
-    case 'index':
-      return 'new'
-    default:
-      return route.name as string
-  }
+  const { topic_id } = route.query
+  if (topic_id)
+    return topic_id as string
+  return route.name as string
 }
 
 const activeKey = ref(getActiveKeyByRouteName(route.name as string))
@@ -61,14 +54,23 @@ const mergeMenus = (): MenuOption[] => {
       ...(data.value?.data || []).map((item) => {
         return {
           label: () => {
-            return h('div', {
-              style: {
-                'padding-left': '32px',
-                'color': '#8a919f',
+            return h(RouterLink, {
+              to: {
+                name: 'index',
+                query: {
+                  topic_id: item.id,
+                },
               },
-            }, item.title)
+            }, {
+              default: () => h('div', {
+                style: {
+                  'padding-left': '32px',
+                  'color': '#8a919f',
+                },
+              }, item.title),
+            })
           },
-          key: item.id,
+          key: String(item.id),
         }
       }),
     ]

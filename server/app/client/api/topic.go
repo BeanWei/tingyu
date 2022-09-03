@@ -46,7 +46,9 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
 		return
 	}
-	topics := query.Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
+	topics := query.Order(
+		ent.Asc(topic.FieldRecRank), ent.Desc(topic.FieldCreatedAt),
+	).Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(topics, total))
 }

@@ -3,18 +3,27 @@ import { useAxios } from '@vueuse/integrations/useAxios'
 import type { Result } from '~/api'
 import { instance, url } from '~/api'
 
+const tabName = ref('followed')
 const modalVisible = ref(false)
 const isLoading = ref(true)
+
 const pageNumber = ref(1)
 const topics = ref<AnyObject[]>([])
 const hasMore = ref(false)
 
-const loadMoreTopic = () => {
+const userStore = useUserStore()
+
+const loadTopic = () => {
+  const params: AnyObject = {
+    limit: 20,
+    page: pageNumber.value,
+  }
+  if (tabName.value === 'followed')
+    params.user_id = userStore.info?.id
+  else if (tabName.value === 'recommend')
+    params.is_rec = true
   return useAxios<Result<AnyObject[]>>(url.listTopic, {
-    params: {
-      limit: 20,
-      page: pageNumber.value,
-    },
+    params,
   }, instance)
 }
 
@@ -24,7 +33,7 @@ const handleIntersect = async ($state: {
 }) => {
   if (hasMore.value) {
     pageNumber.value++
-    const { data, isFinished } = await loadMoreTopic()
+    const { data, isFinished } = await loadTopic()
     if (isFinished) {
       topics.value.push(...(data.value?.data || []))
       hasMore.value = topics.value.length < (data.value?.total || 0)
@@ -36,8 +45,20 @@ const handleIntersect = async ($state: {
   }
 }
 
+const handleTabChange = async (name: string) => {
+  tabName.value = name
+  pageNumber.value = 1
+  isLoading.value = true
+
+  const { data, isFinished } = await loadTopic()
+  if (isFinished) {
+    topics.value = data.value?.data || []
+    isLoading.value = false
+  }
+}
+
 onMounted(async () => {
-  const { data, isFinished } = await loadMoreTopic()
+  const { data, isFinished } = await loadTopic()
   if (isFinished) {
     isLoading.value = false
     if (data.value?.total)
@@ -60,8 +81,8 @@ onMounted(async () => {
       </NInput>
     </NSpace>
     <NSpace justify="space-between">
-      <NTabs type="bar">
-        <NTab name="followed">
+      <NTabs type="bar" @update-value="handleTabChange">
+        <NTab v-if="userStore.info?.id" name="followed">
           关注
         </NTab>
         <NTab name="recommend">
@@ -110,9 +131,9 @@ onMounted(async () => {
       :key="topic.id"
       class="bg-#f4f5f5 important-p-0 important-p-b-2"
     >
-      <TopicItem :data="topic" />
+      <TopicItem :data="topic" :is-followed="tabName === 'followed'" />
     </NListItem>
   </NList>
-  <InfiniteScroll v-if="topics.length" @intersect="handleIntersect" />
+  <InfiniteScroll v-if="!isLoading && topics.length" @intersect="handleIntersect" />
   <AddTopicModal :show="modalVisible" @close="() => { modalVisible = false }" />
 </template>
