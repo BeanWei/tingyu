@@ -30,6 +30,10 @@ type conf struct {
 		Pass string `mapstructure:"pass"`
 		DB   int    `mapstructure:"db"`
 	} `mapstructure:"redis"`
+	Meilisearch struct {
+		Host   string `mapstructure:"host"`
+		APIKey string `mapstructure:"api_key"`
+	} `mapstructure:"meilisearch"`
 }
 
 func Cfg() *conf {

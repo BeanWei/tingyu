@@ -7,6 +7,9 @@ switch (argv["_"][0]) {
   case "migrate":
     await $`go run main.go migrate`;
     break;
+  case "ping":
+    await $`go run main.go ping`;
+    break;
   case "start":
     await $`go run main.go start`;
     break;

@@ -4,15 +4,19 @@ import (
 	"context"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/post"
+	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/BeanWei/tingyu/pkg/iploc"
 	"github.com/BeanWei/tingyu/pkg/shared"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/duke-git/lancet/v2/convertor"
+	"github.com/meilisearch/meilisearch-go"
 )
 
 // ListPost 帖子列表
@@ -38,12 +42,12 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		// TODO: 热度值计算
 		query.Order(ent.Desc(post.FieldCommentCount))
 	}
-	posts := query.WithUser().
+	records := query.WithUser().
 		Limit(req.Limit).
 		Offset(req.Offset()).
 		AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(posts, total))
+	c.JSON(consts.StatusOK, biz.RespSuccess(records, total))
 }
 
 // GetPost 帖子详情
@@ -54,9 +58,9 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	post := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
+	res := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(post))
+	c.JSON(consts.StatusOK, biz.RespSuccess(res))
 }
 
 // CreatePost 发表帖子
@@ -68,13 +72,19 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 	}
 
 	ip := c.ClientIP()
-	ent.DB().Post.Create().
+	res := ent.DB().Post.Create().
 		SetUserID(shared.GetCtxUser(ctx).Id).
 		SetIP(ip).
 		SetIPLoc(iploc.Find(ip)).
 		SetContent(req.Content).
 		AddTopicIDs(req.TopicIds...).
-		ExecX(ctx)
+		SaveX(ctx)
+	g.Meili().Index(post.Table).AddDocuments([]map[string]any{
+		{
+			"id":      res.ID,
+			"content": req.ContentText,
+		},
+	})
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
 }
@@ -82,6 +92,40 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 // DeletePost 删除帖子
 
 // SearchPost 搜索帖子
+func SearchPost(ctx context.Context, c *app.RequestContext) {
+	var req types.SearchPostReq
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		return
+	}
+
+	res, err := g.Meili().Index(post.Table).Search(req.Keyword, &meilisearch.SearchRequest{
+		Limit:  int64(req.Limit),
+		Offset: int64(req.Offset()),
+	})
+	if err != nil {
+		c.AbortWithError(consts.StatusInternalServerError, biz.NewError(biz.CodeServerError, err))
+		return
+	}
+	if res.EstimatedTotalHits == 0 {
+		c.JSON(consts.StatusOK, biz.RespSuccess(nil, 0))
+	}
+	ids := make([]int64, len(res.Hits))
+	for i, hit := range res.Hits {
+		id, _ := convertor.ToInt(hit.(map[string]any)["id"])
+		ids[i] = id
+	}
+	records := ent.DB().Post.Query().Unique(false).Where(
+		post.DeletedAtEQ(0),
+		post.IDIn(ids...),
+	).WithUser().Order(func(s *sql.Selector) {
+		s.OrderExpr(sql.P(func(b *sql.Builder) {
+			b.WriteString("array_position(").Arg(ids).WriteString(", id)")
+		}))
+	}).AllX(ctx)
+
+	c.JSON(consts.StatusOK, biz.RespSuccess(records, int(res.EstimatedTotalHits)))
+}
 
 // CollectPost 收藏帖子
 

@@ -17,8 +17,17 @@ const menuOptions: MenuOption[] = [
 const userStore = useUserStore()
 const miscStore = useMiscStore()
 const route = useRoute()
+const router = useRouter()
 
 const activeKey = ref(route.name as string)
+const searchWord = ref('')
+
+const handleSearch = () => {
+  if (searchWord.value)
+    router.push(`/?keyword=${encodeURIComponent(searchWord.value)}`)
+  else
+    router.push('/')
+}
 
 watch(route, () => {
   activeKey.value = route.name as string
@@ -38,7 +47,13 @@ watch(route, () => {
               :render-label="menuLabelRender"
             />
             <NSpace align="center">
-              <NInput round placeholder="搜索">
+              <NInput
+                v-model:value="searchWord"
+                clearable
+                round
+                placeholder="搜索"
+                @keyup.enter.prevent="handleSearch"
+              >
                 <template #suffix>
                   <ICarbonSearch />
                 </template>

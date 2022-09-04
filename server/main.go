@@ -13,6 +13,7 @@ func main() {
 		Commands: []*cli.Command{
 			cmd.Start,
 			cmd.Migrate,
+			cmd.Ping,
 		},
 	}
 	if err := app.Run(os.Args); err != nil {

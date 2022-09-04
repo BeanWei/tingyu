@@ -1,13 +1,20 @@
 server:
   address: "localhost:8888"
   is_dev: true
+
 jwt:
   secret_key: "loveyouthreethousand"
   timeout_days: 7
+
 database:
   read: "postgres://postgres:postgrespw@localhost:49153/tingyu?sslmode=disable"
   write: "postgres://postgres:postgrespw@localhost:49153/tingyu?sslmode=disable"
+
 redis:
   addr: "localhost:49154"
   pass: "redispw"
   db: 0
+
+meilisearch:
+  host: "http://127.0.0.1:7700"
+  api_key: "masterKey"

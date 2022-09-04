@@ -10,11 +10,13 @@ const reqParams = ref<{
   page: number
   sort_type?: number
   topic_id?: number | string
+  keyword?: string
 }>({
   limit: 20,
   page: 1,
   sort_type: 1,
   topic_id: route.query?.topic_id as string,
+  keyword: route.query?.keyword as string,
 })
 const isLoading = ref(true)
 
@@ -22,7 +24,7 @@ const posts = ref<AnyObject[]>([])
 const hasMorePost = ref(false)
 
 const loadPost = () => {
-  return useAxios<Result<AnyObject[]>>(url.listPost, {
+  return useAxios<Result<AnyObject[]>>(reqParams.value?.keyword ? url.searchPost : url.listPost, {
     params: reqParams.value,
   }, instance)
 }
@@ -78,6 +80,7 @@ watch(route, async () => {
   reqParams.value = {
     ...reqParams.value,
     topic_id: route.query?.topic_id as string,
+    keyword: route.query?.keyword as string,
   }
   const { data, isFinished } = await loadPost()
   if (isFinished) {
@@ -101,7 +104,7 @@ watch(route, async () => {
       @submit="createPost"
     />
   </div>
-  <div class="bg-#fff p-t-4 p-x-5 rounded-t-4px border-b-1 border-b-#efeff5">
+  <div v-if="!reqParams.keyword" class="bg-#fff p-t-4 p-x-5 rounded-t-4px border-b-1 border-b-#efeff5">
     <NTabs type="bar" @update-value="handleTabChange">
       <NTab name="host">
         热门

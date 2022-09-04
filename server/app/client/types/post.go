@@ -16,3 +16,8 @@ type CreatePostReq struct {
 	ContentText string  `json:"content_text,required"`
 	TopicIds    []int64 `json:"topic_ids"`
 }
+
+type SearchPostReq struct {
+	*Paging
+	Keyword string `query:"keyword,required"`
+}

@@ -20,6 +20,7 @@ func Register(s *server.Hertz) {
 		apiv1.GET("/topic/search", middleware.Ctx(jwt), api.SearchTopic)
 		// post
 		apiv1.GET("/post/list", api.ListPost)
+		apiv1.GET("/post/search", api.SearchPost)
 		apiv1.GET("/post/get", api.GetPost)
 		// comment
 		apiv1.GET("/comment/list", api.ListComment)

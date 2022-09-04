@@ -64,6 +64,7 @@ export const url = {
   followTopic: 'POST:/v1/topic/follow',
   unFollowTopic: 'DELETE:/v1/topic/unfollow',
   listPost: 'GET:/v1/post/list',
+  searchPost: 'GET:/v1/post/search',
   getPost: 'GET:/v1/post/get',
   createPost: 'POST:/v1/post/create',
   listComment: 'GET:/v1/comment/list',
