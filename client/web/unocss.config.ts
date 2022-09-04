@@ -34,5 +34,16 @@ export default defineConfig({
     transformerDirectives(),
     transformerVariantGroup(),
   ],
-  safelist: 'prose prose-sm m-auto text-left'.split(' '),
+  safelist: [
+    ...'prose prose-sm m-auto text-left'.split(' '),
+    'i-fluent-emoji-flat-grinning-face-with-smiling-eyes',
+    'i-fluent-emoji-flat-smiling-face-with-sunglasses',
+    'i-fluent-emoji-flat-kissing-face-with-smiling-eyes',
+    'i-fluent-emoji-flat-smiling-face-with-heart-eyes',
+    'i-fluent-emoji-flat-clapping-hands',
+    'i-fluent-emoji-flat-thumbs-up',
+    'i-fluent-emoji-flat-thumbs-down',
+    'i-fluent-emoji-flat-hand-with-index-finger-and-thumb-crossed',
+    'i-fluent-emoji-flat-anguished-face',
+  ],
 })

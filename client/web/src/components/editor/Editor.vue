@@ -18,6 +18,7 @@ import { AutoLinkNode, LinkNode } from '@lexical/link'
 import { HashtagNode } from '@lexical/hashtag'
 import defaultTheme from './themes/default'
 import { MentionNode } from './nodes/MentionNode'
+import { EmojiNode } from './nodes/EmojiNode'
 
 const props = withDefaults(defineProps<{
   initialState?: string
@@ -54,6 +55,7 @@ const config = {
     LinkNode,
     HashtagNode,
     MentionNode,
+    EmojiNode,
   ],
   readOnly: props.readOnly,
   onError(error: Error) {
@@ -131,6 +133,7 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
       <LexicalAutoFocusPlugin v-if="props.autofocus" />
       <LexicalMarkdownShortcutPlugin />
       <LexicalMentionsPlugin :triggers="props.pluginsConfig?.mentions.triggers" />
+      <LexicalEmojisPlugin />
     </div>
     <NSpace v-if="!!!props.readOnly" justify="space-between" class="m-t-2">
       <NSpace>
@@ -139,11 +142,7 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
             <NIcon><ICarbonImage /></NIcon>
           </template>
         </NButton>
-        <NButton quaternary circle>
-          <template #icon>
-            <NIcon><ICarbonFaceAdd /></NIcon>
-          </template>
-        </NButton>
+        <LexicalEmojiMenu />
       </NSpace>
       <EditorSubmit
         :disabled="!!!userStore.info || !!!contentText"

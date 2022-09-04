@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@antfu/eslint-config': ^0.25.2
   '@iconify-json/carbon': ^1.1.7
+  '@iconify-json/fluent-emoji-flat': ^1.1.0
   '@intlify/vite-plugin-vue-i18n': ^6.0.1
   '@vitejs/plugin-vue': ^3.0.3
   '@vueuse/core': ^9.1.1
@@ -47,6 +48,7 @@ dependencies:
 devDependencies:
   '@antfu/eslint-config': registry.npmmirror.com/@antfu/eslint-config/0.25.2_shit3uhl6a7megkzgoz6xssnfa
   '@iconify-json/carbon': registry.npmmirror.com/@iconify-json/carbon/1.1.7
+  '@iconify-json/fluent-emoji-flat': registry.npmmirror.com/@iconify-json/fluent-emoji-flat/1.1.0
   '@intlify/vite-plugin-vue-i18n': registry.npmmirror.com/@intlify/vite-plugin-vue-i18n/6.0.1_vite@3.0.9+vue-i18n@9.2.2
   '@vitejs/plugin-vue': registry.npmmirror.com/@vitejs/plugin-vue/3.0.3_vite@3.0.9+vue@3.2.37
   critters: registry.npmmirror.com/critters/0.0.16
@@ -1736,6 +1738,14 @@ packages:
       '@iconify/types': registry.npmmirror.com/@iconify/types/1.1.0
     dev: true
 
+  registry.npmmirror.com/@iconify-json/fluent-emoji-flat/1.1.0:
+    resolution: {integrity: sha512-pUJjCoQoBbcguTasGlPY7ugobTJsEF/mtUT+KEsNzTRIYiGFfDSRLZ0H/eD9+N9bVMHbWV1egaV4lE0tLHgDJQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@iconify-json/fluent-emoji-flat/-/fluent-emoji-flat-1.1.0.tgz}
+    name: '@iconify-json/fluent-emoji-flat'
+    version: 1.1.0
+    dependencies:
+      '@iconify/types': registry.npmmirror.com/@iconify/types/1.1.0
+    dev: true
+
   registry.npmmirror.com/@iconify/types/1.1.0:
     resolution: {integrity: sha512-Jh0llaK2LRXQoYsorIH8maClebsnzTcve+7U3rQUSnC11X4jtPnFuyatqFLvMxZ8MLG8dB4zfHsbPfuvxluONw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@iconify/types/-/types-1.1.0.tgz}
     name: '@iconify/types'
@@ -1772,8 +1782,8 @@ packages:
       vue-i18n:
         optional: true
     dependencies:
-      '@intlify/message-compiler': registry.npmmirror.com/@intlify/message-compiler/9.2.0
-      '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.2.0
+      '@intlify/message-compiler': registry.npmmirror.com/@intlify/message-compiler/9.3.0-beta.3
+      '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.3.0-beta.3
       jsonc-eslint-parser: registry.npmmirror.com/jsonc-eslint-parser/1.4.1
       source-map: registry.npmmirror.com/source-map/0.6.1
       vue-i18n: registry.npmmirror.com/vue-i18n/9.2.2_vue@3.2.37
@@ -1799,16 +1809,6 @@ packages:
     dependencies:
       '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.2.2
 
-  registry.npmmirror.com/@intlify/message-compiler/9.2.0:
-    resolution: {integrity: sha512-KGwwZsl+Nw2O26ZOKdytncxzKnMZ236KmM70u4GePgbizI+pu8yAh0apKxljSPzEJ7WECKTVc9R+laG12EJQYA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/message-compiler/-/message-compiler-9.2.0.tgz}
-    name: '@intlify/message-compiler'
-    version: 9.2.0
-    engines: {node: '>= 14'}
-    dependencies:
-      '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.2.0
-      source-map: registry.npmmirror.com/source-map/0.6.1
-    dev: true
-
   registry.npmmirror.com/@intlify/message-compiler/9.2.2:
     resolution: {integrity: sha512-IUrQW7byAKN2fMBe8z6sK6riG1pue95e5jfokn8hA5Q3Bqy4MBJ5lJAofUsawQJYHeoPJ7svMDyBaVJ4d0GTtA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/message-compiler/-/message-compiler-9.2.2.tgz}
     name: '@intlify/message-compiler'
@@ -1818,11 +1818,14 @@ packages:
       '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.2.2
       source-map: registry.npmmirror.com/source-map/0.6.1
 
-  registry.npmmirror.com/@intlify/shared/9.2.0:
-    resolution: {integrity: sha512-71uObL3Sy2ZiBQBMVETbkspE4Plpy87Hvlj6FAUF3xdD+M82tuxe3MVJjaD3ucqhtHmQWBkAWEurVLdPYr8G2g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/shared/-/shared-9.2.0.tgz}
-    name: '@intlify/shared'
-    version: 9.2.0
+  registry.npmmirror.com/@intlify/message-compiler/9.3.0-beta.3:
+    resolution: {integrity: sha512-j8OwToBQgs01RBMX4GCDNQfcnmw3AiDG3moKIONTrfXcf+1yt/rWznLTYH/DXbKcFMAFijFpCzMYjUmH1jVFYA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/message-compiler/-/message-compiler-9.3.0-beta.3.tgz}
+    name: '@intlify/message-compiler'
+    version: 9.3.0-beta.3
     engines: {node: '>= 14'}
+    dependencies:
+      '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.3.0-beta.3
+      source-map: registry.npmmirror.com/source-map/0.6.1
     dev: true
 
   registry.npmmirror.com/@intlify/shared/9.2.2:
@@ -1830,6 +1833,13 @@ packages:
     name: '@intlify/shared'
     version: 9.2.2
     engines: {node: '>= 14'}
+
+  registry.npmmirror.com/@intlify/shared/9.3.0-beta.3:
+    resolution: {integrity: sha512-Z/0TU4GhFKRxKh+0RbwJExik9zz57gXYgxSYaPn7YQdkQ/pabSioCY/SXnYxQHL6HzULF5tmqarFm6glbGqKhw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/shared/-/shared-9.3.0-beta.3.tgz}
+    name: '@intlify/shared'
+    version: 9.3.0-beta.3
+    engines: {node: '>= 14'}
+    dev: true
 
   registry.npmmirror.com/@intlify/vite-plugin-vue-i18n/6.0.1_vite@3.0.9+vue-i18n@9.2.2:
     resolution: {integrity: sha512-FFVcxVU4bR9vdDLNbltM5mrhndnXMErO01i0RrpdyMegEt3Nu/YLoH0sFdjRun7/RY4vaEnhTnFvVf9uO0dQvg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/vite-plugin-vue-i18n/-/vite-plugin-vue-i18n-6.0.1.tgz}
@@ -1850,7 +1860,7 @@ packages:
         optional: true
     dependencies:
       '@intlify/bundle-utils': registry.npmmirror.com/@intlify/bundle-utils/3.1.0_vue-i18n@9.2.2
-      '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.2.0
+      '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.3.0-beta.3
       '@rollup/pluginutils': registry.npmmirror.com/@rollup/pluginutils/4.2.1
       debug: registry.npmmirror.com/debug/4.3.4
       fast-glob: registry.npmmirror.com/fast-glob/3.2.11

@@ -10,29 +10,33 @@ import { useEditor } from 'lexical-vue'
 import { onMounted, onUnmounted } from 'vue'
 
 const editor = useEditor()
-let unregisterListener: () => void
+let removeUpdateListener: () => void
 
 onMounted(() => {
-  unregisterListener = editor.registerCommand(
-    CLEAR_EDITOR_COMMAND,
-    (_payload) => {
-      editor.update(() => {
-        const root = $getRoot()
-        const selection = $getSelection()
-        const paragraph = $createParagraphNode()
-        root.clear()
-        root.append(paragraph)
-        if (selection !== null)
-          paragraph.select()
-      })
-      return true
-    },
-    COMMAND_PRIORITY_EDITOR,
-  )
+  const updateListener = () => {
+    editor.registerCommand(
+      CLEAR_EDITOR_COMMAND,
+      (_payload) => {
+        editor.update(() => {
+          const root = $getRoot()
+          const selection = $getSelection()
+          const paragraph = $createParagraphNode()
+          root.clear()
+          root.append(paragraph)
+          if (selection !== null)
+            paragraph.select()
+        })
+        return true
+      },
+      COMMAND_PRIORITY_EDITOR,
+    )
+  }
+
+  removeUpdateListener = editor.registerUpdateListener(updateListener)
 })
 
 onUnmounted(() => {
-  unregisterListener?.()
+  removeUpdateListener?.()
 })
 </script>
 
