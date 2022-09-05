@@ -132,8 +132,8 @@ onMounted(async () => {
           全部评论
         </span>
         <NTabs v-if="comments.length" type="segment" size="small" class="w-30">
+          <NTab name="hot" tab="热门" />
           <NTab name="new" tab="最新" />
-          <NTab name="hot" tab="最热" />
         </NTabs>
       </NSpace>
       <NList :show-divider="false">

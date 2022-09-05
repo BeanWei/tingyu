@@ -89,19 +89,7 @@ onMounted(async () => {
           推荐
         </NTab>
         <NTab name="more">
-          <NDropdown
-            :options="[{
-              label: '更多',
-              key: 'more',
-            }]"
-          >
-            <div class="items-center">
-              更多
-              <NIcon>
-                <ICarbonChevronDown />
-              </NIcon>
-            </div>
-          </NDropdown>
+          更多
         </NTab>
       </NTabs>
       <NButton
@@ -116,6 +104,32 @@ onMounted(async () => {
         </template>
         添加话题
       </NButton>
+    </NSpace>
+  </div>
+  <div v-if="tabName === 'more'" class="bg-#fff p-x-5 p-t-4 p-b-1">
+    <NSpace align="center">
+      <NTabs type="segment" size="small" class="w-30">
+        <NTab name="hot" tab="热门" />
+        <NTab name="new" tab="最新" />
+      </NTabs>
+      <NPopselect
+        trigger="hover"
+        :options="[{
+          label: '全部分类',
+          value: 'all',
+          key: 'all',
+        }]"
+        scrollable
+      >
+        <NButton quaternary icon-placement="right">
+          全部分类
+          <template #icon>
+            <n-icon>
+              <ICarbonChevronDown />
+            </n-icon>
+          </template>
+        </NButton>
+      </NPopselect>
     </NSpace>
   </div>
   <NList :show-divider="false">
