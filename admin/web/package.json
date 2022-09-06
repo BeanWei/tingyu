@@ -1,0 +1,70 @@
+{
+  "name": "@tingyu/admin",
+  "private": true,
+  "packageManager": "pnpm@7.8.0",
+  "scripts": {
+    "build": "vite build",
+    "dev": "cross-env vite --port 3332 --mode development",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "stylelint": "stylelint 'src/**/*.less' 'src/**/*.css' --fix --cache",
+    "pre-commit": "pretty-quick --staged && npm run eslint && npm run stylelint",
+    "up": "taze major -I"
+  },
+  "dependencies": {
+    "@arco-design/web-react": "^2.39.3",
+    "@arco-plugins/vite-react": "^1.3.1",
+    "@arco-themes/react-arco-pro": "^0.0.7",
+    "@loadable/component": "^5.15.2",
+    "axios": "^0.27.0",
+    "classnames": "^2.3.1",
+    "lodash": "^4.17.21",
+    "nprogress": "^0.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.26.3",
+    "@arco-design/webpack-plugin": "^1.7.0",
+    "@arco-plugins/vite-plugin-svgr": "^0.7.2",
+    "@svgr/webpack": "^6.3.1",
+    "@types/react": "^18.0.18",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.1.0",
+    "eslint": "^8.23.0",
+    "less": "^4.1.3",
+    "less-loader": "11.0.0",
+    "pretty-quick": "^3.1.3",
+    "postcss-less": "4",
+    "prettier": "^2.7.1",
+    "taze": "^0.8.0",
+    "stylelint": "^14.11.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^28.0.0",
+    "typescript": "^4.8.2",
+    "vite": "^3.1.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix --cache"
+    ],
+    "*.{css, less}": [
+      "stylelint --fix"
+    ]
+  }
+}
