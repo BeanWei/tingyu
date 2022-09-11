@@ -1,0 +1,73 @@
+import { Message } from '@arco-design/web-react'
+import axios from 'axios'
+import { useUserStore } from '~/store'
+
+export const request = axios.create({
+  baseURL: '/api',
+  timeout: 30 * 1000, // 30s 超时
+})
+
+request.interceptors.request.use(
+  (config) => {
+    if (config.url && !config.url.startsWith('/')) {
+      const [method, ...uri] = config.url.split(':')
+      config.method = method
+      config.url = uri.join(':')
+    }
+    !config.headers && (config.headers = { Authorization: '' })
+    const token = useUserStore().token
+    if (token)
+      config.headers.Authorization = `Bearer ${token}`
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
+
+request.interceptors.response.use(
+  (response) => {
+    if (response.status === 200)
+      return response
+    else
+      Promise.reject(response?.data || {})
+  },
+  (error = {}) => {
+    const { response = {} } = error || {}
+    // 重定向
+    if (response?.status === 401)
+      useUserStore().deleteToken()
+    else if (response?.status === 403)
+      Message.warning(response?.data.msg || '禁止访问')
+    else
+      Message.error(response?.data?.msg || '请求失败')
+    return Promise.reject(response?.data || {})
+  },
+)
+
+export interface Result<T> {
+  code: number
+  msg: string
+  total: number
+  data: T
+}
+
+export const url = {
+  userLogin: 'POST:/v1/user/login',
+  getUserInfo: 'GET:/v1/user/get',
+  listTopic: 'GET:/v1/topic/list',
+  searchTopic: 'GET:/v1/topic/search',
+  createTopic: 'POST:/v1/topic/create',
+  followTopic: 'POST:/v1/topic/follow',
+  unFollowTopic: 'DELETE:/v1/topic/unfollow',
+  listPost: 'GET:/v1/post/list',
+  searchPost: 'GET:/v1/post/search',
+  getPost: 'GET:/v1/post/get',
+  createPost: 'POST:/v1/post/create',
+  listComment: 'GET:/v1/comment/list',
+  createComment: 'POST:/v1/comment/create',
+  deleteComment: 'DELETE:/v1/comment/delete',
+  listReply: 'GET:/v1/reply/list',
+  createReply: 'POST:/v1/reply/create',
+  deleteReply: 'DELETE:/v1/reply/delete',
+}
