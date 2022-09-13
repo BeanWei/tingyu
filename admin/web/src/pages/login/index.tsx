@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import LoginForm from './form'
-import styles from './style/index.module.less'
+import styles from './styles/index.module.less'
 import Footer from '~/components/Footer'
 
 function Login() {

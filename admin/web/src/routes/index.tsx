@@ -19,6 +19,36 @@ const routes: IRoute[] = [
       },
     ],
   },
+  {
+    name: '系统管理',
+    key: 'system',
+    children: [
+      {
+        name: '分类管理',
+        key: 'system/category',
+      },
+      {
+        name: '评论管理',
+        key: 'system/comment',
+      },
+      {
+        name: '帖子管理',
+        key: 'system/post',
+      },
+      {
+        name: '回复管理',
+        key: 'system/reply',
+      },
+      {
+        name: '话题管理',
+        key: 'system/topic',
+      },
+      {
+        name: '用户管理',
+        key: 'system/user',
+      },
+    ],
+  },
 ]
 
 export default routes

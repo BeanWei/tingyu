@@ -8,6 +8,8 @@ import { useSettingsStore, useUserStore } from './store'
 import PageLayout from './layout'
 import Login from './pages/login'
 import { request, url } from './api'
+import changeTheme from './utils/changeTheme'
+import './styles/global.less'
 
 function App() {
   const settingsStore = useSettingsStore()
@@ -36,6 +38,10 @@ function App() {
       window.location.pathname = '/admin/login'
     }
   }, [])
+
+  useEffect(() => {
+    changeTheme(settingsStore.theme)
+  }, [settingsStore.theme])
 
   return (
     <BrowserRouter>

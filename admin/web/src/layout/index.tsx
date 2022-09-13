@@ -12,6 +12,7 @@ import {
   IconMenuFold,
   IconMenuUnfold,
   IconSettings,
+  IconStorage,
   IconUser,
 } from '@arco-design/web-react/icon'
 import NProgress from 'nprogress'
@@ -33,6 +34,8 @@ function getIconFromKey(key) {
   switch (key) {
     case 'dashboard':
       return <IconDashboard className={styles.icon} />
+    case 'system':
+      return <IconStorage className={styles.icon} />
     case 'list':
       return <IconList className={styles.icon} />
     case 'form':
@@ -191,7 +194,7 @@ function PageLayout() {
           [styles['layout-navbar-hidden']]: false,
         })}
       >
-        <Navbar show />
+        <Navbar />
       </div>
       {!userStore.info?.id
         ? (

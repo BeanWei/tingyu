@@ -1,23 +1,24 @@
 import {
+  Avatar,
+  Dropdown,
   Input,
   Tooltip,
 } from '@arco-design/web-react'
 import {
+  IconLoading,
   IconMoonFill,
   IconSunFill,
 } from '@arco-design/web-react/icon'
 import styles from './style/index.module.less'
 import IconButton from './IconButton'
 import Logo from '~/assets/logo.svg'
-import { useSettingsStore } from '~/store/index'
+import { useSettingsStore, useUserStore } from '~/store/index'
 import { useLocale } from '~/hooks'
 
-function Navbar({ show }: { show: boolean }) {
+function Navbar() {
   const t = useLocale()
   const settingsStore = useSettingsStore()
-
-  if (!show)
-    return null
+  const userStore = useUserStore()
 
   return (
     <div className={styles.navbar}>
@@ -48,21 +49,13 @@ function Navbar({ show }: { show: boolean }) {
             />
           </Tooltip>
         </li>
-        {/* {userInfo && (
-          <li>
-            <Dropdown droplist={droplist} position="br" disabled={userLoading}>
-              <Avatar size={32} style={{ cursor: 'pointer' }}>
-                {userLoading
-                  ? (
-                  <IconLoading />
-                    )
-                  : (
-                  <img alt="avatar" src={userInfo.avatar} />
-                    )}
-              </Avatar>
-            </Dropdown>
-          </li>
-        )} */}
+        <li>
+          <Dropdown position="br" disabled={!userStore.token}>
+            <Avatar size={32} style={{ cursor: 'pointer' }}>
+              {userStore.info?.id ? userStore.info?.avatar ? <img alt="avatar" src={userStore.info?.avatar} /> : (userStore.info?.nickname || userStore.info?.username)[0].toUpperCase() : <IconLoading />}
+            </Avatar>
+          </Dropdown>
+        </li>
       </ul>
     </div>
   )
