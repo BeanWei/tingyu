@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import { Breadcrumb, Layout, Menu, Spin } from '@arco-design/web-react'
 import cs from 'classnames'
 import {
@@ -15,14 +15,13 @@ import {
   IconUser,
 } from '@arco-design/web-react/icon'
 import NProgress from 'nprogress'
-import Navbar from './components/NavBar'
-import Footer from './components/Footer'
-import { isArray } from './utils/is'
-import lazyload from './utils/lazyload'
-import styles from './styles/layout.module.less'
-import { useUserStore } from './store'
+import Navbar from '~/components/NavBar'
+import Footer from '~/components/Footer'
+import { isArray } from '~/utils/is'
+import styles from '~/styles/layout.module.less'
+import { useUserStore } from '~/store'
 import type { IRoute } from '~/routes'
-import { routes } from '~/routes'
+import routes from '~/routes'
 
 const MenuItem = Menu.Item
 const SubMenu = Menu.SubMenu
@@ -54,7 +53,7 @@ function getIconFromKey(key) {
 }
 
 function getFlattenRoutes(routes) {
-  const mod = import.meta.glob('./pages/**/[a-z[]*.tsx')
+  const mod = import.meta.glob('~/pages/**/[a-z[]*.tsx')
   const res = []
   function travel(_routes) {
     _routes.forEach((route) => {
@@ -63,14 +62,18 @@ function getFlattenRoutes(routes) {
       )
       if (route.key && (!route.children || !visibleChildren.length)) {
         try {
-          route.component = lazyload(mod[`./pages/${route.key}/index.tsx`])
+          const Component = React.lazy(mod[`/src/pages/${route.key}/index.tsx`] as any)
+          route.element = (
+            <Suspense fallback={<Spin className={styles.spin} />}>
+              <Component />
+            </Suspense>
+          )
           res.push(route)
         }
         catch (e) {
           console.error(e)
         }
       }
-
       if (isArray(route.children) && route.children.length)
         travel(route.children)
     })
@@ -81,10 +84,10 @@ function getFlattenRoutes(routes) {
 
 function PageLayout() {
   const navigate = useNavigate()
-  const pathname = window.location.pathname
+  const pathname = window.location.pathname.replace(/^\/admin/, '')
   const userStore = useUserStore()
 
-  const defaultSelectedKeys = [routes[0].key]
+  const defaultSelectedKeys = [routes[0].children ? routes[0].children[0].key : routes[0].key]
   const defaultOpenKeys = [routes[0].key]
 
   const [breadcrumb, setBreadCrumb] = useState([])
@@ -105,13 +108,9 @@ function PageLayout() {
 
   function onClickMenuItem(key) {
     const currentRoute = flattenRoutes.find(r => r.key === key)
-    const component = currentRoute.component
-    const preload = component.preload()
     NProgress.start()
-    preload.then(() => {
-      navigate(currentRoute.path ? currentRoute.path : `/${key}`)
-      NProgress.done()
-    })
+    navigate(currentRoute.path ? currentRoute.path : `/admin/${key}`)
+    NProgress.done()
   }
 
   function toggleCollapse() {
@@ -122,7 +121,7 @@ function PageLayout() {
   const paddingTop = { paddingTop: navbarHeight }
   const paddingStyle = { ...paddingLeft, ...paddingTop }
 
-  function renderRoutes() {
+  function renderMenus() {
     routeMap.current.clear()
     return function travel(_routes: IRoute[], level, parentNode = []) {
       return _routes.map((route) => {
@@ -134,35 +133,26 @@ function PageLayout() {
           </>
         )
 
-        routeMap.current.set(
-          `/${route.key}`,
-          breadcrumb ? [...parentNode, route.name] : [],
-        )
+        routeMap.current[`/${route.key}`] = breadcrumb ? [...parentNode, route.name] : []
 
         const visibleChildren = (route.children || []).filter((child) => {
           const { ignore, breadcrumb = true } = child
-          if (ignore || route.ignore) {
-            routeMap.current.set(
-              `/${child.key}`,
-              breadcrumb ? [...parentNode, route.name, child.name] : [],
-            )
-          }
-
+          if (ignore || route.ignore)
+            routeMap.current[`/${child.key}`] = breadcrumb ? [...parentNode, route.name, child.name] : []
           return !ignore
         })
 
         if (ignore)
           return ''
-
         if (visibleChildren.length) {
-          menuMap.current.set(route.key, { subMenu: true })
+          menuMap.current[route.key] = { subMenu: true }
           return (
             <SubMenu key={route.key} title={titleDom}>
               {travel(visibleChildren, level + 1, [...parentNode, route.name])}
             </SubMenu>
           )
         }
-        menuMap.current.set(route.key, { menuItem: true })
+        menuMap.current[route.key] = { menuItem: true }
         return <MenuItem key={route.key}>{titleDom}</MenuItem>
       })
     }
@@ -175,21 +165,21 @@ function PageLayout() {
     while (pathKeys.length > 0) {
       const currentRouteKey = pathKeys.join('/')
       const menuKey = currentRouteKey.replace(/^\//, '')
-      const menuType = menuMap.current.get(menuKey)
+      const menuType = menuMap.current[menuKey]
       if (menuType && menuType.menuItem)
         newSelectedKeys.push(menuKey)
-
       if (menuType && menuType.subMenu && !openKeys.includes(menuKey))
         newOpenKeys.push(menuKey)
-
       pathKeys.pop()
     }
     setSelectedKeys(newSelectedKeys)
     setOpenKeys(newOpenKeys)
   }
 
+  const menus = useMemo(() => renderMenus()(routes, 1), [])
+
   useEffect(() => {
-    const routeConfig = routeMap.current.get(pathname)
+    const routeConfig = routeMap.current[pathname]
     setBreadCrumb(routeConfig || [])
     updateMenuStatus()
   }, [pathname])
@@ -229,7 +219,7 @@ function PageLayout() {
                   setOpenKeys(openKeys)
                 }}
               >
-                {renderRoutes()(routes, 1)}
+                {menus}
               </Menu>
             </div>
             <div className={styles['collapse-btn']} onClick={toggleCollapse}>
@@ -250,18 +240,19 @@ function PageLayout() {
                 </div>
               )}
               <Content>
-                <Routes>
-                  {flattenRoutes.map((route, index) => {
-                    return (
-                      <Route
-                        key={index}
-                        path={`/${route.key}`}
-                        element={route.component}
-                      />
-                    )
-                  })}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
+                <Suspense fallback={<Spin className={styles.spin} />}>
+                  <Routes>
+                    {flattenRoutes.map((route, index) => {
+                      return (
+                        <Route
+                          key={index}
+                          path={`/${route.key}`}
+                          element={route.element}
+                        />
+                      )
+                    })}
+                  </Routes>
+                </Suspense>
               </Content>
             </div>
             <Footer />

@@ -29,10 +29,12 @@ function App() {
       request({
         url: url.getUserInfo,
       }).then((res) => {
-        userStore.info = res.data
+        useUserStore.setState({ info: res.data.data })
       })
     }
-    else if (window.location.pathname.replace(/\//g, '') !== 'login') { window.location.pathname = '/login' }
+    else if (!window.location.pathname.startsWith('/admin/login')) {
+      window.location.pathname = '/admin/login'
+    }
   }, [])
 
   return (
@@ -52,8 +54,8 @@ function App() {
         }}
       >
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<PageLayout />} />
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/*" element={<PageLayout />} />
         </Routes>
       </ConfigProvider>
     </BrowserRouter>

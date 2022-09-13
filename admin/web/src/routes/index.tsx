@@ -8,7 +8,7 @@ export interface IRoute {
   ignore?: boolean
 }
 
-export const routes: IRoute[] = [
+const routes: IRoute[] = [
   {
     name: '仪表盘',
     key: 'dashboard',
@@ -20,3 +20,5 @@ export const routes: IRoute[] = [
     ],
   },
 ]
+
+export default routes

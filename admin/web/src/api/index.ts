@@ -15,7 +15,7 @@ request.interceptors.request.use(
       config.url = uri.join(':')
     }
     !config.headers && (config.headers = { Authorization: '' })
-    const token = useUserStore().token
+    const token = useUserStore.getState().token
     if (token)
       config.headers.Authorization = `Bearer ${token}`
     return config
@@ -36,7 +36,7 @@ request.interceptors.response.use(
     const { response = {} } = error || {}
     // 重定向
     if (response?.status === 401)
-      useUserStore().deleteToken()
+      useUserStore.getState().deleteToken()
     else if (response?.status === 403)
       Message.warning(response?.data.msg || '禁止访问')
     else

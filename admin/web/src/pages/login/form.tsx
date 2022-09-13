@@ -18,6 +18,7 @@ import { useUserStore } from '~/store'
 export default function LoginForm() {
   const t = useLocale(locales)
   const formRef = useRef<FormInstance>()
+  const userStore = useUserStore()
 
   const { loading, run } = useRequest((data: AnyObject) => {
     return request({
@@ -27,8 +28,8 @@ export default function LoginForm() {
   }, {
     manual: true,
     onSuccess: (result) => {
-      useUserStore().updateToken(result.data.token)
-      window.location.href = '/'
+      userStore.updateToken(result.data.data.token)
+      window.location.href = '/admin'
     },
   })
 
@@ -46,15 +47,14 @@ export default function LoginForm() {
         className={styles['login-form']}
         layout="vertical"
         ref={formRef}
-        initialValues={{ userName: 'admin', password: 'admin' }}
       >
         <Form.Item
-          field="userName"
-          rules={[{ required: true, message: t['login.form.userName.errMsg'] }]}
+          field="username"
+          rules={[{ required: true, message: t['login.form.username.errMsg'] }]}
         >
           <Input
             prefix={<IconUser />}
-            placeholder={t['login.form.userName.placeholder']}
+            placeholder={t['login.form.username.placeholder']}
             onPressEnter={handleLogin}
           />
         </Form.Item>
@@ -70,20 +70,10 @@ export default function LoginForm() {
         </Form.Item>
         <Space size={16} direction="vertical">
           <div className={styles['login-form-password-actions']}>
-            {/* <Checkbox checked={rememberPassword} onChange={setRememberPassword}>
-              {t['login.form.rememberPassword']}
-            </Checkbox> */}
             <Link>{t['login.form.forgetPassword']}</Link>
           </div>
           <Button type="primary" long onClick={handleLogin} loading={loading}>
             {t['login.form.login']}
-          </Button>
-          <Button
-            type="text"
-            long
-            className={styles['login-form-register-btn']}
-          >
-            {t['login.form.register']}
           </Button>
         </Space>
       </Form>
