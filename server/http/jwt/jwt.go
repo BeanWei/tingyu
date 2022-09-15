@@ -32,7 +32,7 @@ func CreateToken(data *shared.CtxUser) (tokenStr string, expire time.Time, err e
 
 // ParseToken .
 func ParseToken(tokenStr string) (*Claims, error) {
-	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (interface{}, error) {
 		if t.Method != jwt.SigningMethodHS256 {
 			return nil, errors.New("invalid signing algorithm")
 		}
@@ -52,7 +52,7 @@ func ParseToken(tokenStr string) (*Claims, error) {
 
 // GetToken .
 func GetToken(ctx context.Context, c *app.RequestContext) (string, error) {
-	authHeader := c.Request.Header.Get("header:Authorization")
+	authHeader := c.Request.Header.Get("Authorization")
 	if authHeader == "" {
 		return "", errors.New("auth header is empty")
 	}
@@ -62,7 +62,7 @@ func GetToken(ctx context.Context, c *app.RequestContext) (string, error) {
 		return "", errors.New("auth header is invalid")
 	}
 
-	return parts[len(parts)-1], nil
+	return parts[1], nil
 }
 
 // RefreshToken .
