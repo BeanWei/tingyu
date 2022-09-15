@@ -56,5 +56,7 @@ export const url = {
   userLogin: 'POST:/v1/user/login',
   getUserInfo: 'GET:/v1/user/get',
   listCategory: 'GET:/admin/category/list',
-  createCategory: 'GET:/admin/category/create',
+  createCategory: 'POST:/admin/category/create',
+  listTopic: 'GET:/admin/topic/list',
+  createTopic: 'POST:/admin/topic/create',
 }
