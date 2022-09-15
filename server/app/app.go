@@ -3,6 +3,7 @@ package app
 import (
 	"time"
 
+	"github.com/BeanWei/tingyu/app/admin"
 	"github.com/BeanWei/tingyu/app/client"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/http/middleware"
@@ -33,6 +34,7 @@ func NewHTTPServer() {
 		middleware.CORS(),
 	)
 
+	admin.Register(svr)
 	client.Register(svr)
 
 	svr.Spin()

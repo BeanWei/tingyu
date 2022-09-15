@@ -7,8 +7,8 @@ require (
 	github.com/cloudwego/hertz v0.3.0
 	github.com/duke-git/lancet/v2 v2.1.6
 	github.com/go-redis/redis/v8 v8.11.5
+	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/hertz-contrib/cors v0.0.0-20220601061225-50f4e582beaf
-	github.com/hertz-contrib/jwt v1.0.0
 	github.com/hibiken/asynq v0.23.0
 	github.com/jackc/pgx/v5 v5.0.0-beta.3
 	github.com/meilisearch/meilisearch-go v0.20.1
@@ -35,8 +35,8 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
+	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/google/uuid v1.3.0 // indirect

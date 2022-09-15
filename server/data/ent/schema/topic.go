@@ -31,7 +31,7 @@ func (Topic) Fields() []ent.Field {
 		field.Int64("topic_category_id").Optional().Default(0).Comment("分类ID"),
 		field.Bool("is_rec").Default(false).Comment("是否推荐"),
 		field.Int("rec_rank").Default(9999).Comment("推荐值"),
-		// field.Bool("is_offline").Default(false).Comment("是否下线"),
+		field.Int8("status").Default(0).Comment("状态(0.正常 1.下线 2.待审核)"),
 		// field.Bool("is_unpostable").Default(false).Comment("禁止发贴"),
 		// field.Bool("is_uncommentable").Default(false).Comment("禁止评论"),
 	}

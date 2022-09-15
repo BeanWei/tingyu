@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"crypto/sha256"
 	"fmt"
 	"strings"
 	"time"
@@ -13,10 +12,10 @@ import (
 	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
+	"github.com/BeanWei/tingyu/pkg/cryptor"
 	"github.com/cloudwego/hertz/pkg/common/errors"
 	"github.com/duke-git/lancet/v2/random"
 	"github.com/duke-git/lancet/v2/validator"
-	"golang.org/x/crypto/pbkdf2"
 )
 
 const (
@@ -40,7 +39,7 @@ func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User,
 			usr := ent.DB().User.Create().
 				SetUsername(req.Username).
 				SetNickname(req.Username).
-				SetPassword(HashUserPwd(req.Password, salt)).
+				SetPassword(cryptor.HashUserPwd(req.Password, salt)).
 				SetSalt(salt).
 				SaveX(ctx)
 			return usr, nil
@@ -52,7 +51,7 @@ func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User,
 	if errTimes, _ := g.Redis().Get(ctx, lek).Int(); errTimes >= MAX_LOGIN_ERR_TIMES {
 		return nil, biz.NewError(biz.CodeTooManyLoginError, err)
 	}
-	if HashUserPwd(req.Password, usr.Salt) != usr.Password {
+	if cryptor.HashUserPwd(req.Password, usr.Salt) != usr.Password {
 		// 更新登录错误次数
 		if times := g.Redis().Incr(ctx, lek).Val(); times == 1 {
 			g.Redis().Expire(ctx, lek, time.Hour)
@@ -94,11 +93,5 @@ func ValidPassword(password string) *errors.Error {
 			return nil
 		}
 	}
-	return biz.NewError(biz.CodeInvalidPassword, fmt.Errorf("password %s is invalid", password))
-}
-
-// HashUserPwd 用户明文密码加密
-func HashUserPwd(password, salt string) string {
-	passwd := pbkdf2.Key([]byte(password), []byte(salt), 10000, 50, sha256.New)
-	return fmt.Sprintf("%x", passwd)
+	return biz.NewError(biz.CodeInvalidPassword, errors.NewPublic("invalid password"))
 }
