@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import { Breadcrumb, Layout, Menu, Spin } from '@arco-design/web-react'
 import cs from 'classnames'
 import {
@@ -29,6 +29,8 @@ const SubMenu = Menu.SubMenu
 
 const Sider = Layout.Sider
 const Content = Layout.Content
+
+NProgress.configure({ showSpinner: false })
 
 function getIconFromKey(key) {
   switch (key) {
@@ -164,7 +166,7 @@ function PageLayout() {
   function updateMenuStatus() {
     const pathKeys = pathname.split('/')
     const newSelectedKeys: string[] = []
-    const newOpenKeys: string[] = [...openKeys]
+    const newOpenKeys: string[] = []
     while (pathKeys.length > 0) {
       const currentRouteKey = pathKeys.join('/')
       const menuKey = currentRouteKey.replace(/^\//, '')
@@ -175,8 +177,8 @@ function PageLayout() {
         newOpenKeys.push(menuKey)
       pathKeys.pop()
     }
-    setSelectedKeys(newSelectedKeys)
-    setOpenKeys(newOpenKeys)
+    newSelectedKeys.length > 0 && setSelectedKeys(newSelectedKeys)
+    newOpenKeys.length > 0 && setOpenKeys(newOpenKeys)
   }
 
   const menus = useMemo(() => renderMenus()(routes, 1), [])
@@ -245,6 +247,7 @@ function PageLayout() {
               <Content>
                 <Suspense fallback={<Spin className={styles.spin} />}>
                   <Routes>
+                    <Route path="/" element={<Navigate to={`/admin/${defaultSelectedKeys[0]}`} />} />
                     {flattenRoutes.map((route, index) => {
                       return (
                         <Route

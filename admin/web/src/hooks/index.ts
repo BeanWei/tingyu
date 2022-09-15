@@ -1,12 +1,7 @@
-import defaultLocales from '~/locales'
-import { useSettingsStore } from '~/store'
-
-function useLocale(locales = null) {
-  const lang = useSettingsStore().lang
-
-  return (locales || defaultLocales)[lang] || {}
-}
+import useLocale from './useLocale'
+import useTable from './useTable'
 
 export {
   useLocale,
+  useTable,
 }
