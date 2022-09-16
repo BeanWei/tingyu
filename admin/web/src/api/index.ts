@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useUserStore } from '~/store'
 
 export const request = axios.create({
-  baseURL: '/api',
+  baseURL: '/api/admin',
   timeout: 30 * 1000, // 30s 超时
 })
 
@@ -53,10 +53,20 @@ export interface Result<T> {
 }
 
 export const url = {
-  userLogin: 'POST:/v1/user/login',
-  getUserInfo: 'GET:/v1/user/get',
-  listCategory: 'GET:/admin/category/list',
-  createCategory: 'POST:/admin/category/create',
-  listTopic: 'GET:/admin/topic/list',
-  createTopic: 'POST:/admin/topic/create',
+  userLogin: 'POST:/auth/login',
+  getUserInfo: 'GET:/auth/info',
+  listCategory: 'GET:/category/list',
+  createCategory: 'POST:/category/create',
+  updateCategory: 'PUT:/category/update',
+  listTopic: 'GET:/topic/list',
+  createTopic: 'POST:/topic/create',
+  updateTopic: 'PUT:/topic/update',
+  listPost: 'GET:/post/list',
+  updatePost: 'PUT:/post/update',
+  listComment: 'GET:/comment/list',
+  updateComment: 'PUT:/comment/update',
+  listReply: 'GET:/reply/list',
+  updateReply: 'PUT:/reply/update',
+  listUser: 'GET:/user/list',
+  updateUser: 'PUT:/user/update',
 }

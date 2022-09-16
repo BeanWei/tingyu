@@ -1,12 +1,28 @@
-import type { FormInstance, TableColumnProps } from '@arco-design/web-react'
-import { Button, Card, Form, Input, InputNumber, Space, Table, Typography } from '@arco-design/web-react'
+import type { BadgeProps, FormInstance, SelectOptionProps, TableColumnProps } from '@arco-design/web-react'
+import { Badge, Button, Card, Form, Input, InputNumber, Select, Space, Table, Typography } from '@arco-design/web-react'
 import { IconPlus } from '@arco-design/web-react/icon'
 import { useRef, useState } from 'react'
 import { useRequest } from 'ahooks'
 import { request, url } from '~/api'
 import { useTable } from '~/hooks'
+import RecordSelect from '~/components/RecordSelect'
 
 const { useForm } = Form
+
+const StatusOptions: SelectOptionProps[] = [
+  {
+    title: '上线',
+    value: 1,
+  },
+  {
+    title: '下线',
+    value: 2,
+  },
+  {
+    title: '待审核',
+    value: 3,
+  },
+]
 
 function TopicForm(props: {
   initialValues: AnyObject
@@ -50,12 +66,35 @@ function TopicForm(props: {
       }}
     >
       <div style={{ maxWidth: 650, margin: '0 auto' }}>
-        <Form ref={formRef} initialValues={props.initialValues || { rank: 9999 }}>
+        <Form ref={formRef} initialValues={props.initialValues || { rec_rank: 9999, status: 1 }}>
           <Space direction="vertical">
+            <Form.Item field="topic_category_id" label="分类" rules={[{ required: true }]}>
+              <RecordSelect
+                service={url.listCategory}
+                fieldNames={{
+                  title: 'name',
+                }}
+              />
+            </Form.Item>
             <Form.Item field="title" label="话题标题" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            <Form.Item field="rank" label="推荐值">
+            <Form.Item field="icon" label="图标">
+              <Input />
+            </Form.Item>
+            <Form.Item field="description" label="描述">
+              <Input.TextArea />
+            </Form.Item>
+            <Form.Item field="status" label="状态">
+              <Select>
+                {StatusOptions.map((option, idx) => (
+                  <Select.Option key={idx} value={option.value}>
+                    {option.title}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item field="rec_rank" label="推荐值">
               <InputNumber />
             </Form.Item>
           </Space>
@@ -94,14 +133,19 @@ function TopicList() {
     {
       title: '分类',
       dataIndex: 'topic_category_id',
+      render: (_col, record) => <Typography.Text>{record.edges?.topic_category?.name || '-'}</Typography.Text>,
     },
     {
       title: '话题标题',
       dataIndex: 'title',
     },
     {
-      title: '图标',
-      dataIndex: 'icon',
+      title: '状态',
+      dataIndex: 'status',
+      render: (value: number) => {
+        const status: BadgeProps['status'][] = ['success', 'default', 'warning']
+        return <Badge status={status[value - 1]} text={StatusOptions[value - 1].title}></Badge>
+      },
     },
     {
       title: '帖子数量',
@@ -135,13 +179,24 @@ function TopicList() {
 
   return (
     <Card
-      title="话题"
+      title="话题列表"
       extra={(
         <Space>
-          <Form form={form}>
-            <Form.Item field="search" noStyle>
-              <Input.Search placeholder="搜索" onSearch={search.submit}/>
-            </Form.Item>
+          <Form form={form} layout="inline">
+            <Space>
+              <Form.Item field="status" noStyle>
+                <Select placeholder="话题状态" onChange={search.submit} style={{ width: 100 }}>
+                  {StatusOptions.map((option, idx) => (
+                    <Select.Option key={idx} value={option.value}>
+                      {option.title}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item field="search" noStyle>
+                <Input.Search placeholder="搜索" onSearch={search.submit}/>
+              </Form.Item>
+            </Space>
           </Form>
           <Button
             type="primary"

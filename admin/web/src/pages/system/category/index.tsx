@@ -123,7 +123,7 @@ function CategoryList() {
 
   return (
     <Card
-      title="话题分类"
+      title="分类列表"
       extra={(
         <Space>
           <Form form={form}>

@@ -28,20 +28,20 @@ const routes: IRoute[] = [
         key: 'system/category',
       },
       {
-        name: '评论管理',
-        key: 'system/comment',
+        name: '话题管理',
+        key: 'system/topic',
       },
       {
         name: '帖子管理',
         key: 'system/post',
       },
       {
-        name: '回复管理',
-        key: 'system/reply',
+        name: '评论管理',
+        key: 'system/comment',
       },
       {
-        name: '话题管理',
-        key: 'system/topic',
+        name: '回复管理',
+        key: 'system/reply',
       },
       {
         name: '用户管理',
