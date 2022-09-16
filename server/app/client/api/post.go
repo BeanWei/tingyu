@@ -15,7 +15,6 @@ import (
 	"github.com/BeanWei/tingyu/pkg/shared"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/duke-git/lancet/v2/convertor"
 	"github.com/meilisearch/meilisearch-go"
 )
@@ -24,7 +23,7 @@ import (
 func ListPost(ctx context.Context, c *app.RequestContext) {
 	var req types.ListPostReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -34,7 +33,7 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 	}
 	total := query.CountX(ctx)
 	if total == 0 {
-		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
+		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
 	if req.SortType == 0 {
@@ -48,27 +47,27 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		Offset(req.Offset()).
 		AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(records, total))
+	c.JSON(200, biz.RespSuccess(records, total))
 }
 
 // GetPost 帖子详情
 func GetPost(ctx context.Context, c *app.RequestContext) {
 	var req types.GetPostReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
 	res := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(res))
+	c.JSON(200, biz.RespSuccess(res))
 }
 
 // CreatePost 发表帖子
 func CreatePost(ctx context.Context, c *app.RequestContext) {
 	var req types.CreatePostReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -93,7 +92,7 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 		},
 	})
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 
 // DeletePost 删除帖子
@@ -102,7 +101,7 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 func SearchPost(ctx context.Context, c *app.RequestContext) {
 	var req types.SearchPostReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -111,11 +110,11 @@ func SearchPost(ctx context.Context, c *app.RequestContext) {
 		Offset: int64(req.Offset()),
 	})
 	if err != nil {
-		c.AbortWithError(consts.StatusInternalServerError, biz.NewError(biz.CodeServerError, err))
+		biz.Abort(c, biz.CodeServerError, err)
 		return
 	}
 	if res.EstimatedTotalHits == 0 {
-		c.JSON(consts.StatusOK, biz.RespSuccess(nil, 0))
+		c.JSON(200, biz.RespSuccess(nil, 0))
 	}
 	ids := make([]int64, len(res.Hits))
 	for i, hit := range res.Hits {
@@ -132,7 +131,7 @@ func SearchPost(ctx context.Context, c *app.RequestContext) {
 		}))
 	}).AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(records, int(res.EstimatedTotalHits)))
+	c.JSON(200, biz.RespSuccess(records, int(res.EstimatedTotalHits)))
 }
 
 // CollectPost 收藏帖子

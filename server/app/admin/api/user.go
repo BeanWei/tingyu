@@ -9,14 +9,13 @@ import (
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
 // ListUser 用户列表
 func ListUser(ctx context.Context, c *app.RequestContext) {
 	var req types.ListUserReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -33,19 +32,19 @@ func ListUser(ctx context.Context, c *app.RequestContext) {
 	}
 	total := query.CountX(ctx)
 	if total == 0 {
-		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
+		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
 	topics := query.Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(topics, total))
+	c.JSON(200, biz.RespSuccess(topics, total))
 }
 
 // UpdateUser 更新帖子
 func UpdateUser(ctx context.Context, c *app.RequestContext) {
 	var req types.UpdateUserReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -53,5 +52,5 @@ func UpdateUser(ctx context.Context, c *app.RequestContext) {
 		SetStatus(req.Status).
 		ExecX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }

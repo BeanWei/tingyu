@@ -16,14 +16,13 @@ import (
 	"github.com/BeanWei/tingyu/pkg/shared"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
 // ListTopic 话题列表
 func ListTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.ListTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -45,21 +44,21 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 	}
 	total := query.CountX(ctx)
 	if total == 0 {
-		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
+		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
 	topics := query.Order(
 		ent.Asc(topic.FieldRecRank), ent.Desc(topic.FieldCreatedAt),
 	).Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(topics, total))
+	c.JSON(200, biz.RespSuccess(topics, total))
 }
 
 // SearchTopic 搜索话题
 func SearchTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.SearchTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -77,20 +76,18 @@ func SearchTopic(ctx context.Context, c *app.RequestContext) {
 		ent.Asc(topic.FieldRecRank), ent.Desc(topic.FieldCreatedAt),
 	).Limit(20).AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(topics, len(topics)))
+	c.JSON(200, biz.RespSuccess(topics, len(topics)))
 }
 
 // CreateTopic 创建话题
 func CreateTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.CreateTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 	if titleLength := len(req.Title); titleLength > 20 {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(
-			biz.CodeInvalidTopicTitle, fmt.Errorf("topic length is %d, over than 20", titleLength),
-		))
+		biz.Abort(c, biz.CodeInvalidTopicTitle, fmt.Errorf("topic length is %d, over than 20", titleLength))
 		return
 	}
 
@@ -107,51 +104,51 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 		SetStatus(status).
 		ExecX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 
 // FollowTopic 关注话题
 func FollowTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.FollowTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
 	if !ent.DB().Topic.Query().Where(topic.IDEQ(req.Id)).ExistX(ctx) {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, fmt.Errorf("topic %d is not found in db", req.Id)))
+		biz.Abort(c, biz.CodeParamBindError, fmt.Errorf("topic %d is not found in db", req.Id))
 		return
 	}
 
 	uid := shared.GetCtxUser(ctx).Id
 	if service.TopicIsFollowed(ctx, req.Id, uid) {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeTopicIsFollowed, fmt.Errorf("user %d followed topic %d repeat", uid, req.Id)))
+		biz.Abort(c, biz.CodeTopicIsFollowed, fmt.Errorf("user %d followed topic %d repeat", uid, req.Id))
 		return
 	}
 	ent.DB().User.UpdateOneID(uid).AddTopicIDs(req.Id).ExecX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 
 // UnFollowTopic 取关话题
 func UnFollowTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.UnFollowTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
 	if !ent.DB().Topic.Query().Where(topic.IDEQ(req.Id)).ExistX(ctx) {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, fmt.Errorf("topic %d is not found in db", req.Id)))
+		biz.Abort(c, biz.CodeParamBindError, fmt.Errorf("topic %d is not found in db", req.Id))
 		return
 	}
 
 	uid := shared.GetCtxUser(ctx).Id
 	if !service.TopicIsFollowed(ctx, req.Id, uid) {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeTopicIsNotFollowed, fmt.Errorf("user %d not followed topic %d", uid, req.Id)))
+		biz.Abort(c, biz.CodeTopicIsNotFollowed, fmt.Errorf("user %d not followed topic %d", uid, req.Id))
 		return
 	}
 	ent.DB().User.UpdateOneID(uid).RemoveTopicIDs(req.Id).ExecX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }

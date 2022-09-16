@@ -46,7 +46,7 @@ func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User,
 				SaveX(ctx)
 			return usr, nil
 		}
-		return nil, errors.New(err, errors.ErrorTypePublic, nil)
+		return nil, biz.NewError(biz.CodeServerError, err)
 	}
 	lek := fmt.Sprintf("%s:%d", LOGIN_ERR_KEY, usr.ID)
 	// 登录错误次数

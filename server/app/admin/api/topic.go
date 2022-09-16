@@ -9,14 +9,13 @@ import (
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/utils"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
 
 // ListTopic 话题列表
 func ListTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.ListTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -26,19 +25,19 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 	}
 	total := query.CountX(ctx)
 	if total == 0 {
-		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
+		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
 	topics := query.WithTopicCategory().Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(topics, total))
+	c.JSON(200, biz.RespSuccess(topics, total))
 }
 
 // CreateTopic 创建话题
 func CreateTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.CreateTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -52,14 +51,14 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 		SetRecRank(req.RecRank).
 		ExecX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 
 // UpdateTopic 更新话题
 func UpdateTopic(ctx context.Context, c *app.RequestContext) {
 	var req types.UpdateTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
-		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		biz.Abort(c, biz.CodeParamBindError, err)
 		return
 	}
 
@@ -73,5 +72,5 @@ func UpdateTopic(ctx context.Context, c *app.RequestContext) {
 		SetRecRank(req.RecRank).
 		ExecX(ctx)
 
-	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }

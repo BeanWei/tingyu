@@ -3,6 +3,7 @@ package biz
 import (
 	"fmt"
 
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/common/errors"
 )
 
@@ -23,6 +24,16 @@ func (e *BizError) Error() string {
 		e.Alert,
 		e.Msg,
 	)
+}
+
+func Abort(c *app.RequestContext, bizCode int, err error, opts ...BizErrorOption) {
+	c.Abort()
+	c.Error(NewError(bizCode, err, opts...))
+}
+
+func AbortBizError(c *app.RequestContext, err *errors.Error) {
+	c.Abort()
+	c.Error(err)
 }
 
 func NewError(bizCode int, err error, opts ...BizErrorOption) *errors.Error {
