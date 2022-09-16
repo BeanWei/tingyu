@@ -9,7 +9,7 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name: "LiFly",
+		Name: "TingYu",
 		Commands: []*cli.Command{
 			cmd.Start,
 			cmd.Migrate,
