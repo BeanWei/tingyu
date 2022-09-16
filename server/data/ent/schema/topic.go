@@ -25,13 +25,13 @@ func (Topic) Fields() []ent.Field {
 		field.String("icon").Default("").Comment("图标"),
 		field.String("description").Default("").Comment("描述"),
 		field.Int64("creator_id").Default(0).Comment("创建者ID"),
-		field.Int("post_count").Default(0).Comment("帖子数量"),
-		field.Int("follower_count").Default(0).Comment("关注数量"),
-		field.Int("attender_count").Default(0).Comment("参与者数量"),
+		field.Int("post_count").Default(0).Comment("帖子数量").StructTag(`json:"post_count"`),
+		field.Int("follower_count").Default(0).Comment("关注数量").StructTag(`json:"follower_count"`),
+		field.Int("attender_count").Default(0).Comment("参与者数量").StructTag(`json:"attender_count"`),
 		field.Int64("topic_category_id").Optional().Default(0).Comment("分类ID"),
 		field.Bool("is_rec").Default(false).Comment("是否推荐"),
 		field.Int("rec_rank").Default(9999).Comment("推荐值"),
-		field.Int8("status").Default(0).Comment("状态(0.正常 1.下线 2.待审核)"),
+		field.Int8("status").Default(0).Comment("状态(1.上线 2.下线 3.待审核)"),
 		// field.Bool("is_unpostable").Default(false).Comment("禁止发贴"),
 		// field.Bool("is_uncommentable").Default(false).Comment("禁止评论"),
 	}
@@ -41,6 +41,7 @@ func (Topic) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("topic_category_id"),
 		index.Fields("is_rec"),
+		index.Fields("status"),
 	}
 }
 
@@ -48,7 +49,7 @@ func (Topic) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("posts", Post.Type).Ref("topics"),
 		edge.From("users", User.Type).Ref("topics"),
-		edge.From("topic_categories", TopicCategory.Type).
+		edge.From("topic_category", TopicCategory.Type).
 			Ref("topics").
 			Unique().
 			Field("topic_category_id"),

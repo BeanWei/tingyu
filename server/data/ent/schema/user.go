@@ -24,7 +24,7 @@ func (User) Fields() []ent.Field {
 		field.String("nickname").Default("").Comment("昵称"),
 		field.String("password").Sensitive().Comment("Hash密码"),
 		field.String("salt").Sensitive().Comment("盐值"),
-		field.Int8("status").Default(0).Comment("状态(0.正常 1.停用)"),
+		field.Int8("status").Default(0).Comment("状态(1.正常 2.停用)"),
 		field.String("avatar").Default("").Comment("头像"),
 		field.Bool("is_admin").Default(false).Comment("是否管理员"),
 	}

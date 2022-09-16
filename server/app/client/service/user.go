@@ -10,6 +10,7 @@ import (
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/user"
+	"github.com/BeanWei/tingyu/data/enums"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/BeanWei/tingyu/pkg/cryptor"
@@ -37,6 +38,7 @@ func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User,
 			}
 			salt := random.RandString(10)
 			usr := ent.DB().User.Create().
+				SetStatus(enums.UserStatusActive).
 				SetUsername(req.Username).
 				SetNickname(req.Username).
 				SetPassword(cryptor.HashUserPwd(req.Password, salt)).

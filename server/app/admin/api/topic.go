@@ -21,12 +21,15 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 	}
 
 	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0))
+	if req.Filter.Status > 0 {
+		query.Where(topic.StatusEQ(req.Filter.Status))
+	}
 	total := query.CountX(ctx)
 	if total == 0 {
 		c.JSON(consts.StatusOK, biz.RespSuccess(nil, total))
 		return
 	}
-	topics := query.Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
+	topics := query.WithTopicCategory().Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(topics, total))
 }
@@ -43,6 +46,28 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 		SetTitle(req.Title).
 		SetIcon(req.Icon).
 		SetDescription(req.Description).
+		SetStatus(req.Status).
+		SetTopicCategoryID(req.TopicCategoryId).
+		SetIsRec(req.IsRec).
+		SetRecRank(req.RecRank).
+		ExecX(ctx)
+
+	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+}
+
+// UpdateTopic 更新话题
+func UpdateTopic(ctx context.Context, c *app.RequestContext) {
+	var req types.UpdateTopicReq
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		return
+	}
+
+	ent.DB().Topic.UpdateOneID(req.Id).
+		SetTitle(req.Title).
+		SetIcon(req.Icon).
+		SetDescription(req.Description).
+		SetStatus(req.Status).
 		SetTopicCategoryID(req.TopicCategoryId).
 		SetIsRec(req.IsRec).
 		SetRecRank(req.RecRank).

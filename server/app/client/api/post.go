@@ -8,6 +8,7 @@ import (
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/post"
+	"github.com/BeanWei/tingyu/data/enums"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/BeanWei/tingyu/pkg/iploc"
@@ -27,7 +28,7 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	query := ent.DB().Post.Query().Where(post.DeletedAtEQ(0))
+	query := ent.DB().Post.Query().Where(post.DeletedAtEQ(0), post.StatusEQ(enums.PostStatusPass))
 	if req.TopicId != 0 {
 		query.Where(post.ContentContains(fmt.Sprintf(`"mentionName":"%d"`, req.TopicId)))
 	}
@@ -71,8 +72,14 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	status := enums.PostStatusPass
+	if g.Cfg().Operation.Audit {
+		status = enums.PostStatusAuditing
+	}
+
 	ip := c.ClientIP()
 	res := ent.DB().Post.Create().
+		SetStatus(status).
 		SetUserID(shared.GetCtxUser(ctx).Id).
 		SetIP(ip).
 		SetIPLoc(iploc.Find(ip)).
@@ -117,6 +124,7 @@ func SearchPost(ctx context.Context, c *app.RequestContext) {
 	}
 	records := ent.DB().Post.Query().Unique(false).Where(
 		post.DeletedAtEQ(0),
+		post.StatusEQ(enums.PostStatusPass),
 		post.IDIn(ids...),
 	).WithUser().Order(func(s *sql.Selector) {
 		s.OrderExpr(sql.P(func(b *sql.Builder) {

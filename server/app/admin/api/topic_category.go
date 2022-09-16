@@ -46,3 +46,19 @@ func CreateTopicCategory(ctx context.Context, c *app.RequestContext) {
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
 }
+
+// UpdateTopicCategory 创建话题分类
+func UpdateTopicCategory(ctx context.Context, c *app.RequestContext) {
+	var req types.UpdateTopicCategoryReq
+	if err := c.BindAndValidate(&req); err != nil {
+		c.AbortWithError(consts.StatusBadRequest, biz.NewError(biz.CodeParamBindError, err))
+		return
+	}
+
+	ent.DB().TopicCategory.UpdateOneID(req.Id).
+		SetName(req.Name).
+		SetRank(req.Rank).
+		ExecX(ctx)
+
+	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))
+}

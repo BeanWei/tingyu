@@ -29,6 +29,7 @@ func (CommentReply) Fields() []ent.Field {
 		field.Int64("to_user_id").Default(0).Comment("回复的用户ID"),
 		field.Int64("to_reply_id").Default(0).Comment("回复的回复ID"),
 		field.Bool("is_poster").Default(false).Comment("是否发帖者"),
+		field.Int8("status").Default(0).Comment("状态(1.审核通过 2.审核未通过 3.待审核)"),
 	}
 }
 

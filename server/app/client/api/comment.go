@@ -9,6 +9,8 @@ import (
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/comment"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
+	"github.com/BeanWei/tingyu/data/enums"
+	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/BeanWei/tingyu/pkg/iploc"
 	"github.com/BeanWei/tingyu/pkg/shared"
@@ -28,6 +30,7 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 	query := ent.DB().Comment.Query().Where(
 		comment.PostIDEQ(req.PostId),
 		comment.DeletedAtEQ(0),
+		comment.StatusEQ(enums.CommentStatusPass),
 	)
 	total := query.CountX(ctx)
 	if total == 0 {
@@ -56,7 +59,14 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 		ip       = c.ClientIP()
 		uid      = shared.GetCtxUser(ctx).Id
 	)
+
+	status := enums.CommentStatusPass
+	if g.Cfg().Operation.Audit {
+		status = enums.CommentStatusAuditing
+	}
+
 	ent.DB().Comment.Create().
+		SetStatus(status).
 		SetPostID(postData.ID).
 		SetUserID(uid).
 		SetIP(ip).

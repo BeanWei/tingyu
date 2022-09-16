@@ -26,8 +26,9 @@ func (Comment) Fields() []ent.Field {
 		field.String("ip").Default("").Sensitive().Comment("IP"),
 		field.String("ip_loc").Default("").Comment("IP地址"),
 		field.String("content").Default("").Comment("评论内容"),
-		field.Int("reply_count").Default(0).Comment("回复数"),
+		field.Int("reply_count").Default(0).Comment("回复数").StructTag(`json:"reply_count"`),
 		field.Bool("is_poster").Default(false).Comment("是否发帖者"),
+		field.Int8("status").Default(0).Comment("状态(1.审核通过 2.审核未通过 3.待审核)"),
 	}
 }
 

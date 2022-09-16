@@ -10,6 +10,8 @@ import (
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/topic"
 	"github.com/BeanWei/tingyu/data/ent/user"
+	"github.com/BeanWei/tingyu/data/enums"
+	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/BeanWei/tingyu/pkg/shared"
 	"github.com/cloudwego/hertz/pkg/app"
@@ -25,7 +27,7 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0), topic.StatusEQ(0))
+	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0), topic.StatusEQ(enums.TopicStatusOnline))
 	if req.IsRec {
 		query.Where(topic.IsRecEQ(true))
 	}
@@ -61,7 +63,7 @@ func SearchTopic(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0), topic.StatusEQ(0))
+	query := ent.DB().Topic.Query().Where(topic.DeletedAtEQ(0), topic.StatusEQ(enums.TopicStatusOnline))
 	if req.Keyword != "" {
 		query.Where(topic.TitleContainsFold(req.Keyword))
 	} else if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil && ctxUser.Id > 0 {
@@ -92,12 +94,17 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	status := enums.TopicStatusOnline
+	if g.Cfg().Operation.Audit {
+		status = enums.TopicStatusAuditing
+	}
+
 	ent.DB().Topic.Create().
 		SetTitle(req.Title).
 		SetIcon(req.Icon).
 		SetDescription(req.Description).
 		SetCreatorID(shared.GetCtxUser(ctx).Id).
-		SetStatus(2).
+		SetStatus(status).
 		ExecX(ctx)
 
 	c.JSON(consts.StatusOK, biz.RespSuccess(utils.H{}))

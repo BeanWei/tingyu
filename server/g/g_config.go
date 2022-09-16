@@ -34,6 +34,9 @@ type conf struct {
 		Host   string `mapstructure:"host"`
 		APIKey string `mapstructure:"api_key"`
 	} `mapstructure:"meilisearch"`
+	Operation struct {
+		Audit bool `mapstructure:"audit"`
+	} `mapstructure:"operation"`
 }
 
 func Cfg() *conf {
@@ -41,20 +44,20 @@ func Cfg() *conf {
 		viper.SetConfigType("yaml")
 		viper.AutomaticEnv()
 
-		cfgfile := viper.GetString("ty_cfg_file")
-		if cfgfile == "" {
+		cfgFile := viper.GetString("ty_cfg_file")
+		if cfgFile == "" {
 			panic("config file is missing")
 		}
-		viper.SetConfigFile(cfgfile)
+		viper.SetConfigFile(cfgFile)
 
 		if err := viper.ReadInConfig(); err != nil {
-			panic(fmt.Errorf("read config faild: %+v", err))
+			panic(fmt.Errorf("read config failed: %+v", err))
 		} else {
 			fmt.Println("Using config file: ", viper.ConfigFileUsed())
 		}
 
 		if err := viper.Unmarshal(&cfg); err != nil {
-			panic(fmt.Errorf("viper unmarshal config faild: %+v", err))
+			panic(fmt.Errorf("viper unmarshal config failed: %+v", err))
 		}
 	})
 	return cfg
