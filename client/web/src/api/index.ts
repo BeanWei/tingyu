@@ -58,6 +58,7 @@ export interface Result<T> {
 export const url = {
   userLogin: 'POST:/v1/user/login',
   getUserInfo: 'GET:/v1/user/get',
+  listCategory: 'GET:/v1/category/list',
   listTopic: 'GET:/v1/topic/list',
   searchTopic: 'GET:/v1/topic/search',
   createTopic: 'POST:/v1/topic/create',

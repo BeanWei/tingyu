@@ -7,24 +7,45 @@ const tabName = ref('followed')
 const modalVisible = ref(false)
 const isLoading = ref(true)
 
-const pageNumber = ref(1)
+const reqParams = ref<{
+  limit: number
+  page: number
+  sort_type?: number
+  category_id?: number | string
+}>({
+  limit: 20,
+  page: 1,
+})
 const topics = ref<AnyObject[]>([])
 const hasMore = ref(false)
 
 const userStore = useUserStore()
 
 const loadTopic = () => {
-  const params: AnyObject = {
-    limit: 20,
-    page: pageNumber.value,
-  }
-  if (tabName.value === 'followed')
-    params.user_id = userStore.info?.id
-  else if (tabName.value === 'recommend')
-    params.is_rec = true
   return useAxios<Result<AnyObject[]>>(url.listTopic, {
-    params,
+    params: {
+      ...(tabName.value === 'more'
+        ? reqParams.value
+        : {
+            limit: reqParams.value.limit,
+            page: reqParams.value.page,
+          }),
+      user_id: tabName.value === 'followed' ? userStore.info?.id : undefined,
+      is_rec: tabName.value === 'recommend' ? true : undefined,
+    },
   }, instance)
+}
+
+const reloadTopic = async () => {
+  reqParams.value.page = 1
+  isLoading.value = true
+
+  const { data, isFinished } = await loadTopic()
+  if (isFinished) {
+    topics.value = data.value?.data || []
+    isLoading.value = false
+    hasMore.value = topics.value.length < (data.value?.total || 0)
+  }
 }
 
 const handleIntersect = async ($state: {
@@ -32,7 +53,7 @@ const handleIntersect = async ($state: {
   complete: () => void
 }) => {
   if (hasMore.value) {
-    pageNumber.value++
+    reqParams.value.page++
     const { data, isFinished } = await loadTopic()
     if (isFinished) {
       topics.value.push(...(data.value?.data || []))
@@ -45,17 +66,22 @@ const handleIntersect = async ($state: {
   }
 }
 
-const handleTabChange = async (name: string) => {
+const handleTabChange = (name: string) => {
   tabName.value = name
-  pageNumber.value = 1
-  isLoading.value = true
-
-  const { data, isFinished } = await loadTopic()
-  if (isFinished) {
-    topics.value = data.value?.data || []
-    isLoading.value = false
-  }
+  reloadTopic()
 }
+
+const handleCategoryChange = (value: number | string) => {
+  reqParams.value.category_id = value
+  reloadTopic()
+}
+
+const handleSortChange = (sort: string) => {
+  reqParams.value.sort_type = ['hot', 'new'].indexOf(sort) + 1
+  reloadTopic()
+}
+
+const { data: categories } = useAxios<Result<AnyObject[]>>(url.listCategory, {}, instance)
 
 onMounted(async () => {
   const { data, isFinished } = await loadTopic()
@@ -108,21 +134,35 @@ onMounted(async () => {
   </div>
   <div v-if="tabName === 'more'" class="bg-#fff p-x-5 p-t-4 p-b-1">
     <NSpace align="center">
-      <NTabs type="segment" size="small" class="w-30">
+      <NTabs
+        type="segment"
+        size="small"
+        class="w-30"
+        :on-update:value="handleSortChange"
+        :value="reqParams?.sort_type ? ['hot', 'new'][reqParams?.sort_type - 1] : 'hot'"
+      >
         <NTab name="hot" tab="热门" />
         <NTab name="new" tab="最新" />
       </NTabs>
       <NPopselect
+        v-model:value="reqParams.category_id"
+        :on-update:value="handleCategoryChange"
         trigger="hover"
         :options="[{
           label: '全部分类',
-          value: 'all',
-          key: 'all',
-        }]"
+          value: 0,
+          key: 0,
+        }, ...(categories?.data?.map(item => {
+          return {
+            label: item.name,
+            value: item.id,
+            key: item.id,
+          }
+        }) || [])]"
         scrollable
       >
         <NButton quaternary icon-placement="right">
-          全部分类
+          {{ categories?.data?.find(item => item.id === reqParams.category_id)?.name || '全部分类' }}
           <template #icon>
             <n-icon>
               <ICarbonChevronDown />

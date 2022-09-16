@@ -29,6 +29,18 @@ const loadPost = () => {
   }, instance)
 }
 
+const reloadPost = async () => {
+  reqParams.value.page = 1
+  isLoading.value = true
+
+  const { data, isFinished } = await loadPost()
+  if (isFinished) {
+    posts.value = data.value?.data || []
+    isLoading.value = false
+    hasMorePost.value = posts.value.length < (data.value?.total || 0)
+  }
+}
+
 const handleIntersect = async ($state: {
   loaded: () => void
   complete: () => void
@@ -47,16 +59,9 @@ const handleIntersect = async ($state: {
   }
 }
 
-const handleTabChange = async (name: string) => {
-  reqParams.value.sort_type = name === 'hot' ? 1 : 0
-  reqParams.value.page = 1
-  isLoading.value = true
-
-  const { data, isFinished } = await loadPost()
-  if (isFinished) {
-    posts.value = data.value?.data || []
-    isLoading.value = false
-  }
+const handleTabChange = (name: string) => {
+  reqParams.value.sort_type = name === 'hot' ? 1 : 2
+  reloadPost()
 }
 
 const createPost = (values: AnyObject) => {
@@ -75,19 +80,13 @@ onMounted(async () => {
   }
 })
 
-watch(route, async () => {
-  isLoading.value = true
+watch(route, () => {
   reqParams.value = {
     ...reqParams.value,
     topic_id: route.query?.topic_id as string,
     keyword: route.query?.keyword as string,
   }
-  const { data, isFinished } = await loadPost()
-  if (isFinished) {
-    isLoading.value = false
-    posts.value = data.value?.data || []
-    hasMorePost.value = posts.value.length < (data.value?.total || 0)
-  }
+  reloadPost()
 })
 </script>
 
@@ -102,11 +101,12 @@ watch(route, async () => {
         },
       }"
       @submit="createPost"
+      @submit-success="reloadPost"
     />
   </div>
   <div v-if="!reqParams.keyword" class="bg-#fff p-t-4 p-x-5 rounded-t-4px border-b-1 border-b-#efeff5">
     <NTabs type="bar" @update-value="handleTabChange">
-      <NTab name="host">
+      <NTab name="hot">
         热门
       </NTab>
       <NTab name="new">

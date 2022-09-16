@@ -9,6 +9,9 @@ import ICarbonUserMilitary from '~icons/carbon/user-military'
 import ICarbonUserHashtag from '~icons/carbon/hashtag'
 import { menuLabelRender } from '~/utils/ui'
 
+const userStore = useUserStore()
+const route = useRoute()
+
 const menuOptions: MenuOption[] = [
   {
     label: '广场',
@@ -20,6 +23,7 @@ const menuOptions: MenuOption[] = [
     label: '关注',
     key: 'following',
     icon: () => h(ICarbonUserMilitary),
+    show: !!userStore.info?.id,
   },
   {
     label: '话题',
@@ -28,9 +32,6 @@ const menuOptions: MenuOption[] = [
     icon: () => h(ICarbonUserHashtag),
   },
 ]
-
-const userStore = useUserStore()
-const route = useRoute()
 
 const getActiveKeyByRouteName = (name: string): string => {
   const { topic_id } = route.query
@@ -48,6 +49,7 @@ const { data, isFinished, execute } = useAxios<Result<AnyObject[]>>(url.listTopi
   },
 }, instance, { immediate: false })
 const mergeMenus = (): MenuOption[] => {
+  menuOptions[1].show = true
   if (isFinished && data.value?.total) {
     return [
       ...menuOptions,
