@@ -8,6 +8,7 @@ import (
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/post"
+	"github.com/BeanWei/tingyu/data/ent/topic"
 	"github.com/BeanWei/tingyu/data/enums"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -36,11 +37,11 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
-	if req.SortType == 0 {
-		query.Order(ent.Desc(post.FieldCreatedAt))
-	} else if req.SortType == 1 {
+	if req.SortType == 1 {
 		// TODO: 热度值计算
 		query.Order(ent.Desc(post.FieldCommentCount))
+	} else if req.SortType == 2 {
+		query.Order(ent.Desc(post.FieldCreatedAt))
 	}
 	records := query.WithUser().
 		Limit(req.Limit).
@@ -75,11 +76,12 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 	if g.Cfg().Operation.Audit {
 		status = enums.PostStatusAuditing
 	}
-
 	ip := c.ClientIP()
+	uid := shared.GetCtxUser(ctx).Id
+
 	res := ent.DB().Post.Create().
 		SetStatus(status).
-		SetUserID(shared.GetCtxUser(ctx).Id).
+		SetUserID(uid).
 		SetIP(ip).
 		SetIPLoc(iploc.Find(ip)).
 		SetContent(req.Content).
@@ -90,6 +92,14 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 			"id":      res.ID,
 			"content": req.ContentText,
 		},
+	})
+	if len(req.TopicIds) > 0 {
+		g.Pool().Submit(func() {
+			ent.DB().Topic.Update().Where(topic.IDIn(req.TopicIds...)).AddPostCount(1).Exec(context.Background())
+		})
+	}
+	g.Pool().Submit(func() {
+		ent.DB().User.UpdateOneID(uid).AddCountPost(1).Exec(context.Background())
 	})
 
 	c.JSON(200, biz.RespSuccess(utils.H{}))

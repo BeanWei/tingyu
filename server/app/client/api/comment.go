@@ -74,6 +74,10 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 		SetIsPoster(postData.UserID == uid).
 		ExecX(ctx)
 
+	g.Pool().Submit(func() {
+		ent.DB().Post.UpdateOneID(postData.ID).SetLatestRepliedAt(time.Now().Unix()).ExecX(context.Background())
+	})
+
 	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 

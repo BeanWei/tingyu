@@ -26,7 +26,12 @@ func (User) Fields() []ent.Field {
 		field.String("salt").Sensitive().Comment("盐值"),
 		field.Int8("status").Default(0).Comment("状态(1.正常 2.停用)"),
 		field.String("avatar").Default("").Comment("头像"),
+		field.String("headline").Default("").Comment("个人简介"),
 		field.Bool("is_admin").Default(false).Comment("是否管理员"),
+		field.Int("count_post").Default(0).Comment("发贴数量").StructTag(`json:"count_post"`),
+		field.Int("count_topic").Default(0).Comment("关注话题数量").StructTag(`json:"count_topic"`),
+		field.Int("count_following").Default(0).Comment("关注数量").StructTag(`json:"count_following"`),
+		field.Int("count_follower").Default(0).Comment("粉丝数量").StructTag(`json:"count_follower"`),
 	}
 }
 

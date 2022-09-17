@@ -82,10 +82,14 @@ func GetUserInfo(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	c.JSON(200, biz.RespSuccess(utils.H{
-		"id":       usr.ID,
-		"username": usr.Username,
-		"nickname": usr.Nickname,
-		"avatar":   usr.Avatar,
+		"id":              usr.ID,
+		"username":        usr.Username,
+		"nickname":        usr.Nickname,
+		"avatar":          usr.Avatar,
+		"count_post":      usr.CountPost,
+		"count_topic":     usr.CountTopic,
+		"count_following": usr.CountFollowing,
+		"count_follower":  usr.CountFollower,
 	}))
 }
 

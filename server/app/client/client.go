@@ -12,6 +12,8 @@ func Register(s *server.Hertz) {
 		// user
 		apiv1.POST("/user/login", api.UserLogin)
 		apiv1.GET("/user/get", middleware.Ctx(), api.GetUserInfo)
+		// category
+		apiv1.GET("/category/list", api.ListTopicCategory)
 		// topic
 		apiv1.GET("/topic/list", middleware.Ctx(), api.ListTopic)
 		apiv1.GET("/topic/search", middleware.Ctx(), api.SearchTopic)

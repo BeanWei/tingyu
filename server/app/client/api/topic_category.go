@@ -24,7 +24,7 @@ func ListTopicCategory(ctx context.Context, c *app.RequestContext) {
 		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
-	categories := query.Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
+	categories := query.AllX(ctx)
 
 	c.JSON(200, biz.RespSuccess(categories, total))
 }
