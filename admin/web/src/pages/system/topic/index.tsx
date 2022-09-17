@@ -31,7 +31,7 @@ function TopicForm(props: {
   const formRef = useRef<FormInstance>()
   const { loading, run } = useRequest((data: AnyObject) => {
     return request({
-      url: url.createTopic,
+      url: props.initialValues.id ? url.updateTopic : url.createTopic,
       data,
     })
   }, {

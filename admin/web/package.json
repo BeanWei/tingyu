@@ -24,6 +24,7 @@
     "nprogress": "^0.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-ellipsis-component": "^1.1.10",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "zustand": "^4.1.1"

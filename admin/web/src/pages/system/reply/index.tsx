@@ -1,7 +1,9 @@
 import type { BadgeProps, SelectOptionProps, TableColumnProps } from '@arco-design/web-react'
 import { Badge, Card, Form, Input, Select, Space, Table, Typography } from '@arco-design/web-react'
+import Ellipsis from 'react-ellipsis-component'
 import { url } from '~/api'
 import { useTable } from '~/hooks'
+import { extractText } from '~/utils/lexical'
 
 const { useForm } = Form
 
@@ -30,15 +32,18 @@ function ReplyList() {
     {
       title: '编号',
       dataIndex: 'id',
+      width: 180,
       render: value => <Typography.Text copyable>{value}</Typography.Text>,
     },
     {
       title: 'IP归属地',
       dataIndex: 'ip_loc',
+      width: 180,
     },
     {
       title: '审核状态',
       dataIndex: 'status',
+      width: 180,
       render: (value: number) => {
         const status: BadgeProps['status'][] = ['success', 'default', 'warning']
         return <Badge status={status[value - 1]} text={StatusOptions[value - 1].title}></Badge>
@@ -47,6 +52,9 @@ function ReplyList() {
     {
       title: '回复内容',
       dataIndex: 'content',
+      render: value => (
+        <Ellipsis text={extractText(JSON.parse(value).root)} maxLine={1} ellipsis />
+      ),
     },
   ]
 
