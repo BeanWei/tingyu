@@ -7,6 +7,8 @@ import (
 	"github.com/BeanWei/tingyu/app/client"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/http/middleware"
+	"github.com/BeanWei/tingyu/pkg/oss"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/config"
 	"github.com/panjf2000/ants/v2"
@@ -25,6 +27,7 @@ func NewHTTPServer() {
 		if g.Cfg().Server.IsDev {
 			opts = append(opts, server.WithExitWaitTime(time.Second*0))
 		}
+		opts = append(opts, server.WithMaxRequestBodySize(g.Cfg().OSS.MaxMB*1024*1024))
 		return opts
 	}()...)
 
@@ -36,6 +39,14 @@ func NewHTTPServer() {
 
 	admin.Register(svr)
 	client.Register(svr)
+
+	// Static File
+	if ossType := g.Cfg().OSS.Type; ossType == "" || ossType == oss.OSSTypeLocal {
+		svr.StaticFS("/upload", &app.FS{
+			Root:        g.Cfg().OSS.Local.Path,
+			PathRewrite: app.NewPathSlashesStripper(1),
+		})
+	}
 
 	svr.Spin()
 }

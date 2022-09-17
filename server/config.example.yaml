@@ -18,3 +18,10 @@ redis:
 meilisearch:
   host: "http://127.0.0.1:7700"
   api_key: "masterKey"
+
+oss:
+  type: "local"
+  max_mb: 5
+  local:
+    domain: "http://localhost:8888"
+    path: "/tmp/upload"

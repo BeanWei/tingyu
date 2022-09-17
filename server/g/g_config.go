@@ -34,6 +34,17 @@ type conf struct {
 		Host   string `mapstructure:"host"`
 		APIKey string `mapstructure:"api_key"`
 	} `mapstructure:"meilisearch"`
+	OSS struct {
+		Type  string `mapstructure:"type"` // local, aws, default is local
+		MaxMB int    `mapstructure:"max_mb"`
+		Local struct {
+			Domain string `mapstructure:"domain"`
+			Path   string `mapstructure:"path"`
+		} `mapstructure:"local"`
+		AWS struct {
+			Domain string `mapstructure:"domain"`
+		} `mapstructure:"aws"`
+	}
 	Operation struct {
 		Audit bool `mapstructure:"audit"`
 	} `mapstructure:"operation"`
@@ -49,6 +60,8 @@ func Cfg() *conf {
 			panic("config file is missing")
 		}
 		viper.SetConfigFile(cfgFile)
+
+		viper.SetDefault("oss.max_mb", 4) // refer hertz default server config
 
 		if err := viper.ReadInConfig(); err != nil {
 			panic(fmt.Errorf("read config failed: %+v", err))

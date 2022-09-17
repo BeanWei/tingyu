@@ -42,5 +42,7 @@ func Register(s *server.Hertz) {
 		// reply
 		apiv1.POST("/reply/create", api.CreateCommentReply)
 		apiv1.DELETE("/reply/delete", api.DeleteCommentReply)
+		// upload
+		apiv1.POST("/upload", api.Upload)
 	}
 }

@@ -8,6 +8,7 @@
 .settings/
 *.pem
 dist/
+tmp/
 
 # dependencies
 node_modules

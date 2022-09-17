@@ -23,6 +23,8 @@ const (
 	CodeInvalidTopicTitle      = 20008
 	CodeTopicIsFollowed        = 20009
 	CodeTopicIsNotFollowed     = 20010
+	CodeFileTypeUnSupport      = 20011
+	CodeFileSizeTooLarge       = 20012
 )
 
 var (
@@ -41,6 +43,8 @@ var (
 		CodeInvalidTopicTitle:      {"标题长度不能超过20", "invalid topic title"},
 		CodeTopicIsFollowed:        {"你已经关注该话题", "topic is followed"},
 		CodeTopicIsNotFollowed:     {"你还没关注该话题", "topic is not followed"},
+		CodeFileTypeUnSupport:      {"不支持上传此类型文件", "not support upload file type"},
+		CodeFileSizeTooLarge:       {"文件太大", "file size too large"},
 	}
 )
 
