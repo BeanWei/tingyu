@@ -19,6 +19,7 @@ import { HashtagNode } from '@lexical/hashtag'
 import defaultTheme from './themes/default'
 import { MentionNode } from './nodes/MentionNode'
 import { EmojiNode } from './nodes/EmojiNode'
+import { extractMentionIds } from '~/utils/lexical'
 
 const props = withDefaults(defineProps<{
   initialState?: string
@@ -89,9 +90,12 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
     return
   submitting.value = true
 
+  const [topic_ids, user_ids] = extractMentionIds(content.value.root)
   const { data, isFinished, error } = await props.onSubmit({
     content: JSON.stringify(content.value),
     content_text: contentText.value,
+    topic_ids,
+    user_ids,
   })
   if (isFinished) {
     submitting.value = false

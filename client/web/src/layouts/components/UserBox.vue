@@ -11,22 +11,22 @@ const userStore = useUserStore()
       <NRow>
         <NCol :span="6">
           <NStatistic label="帖子">
-            6
+            {{ userStore.info?.count_post || 0 }}
           </NStatistic>
         </NCol>
         <NCol :span="6">
           <NStatistic label="话题">
-            6
+            {{ userStore.info?.count_topic || 0 }}
           </NStatistic>
         </NCol>
         <NCol :span="6">
           <NStatistic label="关注">
-            6
+            {{ userStore.info?.count_following || 0 }}
           </NStatistic>
         </NCol>
         <NCol :span="6">
           <NStatistic label="粉丝">
-            6
+            {{ userStore.info?.count_follower || 0 }}
           </NStatistic>
         </NCol>
       </NRow>

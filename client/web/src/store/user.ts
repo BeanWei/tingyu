@@ -10,6 +10,10 @@ export interface IUserState {
     username: string
     nickname: string
     avatar: string
+    count_post: number
+    count_topic: number
+    count_following: number
+    count_follower: number
   }
 }
 

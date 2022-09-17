@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import type { MenuOption } from 'naive-ui'
+import type { DropdownOption, MenuOption } from 'naive-ui'
+import ICarbonUser from '~icons/carbon/user'
+import ICarbonSettings from '~icons/carbon/settings'
+import ICarbonLogout from '~icons/carbon/logout'
 import { menuLabelRender } from '~/utils/ui'
 
 const menuOptions: MenuOption[] = [
@@ -11,6 +14,24 @@ const menuOptions: MenuOption[] = [
   {
     label: '关于',
     key: 'about',
+  },
+]
+
+const userOptions: DropdownOption[] = [
+  {
+    label: '我的主页',
+    key: 'profile',
+    icon: () => h(ICarbonUser),
+  },
+  {
+    label: '我的设置',
+    key: 'settings',
+    icon: () => h(ICarbonSettings),
+  },
+  {
+    label: '退出登录',
+    key: 'logout',
+    icon: () => h(ICarbonLogout),
   },
 ]
 
@@ -27,6 +48,20 @@ const handleSearch = () => {
     router.push(`/?keyword=${encodeURIComponent(searchWord.value)}`)
   else
     router.push('/')
+}
+
+const handleUserDropdownSelect = (key: string) => {
+  switch (key) {
+    case 'profile':
+      router.push(`/user/${userStore.info?.id}`)
+      return
+    case 'settings':
+      router.push('/user/settings')
+      return
+    case 'logout':
+      userStore.resetAll()
+      router.push('/')
+  }
 }
 
 watch(route, () => {
@@ -64,7 +99,14 @@ watch(route, () => {
                     <NIcon><ICarbonNotification /></NIcon>
                   </template>
                 </NButton>
-                <UserAvatar :src="userStore.info?.avatar" :size="32" />
+                <NDropdown
+                  trigger="click"
+                  :options="userOptions"
+                  placement="bottom-end"
+                  @select="handleUserDropdownSelect"
+                >
+                  <UserAvatar :src="userStore.info?.avatar" :size="32" />
+                </NDropdown>
               </NSpace>
               <NButton
                 v-else

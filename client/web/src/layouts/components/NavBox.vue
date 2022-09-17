@@ -49,39 +49,41 @@ const { data, isFinished, execute } = useAxios<Result<AnyObject[]>>(url.listTopi
   },
 }, instance, { immediate: false })
 const mergeMenus = (): MenuOption[] => {
-  menuOptions[1].show = true
-  if (isFinished && data.value?.total) {
-    return [
-      ...menuOptions,
-      ...(data.value?.data || []).map((item) => {
-        return {
-          label: () => {
-            return h(RouterLink, {
-              to: {
-                name: 'index',
-                query: {
-                  topic_id: item.id,
+  if (isFinished) {
+    menuOptions[1].show = true
+    if (data.value?.total) {
+      return [
+        ...menuOptions,
+        ...(data.value?.data || []).map((item) => {
+          return {
+            label: () => {
+              return h(RouterLink, {
+                to: {
+                  name: 'index',
+                  query: {
+                    topic_id: item.id,
+                  },
                 },
-              },
-            }, {
-              default: () => h('div', {
-                style: {
-                  'padding-left': '32px',
-                  'color': '#8a919f',
-                },
-              }, item.title),
-            })
-          },
-          key: String(item.id),
-        }
-      }),
-    ]
+              }, {
+                default: () => h('div', {
+                  style: {
+                    'padding-left': '32px',
+                    'color': '#8a919f',
+                  },
+                }, item.title),
+              })
+            },
+            key: String(item.id),
+          }
+        }),
+      ]
+    }
   }
   return menuOptions
 }
 
 userStore.$subscribe((_, $state) => {
-  if ($state.info) {
+  if ($state.info?.id) {
     execute(url.listTopic, {
       params: {
         limit: 20,
@@ -89,6 +91,10 @@ userStore.$subscribe((_, $state) => {
         user_id: userStore.info?.id,
       },
     })
+  }
+  else {
+    menuOptions[1].show = false
+    mergeMenus()
   }
 })
 
@@ -98,7 +104,7 @@ watch(route, () => {
 </script>
 
 <template>
-  <nav class="w-180px bg-#fff box-border z-99 fixed" border-rd-4px>
+  <nav class="w-180px bg-#fff box-border z-99 fixed border-rd-4px">
     <NScrollbar class="max-h-[calc(100%-109px)]">
       <NMenu
         :value="activeKey"

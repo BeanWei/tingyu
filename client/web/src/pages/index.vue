@@ -119,7 +119,7 @@ watch(route, () => {
       <Skeleton />
     </div>
     <div v-else-if="!posts.length" class="bg-#fff border-rd-4px relative min-h-100 flex items-center justify-center">
-      <NEmpty size="large" description="一篇荒芜 :)" />
+      <NEmpty size="large" description="一片荒芜 :)" />
     </div>
     <NListItem
       v-for="post in posts"

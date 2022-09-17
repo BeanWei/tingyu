@@ -28,6 +28,17 @@ const loadComments = () => {
   }, instance)
 }
 
+const reloadComments = async () => {
+  commentsPageNumber.value = 1
+  commentsLoading.value = true
+  const { data, isFinished } = await loadComments()
+  if (isFinished) {
+    comments.value = data.value?.data || []
+    hasMoreComments.value = comments.value.length < (data.value?.total || 0)
+    commentsLoading.value = false
+  }
+}
+
 const handleIntersect = async ($state: {
   loaded: () => void
   complete: () => void
@@ -46,16 +57,6 @@ const handleIntersect = async ($state: {
   }
 }
 
-const reloadComments = async () => {
-  commentsPageNumber.value = 1
-  commentsLoading.value = true
-  const { data, isFinished } = await loadComments()
-  if (isFinished) {
-    comments.value = data.value?.data || []
-    hasMoreComments.value = comments.value.length < (data.value?.total || 0)
-  }
-}
-
 const createComment = (values: AnyObject) => {
   return useAxios(url.createComment, {
     data: {
@@ -70,9 +71,9 @@ const handleNewReply = (reply: AnyObject, commentIdx: number) => {
     ...comments.value[commentIdx],
     reply_count: (comments.value[commentIdx].reply_count || 0) + 1,
     edges: {
-      ...comments.value[commentIdx].edges,
+      ...(comments.value[commentIdx].edges || []),
       comment_replies: [
-        ...comments.value[commentIdx].edges.comment_replies,
+        ...(comments.value[commentIdx].edges.comment_replies || []),
         {
           ...reply,
           edges: {
@@ -153,8 +154,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<route lang="yaml">
-meta:
-  layout: default
-</route>

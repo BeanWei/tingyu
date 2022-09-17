@@ -11,6 +11,9 @@ const props = defineProps<{
     round
     :size="props.size"
     :src="props.src"
+    :style="{
+      cursor: 'pointer',
+    }"
   />
   <NAvatar
     v-else
@@ -19,6 +22,7 @@ const props = defineProps<{
     :style="{
       'background-color': 'rgba(24, 160, 88, 0.16)',
       'color': '#18a058',
+      'cursor': 'pointer',
     }"
   >
     <NIcon><ICarbonRainDrop /></NIcon>

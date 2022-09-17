@@ -23,6 +23,10 @@ const createReply = (commentId: number) => {
     }, instance)
   }
 }
+const handleNewReply = (reply: AnyObject) => {
+  editorVisible.value = false
+  onReplySuccess?.(reply, index)
+}
 </script>
 
 <template>
@@ -59,6 +63,7 @@ const createReply = (commentId: number) => {
           submit-button-text="发布"
           :autofocus="true"
           :on-submit="createReply(data.id)"
+          @submit-success="handleNewReply"
         />
       </div>
       <div v-if="data.edges.comment_replies" class="m-t-4 p-4 bg-#f7f8fa border-rd-1">
