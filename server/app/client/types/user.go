@@ -9,3 +9,9 @@ type UserLoginReq struct {
 type GetUserInfoReq struct {
 	Id int64 `query:"id"`
 }
+
+type UpdateUserInfoReq struct {
+	Avatar   string `json:"avatar"`
+	Nickname string `json:"nickname,required"`
+	Headline string `json:"headline"`
+}

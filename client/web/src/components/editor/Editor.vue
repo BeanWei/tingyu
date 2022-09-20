@@ -19,6 +19,7 @@ import { HashtagNode } from '@lexical/hashtag'
 import defaultTheme from './themes/default'
 import { MentionNode } from './nodes/MentionNode'
 import { EmojiNode } from './nodes/EmojiNode'
+import { ImageNode } from './nodes/ImageNode'
 import { extractMentionIds } from '~/utils/lexical'
 
 const props = withDefaults(defineProps<{
@@ -57,6 +58,7 @@ const config = {
     HashtagNode,
     MentionNode,
     EmojiNode,
+    ImageNode,
   ],
   readOnly: props.readOnly,
   onError(error: Error) {
@@ -138,14 +140,11 @@ const handleSubmit = async (): Promise<boolean | undefined> => {
       <LexicalMarkdownShortcutPlugin />
       <LexicalMentionsPlugin :triggers="props.pluginsConfig?.mentions.triggers" />
       <LexicalEmojisPlugin />
+      <LexicalImagePlugin />
     </div>
     <NSpace v-if="!!!props.readOnly" justify="space-between" class="m-t-2">
       <NSpace>
-        <NButton quaternary circle>
-          <template #icon>
-            <NIcon><ICarbonImage /></NIcon>
-          </template>
-        </NButton>
+        <LexicalImageMenu />
         <LexicalEmojiMenu />
       </NSpace>
       <EditorSubmit

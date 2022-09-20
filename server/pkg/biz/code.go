@@ -18,13 +18,15 @@ const (
 	CodeInvalidPhone           = 20003
 	CodeInvalidEmail           = 20004
 	CodeInvalidPassword        = 20005
-	CodeUsernameExisted        = 20006
-	CodeUserNotFound           = 20007
-	CodeInvalidTopicTitle      = 20008
-	CodeTopicIsFollowed        = 20009
-	CodeTopicIsNotFollowed     = 20010
-	CodeFileTypeUnSupport      = 20011
-	CodeFileSizeTooLarge       = 20012
+	CodeInvalidNickname        = 20006
+	CodeUsernameExisted        = 20007
+	CodeNicknameExisted        = 20008
+	CodeUserNotFound           = 20009
+	CodeInvalidTopicTitle      = 20010
+	CodeTopicIsFollowed        = 20011
+	CodeTopicIsNotFollowed     = 20012
+	CodeFileTypeUnSupport      = 20013
+	CodeFileSizeTooLarge       = 20014
 )
 
 var (
@@ -38,7 +40,9 @@ var (
 		CodeInvalidPhone:           {"无效的手机号", "invalid phone"},
 		CodeInvalidEmail:           {"无效的邮箱", "invalid email"},
 		CodeInvalidPassword:        {"密码长度6~16且必须包含数字和大小写字母", "invalid password"},
+		CodeInvalidNickname:        {"昵称长度3-12且不能包含特殊字符", "invalid nickname"},
 		CodeUsernameExisted:        {"该手机号或邮箱已经注册", "username existed"},
+		CodeNicknameExisted:        {"该昵称已经被使用", "nickname existed"},
 		CodeUserNotFound:           {"用户不存在", "user not found"},
 		CodeInvalidTopicTitle:      {"标题长度不能超过20", "invalid topic title"},
 		CodeTopicIsFollowed:        {"你已经关注该话题", "topic is followed"},

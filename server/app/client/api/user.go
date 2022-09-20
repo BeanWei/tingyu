@@ -8,6 +8,7 @@ import (
 	"github.com/BeanWei/tingyu/app/client/service"
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
+	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/http/jwt"
 	"github.com/BeanWei/tingyu/pkg/biz"
 	"github.com/BeanWei/tingyu/pkg/shared"
@@ -86,11 +87,39 @@ func GetUserInfo(ctx context.Context, c *app.RequestContext) {
 		"username":        usr.Username,
 		"nickname":        usr.Nickname,
 		"avatar":          usr.Avatar,
+		"headline":        usr.Headline,
 		"count_post":      usr.CountPost,
 		"count_topic":     usr.CountTopic,
 		"count_following": usr.CountFollowing,
 		"count_follower":  usr.CountFollower,
 	}))
+}
+
+// UpdateUserInfo 更新个人信息
+func UpdateUserInfo(ctx context.Context, c *app.RequestContext) {
+	var req types.UpdateUserInfoReq
+	if err := c.BindAndValidate(&req); err != nil {
+		biz.Abort(c, biz.CodeParamBindError, err)
+		return
+	}
+
+	uid := shared.GetCtxUser(ctx).Id
+	if ent.DB().User.Query().Where(user.IDNEQ(uid), user.NicknameEqualFold(req.Nickname)).ExistX(ctx) {
+		biz.Abort(c, biz.CodeNicknameExisted, fmt.Errorf("nickname %s existed", req.Nickname))
+		return
+	}
+	if err := service.ValidNickname(req.Nickname); err != nil {
+		biz.AbortBizError(c, err)
+		return
+	}
+
+	ent.DB().User.UpdateOneID(uid).
+		SetAvatar(req.Avatar).
+		SetNickname(req.Nickname).
+		SetHeadline(req.Headline).
+		ExecX(ctx)
+
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 
 // ChangePassword 修改密码

@@ -38,7 +38,7 @@ dependencies:
   '@vueuse/integrations': registry.npmmirror.com/@vueuse/integrations/9.1.1_axios@0.27.2+vue@3.2.37
   axios: registry.npmmirror.com/axios/0.27.2
   lexical: registry.npmmirror.com/lexical/0.3.9
-  lexical-vue: registry.npmmirror.com/lexical-vue/0.1.7
+  lexical-vue: registry.npmmirror.com/lexical-vue/0.1.7_lexical@0.3.9+vue@3.2.37
   naive-ui: registry.npmmirror.com/naive-ui/2.32.2_vue@3.2.37
   pinia: registry.npmmirror.com/pinia/2.0.20_bw4xur2vyhvhfd4whxbr7emp4u
   vue: registry.npmmirror.com/vue/3.2.37
@@ -1767,11 +1767,11 @@ packages:
       - supports-color
     dev: true
 
-  registry.npmmirror.com/@intlify/bundle-utils/3.1.0_vue-i18n@9.2.2:
-    resolution: {integrity: sha512-ghlJ0kR2cCQ8D+poKknC0Xx0ncOt3J3os7CcIAqqIWVF7k6AtGoCDnIru+YzlZcvFRNmP9wEZ7jKliojCdAWNg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/bundle-utils/-/bundle-utils-3.1.0.tgz}
-    id: registry.npmmirror.com/@intlify/bundle-utils/3.1.0
+  registry.npmmirror.com/@intlify/bundle-utils/3.1.1_vue-i18n@9.2.2:
+    resolution: {integrity: sha512-GSGU6eSet+nSaYaZ0z4eMxcdy7sgyolddgF2W4BjapVBnx01tJD5EEhE2gF2iYcljKNJlY54p0zTXYEONzizFA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@intlify/bundle-utils/-/bundle-utils-3.1.1.tgz}
+    id: registry.npmmirror.com/@intlify/bundle-utils/3.1.1
     name: '@intlify/bundle-utils'
-    version: 3.1.0
+    version: 3.1.1
     engines: {node: '>= 12'}
     peerDependencies:
       petite-vue-i18n: '*'
@@ -1859,7 +1859,7 @@ packages:
       vue-i18n:
         optional: true
     dependencies:
-      '@intlify/bundle-utils': registry.npmmirror.com/@intlify/bundle-utils/3.1.0_vue-i18n@9.2.2
+      '@intlify/bundle-utils': registry.npmmirror.com/@intlify/bundle-utils/3.1.1_vue-i18n@9.2.2
       '@intlify/shared': registry.npmmirror.com/@intlify/shared/9.3.0-beta.3
       '@rollup/pluginutils': registry.npmmirror.com/@rollup/pluginutils/4.2.1
       debug: registry.npmmirror.com/debug/4.3.4
@@ -6011,10 +6011,14 @@ packages:
       type-check: registry.npmmirror.com/type-check/0.4.0
     dev: true
 
-  registry.npmmirror.com/lexical-vue/0.1.7:
+  registry.npmmirror.com/lexical-vue/0.1.7_lexical@0.3.9+vue@3.2.37:
     resolution: {integrity: sha512-PYv+wNA2qjDNVFkQERkbSlefWLl14SE4nIz0TP2+ldcI3SfpBe+gw6AVRyNsmPUqaYLYFIU+f4nTAMhs9cT7+A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lexical-vue/-/lexical-vue-0.1.7.tgz}
+    id: registry.npmmirror.com/lexical-vue/0.1.7
     name: lexical-vue
     version: 0.1.7
+    peerDependencies:
+      lexical: ^0.3.5
+      vue: ^3.2.0
     dependencies:
       '@lexical/clipboard': registry.npmmirror.com/@lexical/clipboard/0.3.11_lexical@0.3.9
       '@lexical/code': registry.npmmirror.com/@lexical/code/0.3.11_lexical@0.3.9

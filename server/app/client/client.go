@@ -30,6 +30,7 @@ func Register(s *server.Hertz) {
 
 		// user
 		apiv1.GET("/user/refresh_token", api.RefreshToken)
+		apiv1.PUT("/user/update", api.UpdateUserInfo)
 		// topic
 		apiv1.POST("/topic/create", api.CreateTopic)
 		apiv1.POST("/topic/follow", api.FollowTopic)

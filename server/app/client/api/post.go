@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/BeanWei/tingyu/app/client/types"
@@ -30,7 +29,7 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 
 	query := ent.DB().Post.Query().Where(post.DeletedAtEQ(0), post.StatusEQ(enums.PostStatusPass))
 	if req.TopicId != 0 {
-		query.Where(post.ContentContains(fmt.Sprintf(`"mentionName":"%d"`, req.TopicId)))
+		query.Where(post.HasTopicsWith(topic.IDEQ(req.TopicId)))
 	}
 	total := query.CountX(ctx)
 	if total == 0 {

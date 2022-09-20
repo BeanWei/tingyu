@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
@@ -30,7 +31,7 @@ func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User,
 	if err != nil {
 		if ent.IsNotFound(err) {
 			// 如果账号不存在则注册
-			if err := ValidateUsername(ctx, req.Username); err != nil {
+			if err := ValidateUsername(req.Username); err != nil {
 				return nil, err
 			}
 			if err := ValidPassword(req.Password); err != nil {
@@ -66,7 +67,7 @@ func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User,
 }
 
 // ValidateUsername 校验用户名是否合法
-func ValidateUsername(ctx context.Context, username string) *errors.Error {
+func ValidateUsername(username string) *errors.Error {
 	if strings.Contains(username, "@") {
 		if !validator.IsEmail(username) {
 			return biz.NewError(biz.CodeInvalidEmail, fmt.Errorf("email %s is invalid", username))
@@ -77,9 +78,9 @@ func ValidateUsername(ctx context.Context, username string) *errors.Error {
 	return nil
 }
 
-// ValidPassword 密码合法性验证: 必须包含字母大小写和数字且长度符合要求
+// ValidPassword 密码合法性验证: 必须包含字母大小写和数字且长度在6-16之间
 func ValidPassword(password string) *errors.Error {
-	if len(password) >= 6 || len(password) <= 16 {
+	if length := len(password); length >= 6 || length <= 16 {
 		var num, lower, upper bool
 		for _, r := range password {
 			switch {
@@ -96,4 +97,17 @@ func ValidPassword(password string) *errors.Error {
 		}
 	}
 	return biz.NewError(biz.CodeInvalidPassword, errors.NewPublic("invalid password"))
+}
+
+// ValidNickname 昵称合法性验证: 不能包含特殊字符且长度在2-12之间
+func ValidNickname(nickname string) *errors.Error {
+	if length := utf8.RuneCountInString(nickname); length < 3 || length > 12 {
+		return biz.NewError(biz.CodeInvalidNickname, errors.NewPublic("too long nickname"))
+	}
+	for _, r := range nickname {
+		if unicode.IsSpace(r) || unicode.IsPunct(r) || unicode.IsSymbol(r) {
+			return biz.NewError(biz.CodeInvalidNickname, errors.NewPublic("nickname includes special letters"))
+		}
+	}
+	return nil
 }

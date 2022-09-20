@@ -1,3 +1,4 @@
+import type { UploadCustomRequestOptions } from 'naive-ui'
 import axios from 'axios'
 
 export const instance = axios.create({
@@ -58,6 +59,8 @@ export interface Result<T> {
 export const url = {
   userLogin: 'POST:/v1/user/login',
   getUserInfo: 'GET:/v1/user/get',
+  updateUserInfo: 'PUT:/v1/user/update',
+  fileUpload: 'POST:/v1/upload',
   listCategory: 'GET:/v1/category/list',
   listTopic: 'GET:/v1/topic/list',
   searchTopic: 'GET:/v1/topic/search',
@@ -74,4 +77,37 @@ export const url = {
   listReply: 'GET:/v1/reply/list',
   createReply: 'POST:/v1/reply/create',
   deleteReply: 'DELETE:/v1/reply/delete',
+}
+
+export const fileUpload = (options: UploadCustomRequestOptions) => {
+  const {
+    file,
+    data,
+    onFinish,
+    onError,
+    onProgress,
+  } = options
+  const formData = new FormData()
+  if (data) {
+    Object.keys(data).forEach((key) => {
+      formData.append(
+        key,
+        data[key as keyof UploadCustomRequestOptions['data']],
+      )
+    })
+  }
+  formData.append('file', file.file as File)
+  return instance({
+    url: `${url.fileUpload}`,
+    data: formData,
+    onUploadProgress: ({ percent }) => {
+      onProgress({ percent: Math.ceil(percent) })
+    },
+  }).then((result) => {
+    file.url = result.data.data.url
+    file.thumbnailUrl = result.data.data.url
+    onFinish()
+  }).catch(() => {
+    onError()
+  })
 }
