@@ -104,7 +104,7 @@ onMounted(async () => {
   </div>
   <PostItem v-else :data="post?.data || {}">
     <template #header-extra>
-      <NButton strong secondary round type="primary">
+      <NButton v-if="userStore.info?.id && userStore.info?.id !== post?.data?.edges.user.id" strong secondary round type="primary">
         <template #icon>
           <n-icon>
             <ICarbonAdd />

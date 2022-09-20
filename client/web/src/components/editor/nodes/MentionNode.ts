@@ -2,7 +2,6 @@ import type {
   DOMConversionMap,
   DOMConversionOutput,
   DOMExportOutput,
-  EditorConfig,
   LexicalNode,
   NodeKey,
   SerializedTextNode,
@@ -34,7 +33,7 @@ function convertMentionElement(
   return null
 }
 
-const mentionStyle = 'color: #18a058'
+const mentionStyle = 'color: #18a058; text-decoration: none;'
 export class MentionNode extends TextNode {
   __mention: string
 
@@ -70,11 +69,15 @@ export class MentionNode extends TextNode {
     }
   }
 
-  createDOM(config: EditorConfig): HTMLElement {
-    const dom = super.createDOM(config)
-    dom.style.cssText = mentionStyle
-    dom.className = 'mention'
-    return dom
+  createDOM(): HTMLElement {
+    const element = document.createElement('a')
+    element.style.cssText = mentionStyle
+    element.setAttribute('href', `/?topic_id=${this.__mention}`)
+    element.setAttribute('target', '__blank')
+    const inner = document.createElement('span')
+    inner.textContent = this.__text
+    element.appendChild(inner)
+    return element
   }
 
   exportDOM(): DOMExportOutput {
