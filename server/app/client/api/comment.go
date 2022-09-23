@@ -9,6 +9,7 @@ import (
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/comment"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
+	"github.com/BeanWei/tingyu/data/ent/userreaction"
 	"github.com/BeanWei/tingyu/data/enums"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -77,6 +78,35 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 	g.Pool().Submit(func() {
 		ent.DB().Post.UpdateOneID(postData.ID).SetLatestRepliedAt(time.Now().Unix()).ExecX(context.Background())
 	})
+
+	c.JSON(200, biz.RespSuccess(utils.H{}))
+}
+
+// ReactComment 收藏或点赞评论
+func ReactComment(ctx context.Context, c *app.RequestContext) {
+	var req types.ReactCommentReq
+	if err := c.BindAndValidate(&req); err != nil {
+		biz.Abort(c, biz.CodeParamBindError, err)
+		return
+	}
+
+	uid := shared.GetCtxUser(ctx).Id
+
+	if reaction := ent.DB().UserReaction.Query().Where(
+		userreaction.SubjectTypeEQ(userreaction.SubjectTypeComment),
+		userreaction.SubjectIDEQ(req.Id),
+		userreaction.UserIDEQ(uid),
+		userreaction.ReactCodeEQ(req.Code),
+	).FirstX(ctx); reaction != nil {
+		ent.DB().UserReaction.DeleteOneID(reaction.ID).ExecX(ctx)
+	} else {
+		ent.DB().UserReaction.Create().
+			SetUserID(uid).
+			SetSubjectType(userreaction.SubjectTypeComment).
+			SetSubjectID(req.Id).
+			SetReactCode(req.Code).
+			ExecX(ctx)
+	}
 
 	c.JSON(200, biz.RespSuccess(utils.H{}))
 }

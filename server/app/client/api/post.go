@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/BeanWei/tingyu/app/client/service"
 	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/post"
 	"github.com/BeanWei/tingyu/data/ent/topic"
+	"github.com/BeanWei/tingyu/data/ent/userreaction"
 	"github.com/BeanWei/tingyu/data/enums"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -31,6 +33,33 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 	if req.TopicId != 0 {
 		query.Where(post.HasTopicsWith(topic.IDEQ(req.TopicId)))
 	}
+	if req.UserId != 0 {
+		if req.Pinned {
+			query.Where(func(s *sql.Selector) {
+				s.Where(sql.P(func(b *sql.Builder) {
+					b.WriteString(`"posts"."id" IN (
+						SELECT "user_reactions"."subject_id"
+						FROM "user_reactions"
+						WHERE "user_reactions"."subject_type" = 'post'
+						AND "user_reactions"."react_code" = 'action-pin'
+						AND "user_reactions"."user_id" = `).Arg(req.UserId).WriteString(")")
+				}))
+			})
+		} else if req.Starred {
+			query.Where(func(s *sql.Selector) {
+				s.Where(sql.P(func(b *sql.Builder) {
+					b.WriteString(`"posts"."id" IN (
+						SELECT "user_reactions"."subject_id"
+						FROM "user_reactions"
+						WHERE "user_reactions"."subject_type" = 'post'
+						AND "user_reactions"."react_code" = 'action-star'
+						AND "user_reactions"."user_id" = `).Arg(req.UserId).WriteString(")")
+				}))
+			})
+		} else {
+			query.Where(post.UserIDEQ(req.UserId))
+		}
+	}
 	total := query.CountX(ctx)
 	if total == 0 {
 		c.JSON(200, biz.RespSuccess(nil, total))
@@ -47,7 +76,36 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		Offset(req.Offset()).
 		AllX(ctx)
 
-	c.JSON(200, biz.RespSuccess(records, total))
+	ids := make([]int64, len(records))
+	for i, record := range records {
+		ids[i] = record.ID
+	}
+	reactions, err := service.GetReactionsForManySubject(
+		ctx, shared.GetCtxUser(ctx).Id, userreaction.SubjectTypePost, ids,
+	)
+	if err != nil {
+		biz.Abort(c, biz.CodeServerError, err)
+		return
+	}
+	results := make([]*types.Post, len(records))
+	for i, record := range records {
+		results[i] = &types.Post{
+			ID:              record.ID,
+			CreatedAt:       record.CreatedAt,
+			UpdatedAt:       record.UpdatedAt,
+			CommentCount:    record.CommentCount,
+			IsTop:           record.IsTop,
+			IsExcellent:     record.IsExcellent,
+			IsLock:          record.IsLock,
+			LatestRepliedAt: record.LatestRepliedAt,
+			IPLoc:           record.IPLoc,
+			Content:         record.Content,
+			UserID:          record.UserID,
+			User:            record.Edges.User,
+			Reactions:       reactions[record.ID],
+		}
+	}
+	c.JSON(200, biz.RespSuccess(results, total))
 }
 
 // GetPost 帖子详情
@@ -58,9 +116,31 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	res := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
+	record := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
+	reactions, err := service.GetReactionsForOneSubject(
+		ctx, shared.GetCtxUser(ctx).Id, userreaction.SubjectTypePost, record.ID,
+	)
+	if err != nil {
+		biz.Abort(c, biz.CodeServerError, err)
+		return
+	}
+	result := &types.Post{
+		ID:              record.ID,
+		CreatedAt:       record.CreatedAt,
+		UpdatedAt:       record.UpdatedAt,
+		CommentCount:    record.CommentCount,
+		IsTop:           record.IsTop,
+		IsExcellent:     record.IsExcellent,
+		IsLock:          record.IsLock,
+		LatestRepliedAt: record.LatestRepliedAt,
+		IPLoc:           record.IPLoc,
+		Content:         record.Content,
+		UserID:          record.UserID,
+		User:            record.Edges.User,
+		Reactions:       reactions,
+	}
 
-	c.JSON(200, biz.RespSuccess(res))
+	c.JSON(200, biz.RespSuccess(result))
 }
 
 // CreatePost 发表帖子
@@ -143,6 +223,31 @@ func SearchPost(ctx context.Context, c *app.RequestContext) {
 	c.JSON(200, biz.RespSuccess(records, int(res.EstimatedTotalHits)))
 }
 
-// CollectPost 收藏帖子
+// ReactPost 收藏或点赞帖子
+func ReactPost(ctx context.Context, c *app.RequestContext) {
+	var req types.ReactPostReq
+	if err := c.BindAndValidate(&req); err != nil {
+		biz.Abort(c, biz.CodeParamBindError, err)
+		return
+	}
 
-// ReactPost .
+	uid := shared.GetCtxUser(ctx).Id
+
+	if reaction := ent.DB().UserReaction.Query().Where(
+		userreaction.SubjectTypeEQ(userreaction.SubjectTypePost),
+		userreaction.SubjectIDEQ(req.Id),
+		userreaction.UserIDEQ(uid),
+		userreaction.ReactCodeEQ(req.Code),
+	).FirstX(ctx); reaction != nil {
+		ent.DB().UserReaction.DeleteOneID(reaction.ID).ExecX(ctx)
+	} else {
+		ent.DB().UserReaction.Create().
+			SetUserID(uid).
+			SetSubjectType(userreaction.SubjectTypePost).
+			SetSubjectID(req.Id).
+			SetReactCode(req.Code).
+			ExecX(ctx)
+	}
+
+	c.JSON(200, biz.RespSuccess(utils.H{}))
+}

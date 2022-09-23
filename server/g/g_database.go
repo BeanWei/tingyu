@@ -1,27 +1,27 @@
 package g
 
 import (
-	"database/sql"
 	"sync"
 
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
 )
 
 var (
-	dbr    *sql.DB
-	dbw    *sql.DB
+	dbr    *sqlx.DB
+	dbw    *sqlx.DB
 	dbOnce sync.Once
 )
 
-func DB(read ...bool) *sql.DB {
+func DB(read ...bool) *sqlx.DB {
 	dbOnce.Do(func() {
 		var err error
-		dbw, err = sql.Open("pgx", Cfg().Database.Write)
+		dbw, err = sqlx.Open("pgx", Cfg().Database.Write)
 		if err != nil {
 			panic(err)
 		}
 		if Cfg().Database.Read != "" && Cfg().Database.Read != Cfg().Database.Write {
-			dbr, err = sql.Open("pgx", Cfg().Database.Read)
+			dbr, err = sqlx.Open("pgx", Cfg().Database.Read)
 			if err != nil {
 				panic(err)
 			}
@@ -33,11 +33,11 @@ func DB(read ...bool) *sql.DB {
 	return dbw
 }
 
-func RDB() *sql.DB {
+func RDB() *sqlx.DB {
 	return DB(true)
 }
 
-func WDB() *sql.DB {
+func WDB() *sqlx.DB {
 	return DB()
 }
 

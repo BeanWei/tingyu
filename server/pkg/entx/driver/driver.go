@@ -17,8 +17,8 @@ type multiDriver struct {
 
 func NewDriver() *multiDriver {
 	return &multiDriver{
-		r: entsql.OpenDB(dialect.Postgres, g.RDB()),
-		w: entsql.OpenDB(dialect.Postgres, g.WDB()),
+		r: entsql.OpenDB(dialect.Postgres, g.RDB().DB),
+		w: entsql.OpenDB(dialect.Postgres, g.WDB().DB),
 	}
 }
 

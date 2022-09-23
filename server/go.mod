@@ -11,6 +11,7 @@ require (
 	github.com/hertz-contrib/cors v0.0.0-20220601061225-50f4e582beaf
 	github.com/hibiken/asynq v0.23.0
 	github.com/jackc/pgx/v5 v5.0.0-beta.3
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/meilisearch/meilisearch-go v0.20.1
 	github.com/panjf2000/ants/v2 v2.5.0
 	github.com/spf13/viper v1.12.0

@@ -35,6 +35,7 @@ func NewHTTPServer() {
 	svr.Use(
 		middleware.ErrorHandler(),
 		middleware.CORS(),
+		middleware.Ctx(),
 	)
 
 	admin.Register(svr)

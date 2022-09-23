@@ -9,6 +9,7 @@ import (
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/comment"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
+	"github.com/BeanWei/tingyu/data/ent/userreaction"
 	"github.com/BeanWei/tingyu/data/enums"
 	"github.com/BeanWei/tingyu/g"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -80,6 +81,35 @@ func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
 	})
 
 	c.JSON(200, biz.RespSuccess(res))
+}
+
+// ReactCommentReply 收藏或点赞评论
+func ReactCommentReply(ctx context.Context, c *app.RequestContext) {
+	var req types.ReactCommentReplyReq
+	if err := c.BindAndValidate(&req); err != nil {
+		biz.Abort(c, biz.CodeParamBindError, err)
+		return
+	}
+
+	uid := shared.GetCtxUser(ctx).Id
+
+	if reaction := ent.DB().UserReaction.Query().Where(
+		userreaction.SubjectTypeEQ(userreaction.SubjectTypeReply),
+		userreaction.SubjectIDEQ(req.Id),
+		userreaction.UserIDEQ(uid),
+		userreaction.ReactCodeEQ(req.Code),
+	).FirstX(ctx); reaction != nil {
+		ent.DB().UserReaction.DeleteOneID(reaction.ID).ExecX(ctx)
+	} else {
+		ent.DB().UserReaction.Create().
+			SetUserID(uid).
+			SetSubjectType(userreaction.SubjectTypeReply).
+			SetSubjectID(req.Id).
+			SetReactCode(req.Code).
+			ExecX(ctx)
+	}
+
+	c.JSON(200, biz.RespSuccess(utils.H{}))
 }
 
 // DeleteCommentReply 删除回复

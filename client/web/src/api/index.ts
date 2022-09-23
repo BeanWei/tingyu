@@ -71,6 +71,7 @@ export const url = {
   searchPost: 'GET:/v1/post/search',
   getPost: 'GET:/v1/post/get',
   createPost: 'POST:/v1/post/create',
+  reactPost: 'POST:/v1/post/react',
   listComment: 'GET:/v1/comment/list',
   createComment: 'POST:/v1/comment/create',
   deleteComment: 'DELETE:/v1/comment/delete',

@@ -18,7 +18,7 @@ func Register(s *server.Hertz) {
 
 	sg.POST("/auth/login", api.UserLogin)
 
-	sg.Use(middleware.Ctx(), middleware.Authentication(), func(ctx context.Context, c *app.RequestContext) {
+	sg.Use(middleware.Authentication(), func(ctx context.Context, c *app.RequestContext) {
 		if !shared.GetCtxUser(ctx).IsAdmin {
 			c.AbortWithError(
 				consts.StatusForbidden,
