@@ -45,18 +45,22 @@ const handleNewReply = (reply: AnyObject) => {
       <Editor :read-only="true" :initial-state="data.content" />
     </template>
     <template #footer>
-      <NSpace justify="space-between" align="center">
-        <div
-          class="flex items-center cursor-pointer"
-          @click="changeEditorVisible"
-        >
-          <NIcon size="18">
-            <ICarbonChat />
-          </NIcon>
-          <span class="m-l-0.3em text-12px font-medium">{{ editorVisible ? '取消回复' : data.reply_count || '回复' }}</span>
-        </div>
-        <CreationInfo :time="data.created_at" :location="data.ip_loc" />
-      </NSpace>
+      <SubjectAction :data="data" :react-action="url.reactComment">
+        <template #left>
+          <div
+            class="flex items-center cursor-pointer"
+            @click="changeEditorVisible"
+          >
+            <NIcon size="18">
+              <ICarbonChat />
+            </NIcon>
+            <span class="m-l-0.3em text-12px font-medium">{{ editorVisible ? '取消回复' : data.reply_count || '回复' }}</span>
+          </div>
+        </template>
+        <template #right>
+          <CreationInfo :time="data.created_at" :location="data.ip_loc" />
+        </template>
+      </SubjectAction>
       <div v-if="editorVisible" class="m-t-4 m-b6">
         <Editor
           :placeholder="`回复 ${data.edges.user?.nickname}...`"
@@ -66,7 +70,7 @@ const handleNewReply = (reply: AnyObject) => {
           @submit-success="handleNewReply"
         />
       </div>
-      <div v-if="data.edges.comment_replies" class="m-t-4 p-4 bg-#f7f8fa border-rd-1">
+      <div v-if="data.edges.comment_replies" class="m-t-3 p-x-4 bg-#f7f8fa border-rd-1">
         <NList :show-divider="false">
           <NListItem
             v-for="reply in data.edges.comment_replies"

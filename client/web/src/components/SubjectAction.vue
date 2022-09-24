@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import sortBy from 'lodash/sortBy'
-import { instance, url } from '~/api'
+import { instance } from '~/api'
 
-const { data } = defineProps<{
+const { data, reactAction } = defineProps<{
   data: Record<string, any>
+  reactAction: string
 }>()
 
 const reactions = ref<AnyObject[]>(data.reactions || [])
-
-const router = useRouter()
 
 const emojis: Record<string, string> = {
   'emoji-thumbs_up': '👍',
@@ -24,7 +23,7 @@ const codes = Object.keys(emojis)
 
 const handleReact = (code: string) => {
   instance({
-    url: url.reactPost,
+    url: reactAction,
     data: {
       id: data.id,
       code,
@@ -69,37 +68,33 @@ const handleReact = (code: string) => {
       <span class="ml-1">{{ reaction.count > 99 ? '99+' : reaction.count }}</span>
     </NButton>
   </NSpace>
-  <NSpace align="center" :size="[2, 0]">
-    <NButton quaternary circle @click="router.push(`/post/${data.id}`)">
-      <template #icon>
-        <NIcon>
-          <ICarbonChat />
-        </NIcon>
-        <span class="text-12px">{{ data.comment_count || '' }}</span>
-      </template>
-    </NButton>
-    <NPopover trigger="focus" placement="top-start" style="padding-left: 4px; padding-right: 4px;">
-      <template #trigger>
-        <NButton quaternary circle>
-          <template #icon>
-            <NIcon>
-              <ICarbonFaceAdd />
-            </NIcon>
-          </template>
-        </NButton>
-      </template>
-      <NSpace :size="[2, 0]">
-        <NButton
-          v-for="(text, code) in emojis"
-          :key="code"
-          quaternary
-          circle
-          size="small"
-          @click="() => handleReact(code)"
-        >
-          {{ text }}
-        </NButton>
-      </NSpace>
-    </NPopover>
+  <NSpace justify="space-between" align="center">
+    <NSpace align="center" :size="[2, 0]">
+      <slot name="left" />
+      <NPopover trigger="focus" placement="top-start" style="padding-left: 4px; padding-right: 4px;">
+        <template #trigger>
+          <NButton quaternary circle>
+            <template #icon>
+              <NIcon>
+                <ICarbonFaceAdd />
+              </NIcon>
+            </template>
+          </NButton>
+        </template>
+        <NSpace :size="[2, 0]">
+          <NButton
+            v-for="(text, code) in emojis"
+            :key="code"
+            quaternary
+            circle
+            size="small"
+            @click="() => handleReact(code)"
+          >
+            {{ text }}
+          </NButton>
+        </NSpace>
+      </NPopover>
+    </NSpace>
+    <slot name="right" />
   </NSpace>
 </template>

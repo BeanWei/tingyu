@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/BeanWei/tingyu/app/client/dto"
 	"github.com/BeanWei/tingyu/app/client/service"
-	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/post"
 	"github.com/BeanWei/tingyu/data/ent/topic"
@@ -23,7 +23,7 @@ import (
 
 // ListPost 帖子列表
 func ListPost(ctx context.Context, c *app.RequestContext) {
-	var req types.ListPostReq
+	var req dto.ListPostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -81,15 +81,15 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		ids[i] = record.ID
 	}
 	reactions, err := service.GetReactionsForManySubject(
-		ctx, shared.GetCtxUser(ctx).Id, userreaction.SubjectTypePost, ids,
+		ctx, shared.GetCtxUser(ctx).Id, ids,
 	)
 	if err != nil {
 		biz.Abort(c, biz.CodeServerError, err)
 		return
 	}
-	results := make([]*types.Post, len(records))
+	results := make([]*dto.Post, len(records))
 	for i, record := range records {
-		results[i] = &types.Post{
+		results[i] = &dto.Post{
 			ID:              record.ID,
 			CreatedAt:       record.CreatedAt,
 			UpdatedAt:       record.UpdatedAt,
@@ -110,7 +110,7 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 
 // GetPost 帖子详情
 func GetPost(ctx context.Context, c *app.RequestContext) {
-	var req types.GetPostReq
+	var req dto.GetPostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -118,13 +118,13 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 
 	record := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
 	reactions, err := service.GetReactionsForOneSubject(
-		ctx, shared.GetCtxUser(ctx).Id, userreaction.SubjectTypePost, record.ID,
+		ctx, shared.GetCtxUser(ctx).Id, record.ID,
 	)
 	if err != nil {
 		biz.Abort(c, biz.CodeServerError, err)
 		return
 	}
-	result := &types.Post{
+	result := &dto.Post{
 		ID:              record.ID,
 		CreatedAt:       record.CreatedAt,
 		UpdatedAt:       record.UpdatedAt,
@@ -145,7 +145,7 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 
 // CreatePost 发表帖子
 func CreatePost(ctx context.Context, c *app.RequestContext) {
-	var req types.CreatePostReq
+	var req dto.CreatePostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -188,7 +188,7 @@ func CreatePost(ctx context.Context, c *app.RequestContext) {
 
 // SearchPost 搜索帖子
 func SearchPost(ctx context.Context, c *app.RequestContext) {
-	var req types.SearchPostReq
+	var req dto.SearchPostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -225,7 +225,7 @@ func SearchPost(ctx context.Context, c *app.RequestContext) {
 
 // ReactPost 收藏或点赞帖子
 func ReactPost(ctx context.Context, c *app.RequestContext) {
-	var req types.ReactPostReq
+	var req dto.ReactPostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/BeanWei/tingyu/app/client/types"
+	"github.com/BeanWei/tingyu/app/client/dto"
+	"github.com/BeanWei/tingyu/app/client/service"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/comment"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
@@ -21,7 +22,7 @@ import (
 
 // ListComment 评论列表
 func ListComment(ctx context.Context, c *app.RequestContext) {
-	var req types.ListCommentReq
+	var req dto.ListCommentReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -37,18 +38,67 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
-	comments := query.WithUser().WithCommentReplies(
+	records := query.WithUser().WithCommentReplies(
 		func(crq *ent.CommentReplyQuery) {
 			crq.WithUser().Order(ent.Asc(commentreply.FieldCreatedAt))
 		},
 	).Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
-	c.JSON(200, biz.RespSuccess(comments, total))
+	ids := make([]int64, 0)
+	for _, record := range records {
+		ids = append(ids, record.ID)
+		for _, record2 := range record.Edges.CommentReplies {
+			ids = append(ids, record2.ID)
+		}
+	}
+	reactions, err := service.GetReactionsForManySubject(
+		ctx, shared.GetCtxUser(ctx).Id, ids,
+	)
+	if err != nil {
+		biz.Abort(c, biz.CodeServerError, err)
+		return
+	}
+	results := make([]*dto.Comment, len(records))
+	for i, record := range records {
+		results2 := make([]*dto.CommentReply, len(record.Edges.CommentReplies))
+		for j, record2 := range record.Edges.CommentReplies {
+			results2[j] = &dto.CommentReply{
+				ID:        record2.ID,
+				CreatedAt: record2.CreatedAt,
+				UpdatedAt: record.UpdatedAt,
+				UserID:    record2.UserID,
+				IPLoc:     record2.IPLoc,
+				Content:   record2.Content,
+				CommentID: record2.CommentID,
+				ToUserID:  record2.ToUserID,
+				ToReplyID: record2.ToReplyID,
+				IsPoster:  record2.IsPoster,
+				User:      record2.Edges.User,
+				Reactions: reactions[record2.ID],
+			}
+			results[i] = &dto.Comment{
+				ID:             record.ID,
+				CreatedAt:      record.CreatedAt,
+				UpdatedAt:      record.UpdatedAt,
+				PostID:         record.PostID,
+				UserID:         record.UserID,
+				IPLoc:          record.IPLoc,
+				Content:        record.Content,
+				ReplyCount:     record.ReplyCount,
+				IsPoster:       record.IsPoster,
+				User:           record.Edges.User,
+				Reactions:      reactions[record.ID],
+				CommentReplies: results2,
+			}
+		}
+	}
+
+	c.JSON(200, biz.RespSuccess(results, total))
 }
 
 // CreateComment 发表评论
 func CreateComment(ctx context.Context, c *app.RequestContext) {
-	var req types.CreateCommentReq
+	var req dto.CreateCommentReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -84,7 +134,7 @@ func CreateComment(ctx context.Context, c *app.RequestContext) {
 
 // ReactComment 收藏或点赞评论
 func ReactComment(ctx context.Context, c *app.RequestContext) {
-	var req types.ReactCommentReq
+	var req dto.ReactCommentReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -113,7 +163,7 @@ func ReactComment(ctx context.Context, c *app.RequestContext) {
 
 // DeleteComment 删除评论
 func DeleteComment(ctx context.Context, c *app.RequestContext) {
-	var req types.DeleteCommentReq
+	var req dto.DeleteCommentReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

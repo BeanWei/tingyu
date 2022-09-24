@@ -74,9 +74,11 @@ export const url = {
   reactPost: 'POST:/v1/post/react',
   listComment: 'GET:/v1/comment/list',
   createComment: 'POST:/v1/comment/create',
+  reactComment: 'POST:/v1/comment/react',
   deleteComment: 'DELETE:/v1/comment/delete',
   listReply: 'GET:/v1/reply/list',
   createReply: 'POST:/v1/reply/create',
+  reactReply: 'POST:/v1/reply/react',
   deleteReply: 'DELETE:/v1/reply/delete',
 }
 

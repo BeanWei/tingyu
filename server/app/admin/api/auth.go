@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/BeanWei/tingyu/app/admin/types"
+	"github.com/BeanWei/tingyu/app/admin/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/http/jwt"
@@ -19,7 +19,7 @@ import (
 
 // UserLogin 管理员登录
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	var req types.UserLoginReq
+	var req dto.UserLoginReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

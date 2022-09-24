@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/BeanWei/tingyu/app/client/types"
+	"github.com/BeanWei/tingyu/app/client/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/comment"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
@@ -21,7 +21,7 @@ import (
 
 // ListCommentReply 回复列表
 func ListCommentReply(ctx context.Context, c *app.RequestContext) {
-	var req types.ListCommentReplyReq
+	var req dto.ListCommentReplyReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -44,7 +44,7 @@ func ListCommentReply(ctx context.Context, c *app.RequestContext) {
 
 // CreateCommentReply 发表回复
 func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
-	var req types.CreateCommentReplyReq
+	var req dto.CreateCommentReplyReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -85,7 +85,7 @@ func CreateCommentReply(ctx context.Context, c *app.RequestContext) {
 
 // ReactCommentReply 收藏或点赞评论
 func ReactCommentReply(ctx context.Context, c *app.RequestContext) {
-	var req types.ReactCommentReplyReq
+	var req dto.ReactCommentReplyReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -114,7 +114,7 @@ func ReactCommentReply(ctx context.Context, c *app.RequestContext) {
 
 // DeleteCommentReply 删除回复
 func DeleteCommentReply(ctx context.Context, c *app.RequestContext) {
-	var req types.DeleteCommentReplyReq
+	var req dto.DeleteCommentReplyReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

@@ -1,4 +1,4 @@
-package types
+package dto
 
 type Paging struct {
 	Limit int `query:"limit" vd:"$>=0" default:"20"`

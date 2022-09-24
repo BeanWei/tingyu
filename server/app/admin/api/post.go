@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/BeanWei/tingyu/app/admin/types"
+	"github.com/BeanWei/tingyu/app/admin/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/post"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -13,7 +13,7 @@ import (
 
 // ListPost 帖子列表
 func ListPost(ctx context.Context, c *app.RequestContext) {
-	var req types.ListPostReq
+	var req dto.ListPostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -35,7 +35,7 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 
 // UpdatePost 更新帖子
 func UpdatePost(ctx context.Context, c *app.RequestContext) {
-	var req types.UpdatePostReq
+	var req dto.UpdatePostReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

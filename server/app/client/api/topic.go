@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/BeanWei/tingyu/app/client/dto"
 	"github.com/BeanWei/tingyu/app/client/service"
-	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/topic"
 	"github.com/BeanWei/tingyu/data/ent/user"
@@ -20,7 +20,7 @@ import (
 
 // ListTopic 话题列表
 func ListTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.ListTopicReq
+	var req dto.ListTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -56,7 +56,7 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 
 // SearchTopic 搜索话题
 func SearchTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.SearchTopicReq
+	var req dto.SearchTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -75,7 +75,7 @@ func SearchTopic(ctx context.Context, c *app.RequestContext) {
 
 // CreateTopic 创建话题
 func CreateTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.CreateTopicReq
+	var req dto.CreateTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -106,7 +106,7 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 
 // FollowTopic 关注话题
 func FollowTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.FollowTopicReq
+	var req dto.FollowTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -129,7 +129,7 @@ func FollowTopic(ctx context.Context, c *app.RequestContext) {
 
 // UnFollowTopic 取关话题
 func UnFollowTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.UnFollowTopicReq
+	var req dto.UnFollowTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

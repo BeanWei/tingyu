@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/BeanWei/tingyu/app/admin/types"
+	"github.com/BeanWei/tingyu/app/admin/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/topic"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -13,7 +13,7 @@ import (
 
 // ListTopic 话题列表
 func ListTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.ListTopicReq
+	var req dto.ListTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -35,7 +35,7 @@ func ListTopic(ctx context.Context, c *app.RequestContext) {
 
 // CreateTopic 创建话题
 func CreateTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.CreateTopicReq
+	var req dto.CreateTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -56,7 +56,7 @@ func CreateTopic(ctx context.Context, c *app.RequestContext) {
 
 // UpdateTopic 更新话题
 func UpdateTopic(ctx context.Context, c *app.RequestContext) {
-	var req types.UpdateTopicReq
+	var req dto.UpdateTopicReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

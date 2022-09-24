@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/BeanWei/tingyu/app/client/dto"
 	"github.com/BeanWei/tingyu/app/client/service"
-	"github.com/BeanWei/tingyu/app/client/types"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/http/jwt"
@@ -18,7 +18,7 @@ import (
 
 // UserLogin 用户登录
 func UserLogin(ctx context.Context, c *app.RequestContext) {
-	var req types.UserLoginReq
+	var req dto.UserLoginReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -56,7 +56,7 @@ func RefreshToken(ctx context.Context, c *app.RequestContext) {
 
 // GetUserInfo 获取用户基本信息
 func GetUserInfo(ctx context.Context, c *app.RequestContext) {
-	var req types.GetUserInfoReq
+	var req dto.GetUserInfoReq
 	if err := c.Bind(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -97,7 +97,7 @@ func GetUserInfo(ctx context.Context, c *app.RequestContext) {
 
 // UpdateUserInfo 更新个人信息
 func UpdateUserInfo(ctx context.Context, c *app.RequestContext) {
-	var req types.UpdateUserInfoReq
+	var req dto.UpdateUserInfoReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

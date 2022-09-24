@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/BeanWei/tingyu/app/admin/types"
+	"github.com/BeanWei/tingyu/app/admin/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/topiccategory"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -13,7 +13,7 @@ import (
 
 // ListTopicCategory 话题分类列表
 func ListTopicCategory(ctx context.Context, c *app.RequestContext) {
-	var req types.ListTopicCategoryReq
+	var req dto.ListTopicCategoryReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -32,7 +32,7 @@ func ListTopicCategory(ctx context.Context, c *app.RequestContext) {
 
 // CreateTopicCategory 创建话题分类
 func CreateTopicCategory(ctx context.Context, c *app.RequestContext) {
-	var req types.CreateTopicCategoryReq
+	var req dto.CreateTopicCategoryReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -48,7 +48,7 @@ func CreateTopicCategory(ctx context.Context, c *app.RequestContext) {
 
 // UpdateTopicCategory 创建话题分类
 func UpdateTopicCategory(ctx context.Context, c *app.RequestContext) {
-	var req types.UpdateTopicCategoryReq
+	var req dto.UpdateTopicCategoryReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

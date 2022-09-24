@@ -1,5 +1,5 @@
 //lint:file-ignore SA5008 .
-package types
+package dto
 
 type UserLoginReq struct {
 	Username string `json:"username,required"`

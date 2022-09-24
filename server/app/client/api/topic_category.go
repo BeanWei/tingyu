@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/BeanWei/tingyu/app/client/types"
+	"github.com/BeanWei/tingyu/app/client/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/topiccategory"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -12,7 +12,7 @@ import (
 
 // ListTopicCategory 话题分类列表
 func ListTopicCategory(ctx context.Context, c *app.RequestContext) {
-	var req types.ListTopicCategoryReq
+	var req dto.ListTopicCategoryReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

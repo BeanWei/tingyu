@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { url } from '~/api'
+
 const { data } = defineProps<{
   data: AnyObject
 }>()
+
+const router = useRouter()
 </script>
 
 <template>
-  <div class="bg-#fff border-rd-1 p-y-4 p-x-5 relative">
+  <div class="bg-#fff border-rd-1 p-x-5 p-t-4 p-b-2 relative">
     <NThing content-indented>
       <template #avatar>
         <UserAvatar
@@ -37,7 +41,21 @@ const { data } = defineProps<{
 
       </template> -->
       <template #action>
-        <PostFooterAction :data="data" />
+        <SubjectAction
+          :data="data"
+          :react-action="url.reactPost"
+        >
+          <template #left>
+            <NButton quaternary circle @click="router.push(`/post/${data.id}`)">
+              <template #icon>
+                <NIcon>
+                  <ICarbonChat />
+                </NIcon>
+                <span class="text-12px">{{ data.comment_count || '' }}</span>
+              </template>
+            </NButton>
+          </template>
+        </SubjectAction>
       </template>
     </NThing>
   </div>

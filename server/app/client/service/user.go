@@ -8,7 +8,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/BeanWei/tingyu/app/client/types"
+	"github.com/BeanWei/tingyu/app/client/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/data/enums"
@@ -26,7 +26,7 @@ const (
 )
 
 // UserLoginOrSignIn 登录或注册
-func UserLoginOrSignIn(ctx context.Context, req *types.UserLoginReq) (*ent.User, *errors.Error) {
+func UserLoginOrSignIn(ctx context.Context, req *dto.UserLoginReq) (*ent.User, *errors.Error) {
 	usr, err := ent.DB().User.Query().Where(user.UsernameEQ(req.Username)).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {

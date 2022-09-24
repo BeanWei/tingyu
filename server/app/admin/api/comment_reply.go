@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/BeanWei/tingyu/app/admin/types"
+	"github.com/BeanWei/tingyu/app/admin/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -13,7 +13,7 @@ import (
 
 // ListCommentReply 回复列表
 func ListCommentReply(ctx context.Context, c *app.RequestContext) {
-	var req types.ListCommentReplyReq
+	var req dto.ListCommentReplyReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -35,7 +35,7 @@ func ListCommentReply(ctx context.Context, c *app.RequestContext) {
 
 // UpdateCommentReply 更新回复
 func UpdateCommentReply(ctx context.Context, c *app.RequestContext) {
-	var req types.UpdateCommentReplyReq
+	var req dto.UpdateCommentReplyReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return

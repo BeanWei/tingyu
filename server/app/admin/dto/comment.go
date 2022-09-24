@@ -1,7 +1,7 @@
 //lint:file-ignore SA5008 .
-package types
+package dto
 
-type ListCommentReplyReq struct {
+type ListCommentReq struct {
 	*Paging
 	Search string `query:"search"`
 	Filter struct {
@@ -9,7 +9,7 @@ type ListCommentReplyReq struct {
 	} `query:"filter"`
 }
 
-type UpdateCommentReplyReq struct {
+type UpdateCommentReq struct {
 	Id     int64 `json:"id,required"`
 	Status int8  `json:"status,required"`
 }

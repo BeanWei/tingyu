@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"github.com/BeanWei/tingyu/app/admin/types"
+	"github.com/BeanWei/tingyu/app/admin/dto"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/user"
 	"github.com/BeanWei/tingyu/pkg/biz"
@@ -13,7 +13,7 @@ import (
 
 // ListUser 用户列表
 func ListUser(ctx context.Context, c *app.RequestContext) {
-	var req types.ListUserReq
+	var req dto.ListUserReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
@@ -42,7 +42,7 @@ func ListUser(ctx context.Context, c *app.RequestContext) {
 
 // UpdateUser 更新帖子
 func UpdateUser(ctx context.Context, c *app.RequestContext) {
-	var req types.UpdateUserReq
+	var req dto.UpdateUserReq
 	if err := c.BindAndValidate(&req); err != nil {
 		biz.Abort(c, biz.CodeParamBindError, err)
 		return
