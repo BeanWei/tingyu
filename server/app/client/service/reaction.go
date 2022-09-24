@@ -16,7 +16,7 @@ func GetReactionsForOneSubject(ctx context.Context, userId, subjectId int64) ([]
 			select count(t2.id) from user_reactions as t2 where t2.user_id = $1 and t2.subject_id = t1.subject_id and t2.react_code = t1.react_code
 		) > 0 then true else false end as active
 		from user_reactions as t1
-		where t1.subject_id = $3
+		where t1.subject_id = $2
 		group by t1.subject_id, t1.react_code
 	`, userId, subjectId); err != nil {
 		return nil, err
@@ -25,6 +25,10 @@ func GetReactionsForOneSubject(ctx context.Context, userId, subjectId int64) ([]
 }
 
 func GetReactionsForManySubject(ctx context.Context, userId int64, subjectIds []int64) (map[int64][]*dto.Reaction, error) {
+	if len(subjectIds) == 0 {
+		return make(map[int64][]*dto.Reaction), nil
+	}
+
 	reactions := make([]*dto.Reaction, 0)
 	query, args, err := sqlx.In(`
 		select t1.subject_id, t1.react_code as code, count(t1.react_code) as count,

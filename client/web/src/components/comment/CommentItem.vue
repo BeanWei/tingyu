@@ -34,12 +34,12 @@ const handleNewReply = (reply: AnyObject) => {
     <template #avatar>
       <UserAvatar
         :size="24"
-        :src="data.edges.user?.avatar"
+        :src="data.user?.avatar"
         class="flex relative border-neutral-200/70"
       />
     </template>
     <template #header>
-      <a class="font-medium text-16px color-#252933 decoration-none cursor-pointer"> {{ data.edges.user?.nickname }} </a>
+      <a class="font-medium text-16px color-#252933 decoration-none cursor-pointer"> {{ data.user?.nickname }} </a>
     </template>
     <template #description>
       <Editor :read-only="true" :initial-state="data.content" />
@@ -63,17 +63,17 @@ const handleNewReply = (reply: AnyObject) => {
       </SubjectAction>
       <div v-if="editorVisible" class="m-t-4 m-b6">
         <Editor
-          :placeholder="`回复 ${data.edges.user?.nickname}...`"
+          :placeholder="`回复 ${data.user?.nickname}...`"
           submit-button-text="发布"
           :autofocus="true"
           :on-submit="createReply(data.id)"
           @submit-success="handleNewReply"
         />
       </div>
-      <div v-if="data.edges.comment_replies" class="m-t-3 p-x-4 bg-#f7f8fa border-rd-1">
+      <div v-if="data.comment_replies" class="m-t-3 p-x-4 bg-#f7f8fa border-rd-1">
         <NList :show-divider="false">
           <NListItem
-            v-for="reply in data.edges.comment_replies"
+            v-for="reply in data.comment_replies"
             :key="reply.id"
             :show-divider="false"
             class="bg-#f7f8fa"

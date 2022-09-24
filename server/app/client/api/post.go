@@ -76,13 +76,16 @@ func ListPost(ctx context.Context, c *app.RequestContext) {
 		Offset(req.Offset()).
 		AllX(ctx)
 
+	var uid int64
+	if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil {
+		uid = ctxUser.Id
+	}
+
 	ids := make([]int64, len(records))
 	for i, record := range records {
 		ids[i] = record.ID
 	}
-	reactions, err := service.GetReactionsForManySubject(
-		ctx, shared.GetCtxUser(ctx).Id, ids,
-	)
+	reactions, err := service.GetReactionsForManySubject(ctx, uid, ids)
 	if err != nil {
 		biz.Abort(c, biz.CodeServerError, err)
 		return
@@ -116,10 +119,13 @@ func GetPost(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	var uid int64
+	if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil {
+		uid = ctxUser.Id
+	}
+
 	record := ent.DB().Post.Query().Where(post.IDEQ(req.Id)).WithUser().OnlyX(ctx)
-	reactions, err := service.GetReactionsForOneSubject(
-		ctx, shared.GetCtxUser(ctx).Id, record.ID,
-	)
+	reactions, err := service.GetReactionsForOneSubject(ctx, uid, record.ID)
 	if err != nil {
 		biz.Abort(c, biz.CodeServerError, err)
 		return

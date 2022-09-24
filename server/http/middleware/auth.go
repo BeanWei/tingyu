@@ -13,7 +13,7 @@ import (
 func Authentication() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		ctxUser := shared.GetCtxUser(ctx)
-		if ctxUser == nil {
+		if ctxUser == nil || ctxUser.Id == 0 {
 			biz.Abort(c, biz.CodeNotAuthorized, errors.NewPublic("user not login"))
 		}
 		c.Next(ctx)

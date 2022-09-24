@@ -44,6 +44,11 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 		},
 	).Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
+	var uid int64
+	if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil {
+		uid = ctxUser.Id
+	}
+
 	ids := make([]int64, 0)
 	for _, record := range records {
 		ids = append(ids, record.ID)
@@ -51,9 +56,7 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 			ids = append(ids, record2.ID)
 		}
 	}
-	reactions, err := service.GetReactionsForManySubject(
-		ctx, shared.GetCtxUser(ctx).Id, ids,
-	)
+	reactions, err := service.GetReactionsForManySubject(ctx, uid, ids)
 	if err != nil {
 		biz.Abort(c, biz.CodeServerError, err)
 		return
@@ -76,20 +79,20 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 				User:      record2.Edges.User,
 				Reactions: reactions[record2.ID],
 			}
-			results[i] = &dto.Comment{
-				ID:             record.ID,
-				CreatedAt:      record.CreatedAt,
-				UpdatedAt:      record.UpdatedAt,
-				PostID:         record.PostID,
-				UserID:         record.UserID,
-				IPLoc:          record.IPLoc,
-				Content:        record.Content,
-				ReplyCount:     record.ReplyCount,
-				IsPoster:       record.IsPoster,
-				User:           record.Edges.User,
-				Reactions:      reactions[record.ID],
-				CommentReplies: results2,
-			}
+		}
+		results[i] = &dto.Comment{
+			ID:             record.ID,
+			CreatedAt:      record.CreatedAt,
+			UpdatedAt:      record.UpdatedAt,
+			PostID:         record.PostID,
+			UserID:         record.UserID,
+			IPLoc:          record.IPLoc,
+			Content:        record.Content,
+			ReplyCount:     record.ReplyCount,
+			IsPoster:       record.IsPoster,
+			User:           record.Edges.User,
+			Reactions:      reactions[record.ID],
+			CommentReplies: results2,
 		}
 	}
 
