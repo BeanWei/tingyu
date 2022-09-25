@@ -68,7 +68,7 @@ func ListComment(ctx context.Context, c *app.RequestContext) {
 			results2[j] = &dto.CommentReply{
 				ID:        record2.ID,
 				CreatedAt: record2.CreatedAt,
-				UpdatedAt: record.UpdatedAt,
+				UpdatedAt: record2.UpdatedAt,
 				UserID:    record2.UserID,
 				IPLoc:     record2.IPLoc,
 				Content:   record2.Content,

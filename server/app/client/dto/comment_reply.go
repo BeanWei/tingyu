@@ -17,7 +17,6 @@ type CommentReply struct {
 	ToUserID  int64       `json:"to_user_id"`
 	ToReplyID int64       `json:"to_reply_id"`
 	IsPoster  bool        `json:"is_poster"`
-	Status    int8        `json:"status"`
 	User      *ent.User   `json:"user"`
 	Reactions []*Reaction `json:"reactions"`
 }

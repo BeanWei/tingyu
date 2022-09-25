@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/BeanWei/tingyu/app/client/dto"
+	"github.com/BeanWei/tingyu/app/client/service"
 	"github.com/BeanWei/tingyu/data/ent"
 	"github.com/BeanWei/tingyu/data/ent/comment"
 	"github.com/BeanWei/tingyu/data/ent/commentreply"
@@ -37,9 +38,41 @@ func ListCommentReply(ctx context.Context, c *app.RequestContext) {
 		c.JSON(200, biz.RespSuccess(nil, total))
 		return
 	}
-	replies := query.WithUser().Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
+	records := query.WithUser().Limit(req.Limit).Offset(req.Offset()).AllX(ctx)
 
-	c.JSON(200, biz.RespSuccess(replies, total))
+	var uid int64
+	if ctxUser := shared.GetCtxUser(ctx); ctxUser != nil {
+		uid = ctxUser.Id
+	}
+
+	ids := make([]int64, len(records))
+	for i, record := range records {
+		ids[i] = record.ID
+	}
+	reactions, err := service.GetReactionsForManySubject(ctx, uid, ids)
+	if err != nil {
+		biz.Abort(c, biz.CodeServerError, err)
+		return
+	}
+	results := make([]*dto.CommentReply, len(records))
+	for i, record := range records {
+		results[i] = &dto.CommentReply{
+			ID:        record.ID,
+			CreatedAt: record.CreatedAt,
+			UpdatedAt: record.UpdatedAt,
+			UserID:    record.UserID,
+			IPLoc:     record.IPLoc,
+			Content:   record.Content,
+			CommentID: record.CommentID,
+			ToUserID:  record.ToUserID,
+			ToReplyID: record.ToReplyID,
+			IsPoster:  record.IsPoster,
+			User:      record.Edges.User,
+			Reactions: reactions[record.ID],
+		}
+	}
+
+	c.JSON(200, biz.RespSuccess(results, total))
 }
 
 // CreateCommentReply 发表回复
